@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+
+<!--[if lt IE 7]> <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js lt-ie9 lt-ie8" lang="en"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js lt-ie9" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8" >
+
+  <!-- Set the viewport width to device width for mobile -->
+  <meta name="viewport" content="width=device-width" />
+
+  <title>{{ page.title }}</title>
+
+  <!-- CSS Files -->
+  <link rel="stylesheet" href="assets/css/foundation.css">
+  <link rel="stylesheet" href="assets/css/app.css">
+  <link rel="stylesheet" type="text/css" href="https://raw.github.com/k4r573n/leaflet-control-osm-geocoder/master/Control.OSMGeocoder.css">
+
+  
+<!-- JS Files -->
+  <script src="assets/js/jquery.js"></script>
+  <script src="assets/js/foundation.js"></script>
+  	<!-- Initialize JS Plugins -->
+  	<script src="assets/js/app.js"></script>
+
+<script src="assets/js/map.js"></script>
+      <link rel="stylesheet" type="text/css" href="http://cdn.leafletjs.com/leaflet-0.5/leaflet.css">
+      <script type='text/javascript' src="http://cdn.leafletjs.com/leaflet-0.5/leaflet.js"></script>
+      <script type='text/javascript' src="https://raw.github.com/k4r573n/leaflet-control-osm-geocoder/master/Control.OSMGeocoder.js"></script>
+
+
+  <!-- IE Fix for HTML5 Tags -->
+  <!--[if lt IE 9]>
+    <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  
+
+</head>
+	<body class="map-body">
+		
+<div id="nav-menu" class="row">
+
+{% include nav.html %}
+
+</div>
+{{ content }}
+</body>
+</html>
+
+

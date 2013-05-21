@@ -1,0 +1,8 @@
+/* Created By Eric BREHAULT in France. */
+
+
+/* SITE */
+  Standards: HTML5, CSS3
+  Components: Leaflet, jQuery, Foundation, html5 Boilerplate
+  Software: Sublime Text 2, Git, Jekyll
+  

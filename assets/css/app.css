@@ -1,0 +1,22 @@
+nav ul li {
+	display: inline;
+	padding-right: 25px;
+}
+
+.map-body { 
+    margin:0;
+    padding:0;
+    position: static;
+}
+.map-pane{
+  position:absolute;
+  top: 40px;
+  bottom: 0;
+  width: 50%;
+}
+#map-l {
+  left:0;
+}
+#map-r{
+  right:0;
+}
