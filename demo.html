@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <title> - jsFiddle demo</title>
+  
+  <script type='text/javascript' src='/js/lib/dummy.js'></script>
+  
+  
+  
+  <link rel="stylesheet" type="text/css" href="/css/result-light.css">
+  
+    
+      <link rel="stylesheet" type="text/css" href="http://cdn.leafletjs.com/leaflet-0.5/leaflet.css">
+    
+    
+  
+    
+    
+      <script type='text/javascript' src="http://cdn.leafletjs.com/leaflet-0.5/leaflet.js"></script>
+    
+  
+    
+    
+      <script type='text/javascript' src="https://raw.github.com/k4r573n/leaflet-control-osm-geocoder/master/Control.OSMGeocoder.js"></script>
+    
+  
+    
+      <link rel="stylesheet" type="text/css" href="https://raw.github.com/k4r573n/leaflet-control-osm-geocoder/master/Control.OSMGeocoder.css">
+    
+    
+  
+  <style type='text/css'>
+    body { 
+    margin:0;
+    padding:0;
+    padding-top: 40px;
+}
+#map-l {
+  position:absolute;
+  top:0;
+  left:0;
+  bottom:0;
+  width: 50%;
+}
+#map-r{
+  position:absolute;
+  top:0;
+  right:0;
+  bottom:0;
+  width: 50%;
+}
+  </style>
+  
+
+
+<script type='text/javascript'>//<![CDATA[ 
+window.onload=function(){
+var mapl = L.map('map-l').setView([47.12, -1.40], 10);
+var mapr = L.map('map-r').setView([47.12, -1.40], 10);
+
+L.tileLayer('http://a.tiles.mapbox.com/v3/examples.map-a1dcgmtr/{z}/{x}/{y}.png', {
+  maxZoom: 16
+}).addTo(mapl)
+
+L.tileLayer('http://a.tiles.mapbox.com/v3/examples.map-20v6611k/{z}/{x}/{y}.png', {
+  maxZoom: 16
+}).addTo(mapr);
+
+L.control.scale().addTo(mapl).addTo(mapr);
+
+var osmGeocoder = new L.Control.OSMGeocoder();
+mapr.addControl(osmGeocoder);
+
+var cursorl = L.circleMarker([0,0], {radius:20, fillOpacity: 0.2, color: '#ff0', fillColor: '#fff'}).addTo(mapl);
+var cursorr = L.circleMarker([0,0], {radius:20, fillOpacity: 0.2, color: '#ff0', fillColor: '#fff'}).addTo(mapr);
+
+mapl.on('mousemove', function (e) {
+   cursorl.setLatLng(e.latlng);
+   cursorr.setLatLng(e.latlng);
+});
+mapr.on('mousemove', function (e) {
+   cursorl.setLatLng(e.latlng);
+   cursorr.setLatLng(e.latlng);
+});
+
+var updatel = function () {mapl.setView(mapr.getCenter(), mapr.getZoom());};
+var updater = function () {mapr.setView(mapl.getCenter(), mapl.getZoom());};
+mapl.on('move zoom', function (e) {
+   mapr.off('move zoom');
+   updater();
+   mapr.on('move zoom', updatel);
+});
+mapr.on('move zoom', function (e) {
+       mapl.off('move zoom');
+   updatel();
+   mapl.on('move zoom', updatel);
+});
+}//]]>  
+
+</script>
+
+
+</head>
+<body>
+  <div id="map-l"></div>
+<div id="map-r"></div>
+  
+</body>
+
+
+</html>
+
