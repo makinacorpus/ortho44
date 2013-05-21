@@ -10,7 +10,7 @@ nav ul li {
 }
 .map-pane{
   position:absolute;
-  top: 40px;
+  top: 100px;
   bottom: 0;
   width: 50%;
 }
@@ -19,4 +19,10 @@ nav ul li {
 }
 #map-r{
   right:0;
+}
+
+@media only screen and (min-width: 768px) {
+	.map-pane{
+		top: 40px;
+	}
 }
