@@ -13,16 +13,14 @@
   <title>{{ page.title }}</title>
 
   <!-- CSS Files -->
-  <link rel="stylesheet" href="assets/css/foundation.css">
+  <link rel="stylesheet" href="assets/css/foundation.min.css">
   <link rel="stylesheet" href="assets/css/app.css">
   <link rel="stylesheet" type="text/css" href="https://raw.github.com/k4r573n/leaflet-control-osm-geocoder/master/Control.OSMGeocoder.css">
 
   
 <!-- JS Files -->
-  <script src="assets/js/jquery.js"></script>
   <script src="assets/js/foundation.js"></script>
   	<!-- Initialize JS Plugins -->
-  	<script src="assets/js/app.js"></script>
 
 <script src="assets/js/map.js"></script>
       <link rel="stylesheet" type="text/css" href="http://cdn.leafletjs.com/leaflet-0.5/leaflet.css">
@@ -40,9 +38,10 @@
 	<body class="map-body">
 		
 <div id="nav-menu" class="row">
+<div class="large-12 columns large-centered">
 
 {% include nav.html %}
-
+</div>
 </div>
 {{ content }}
 </body>
