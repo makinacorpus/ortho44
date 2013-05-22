@@ -16,7 +16,7 @@ casper.waitForSelector(x("//a[normalize-space(text())='Démonstration']"),
         this.test.assertExists(x("//a[normalize-space(text())='Démonstration']"));
 });
 casper.then(function() {
-    this.test.assertUrlMatch(/^http:\/\/makinacorpus.github.io\/ortho44\/dem.htm$/);
+    this.test.assertUrlMatch(/^http:\/\/makinacorpus.github.io\/ortho44\/demo.html$/);
 });
 
 casper.run(function() {this.test.renderResults(true);});
