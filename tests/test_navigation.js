@@ -6,6 +6,7 @@ var x = require('casper').selectXPath;
 var casper = require('casper').create();
 casper.options.viewportSize = {width: 1615, height: 964};
 casper.start('http://makinacorpus.github.io/ortho44/');
+
 casper.waitForSelector(x("//a[normalize-space(text())='Démonstration']"),
     function success() {
         this.test.assertExists(x("//a[normalize-space(text())='Démonstration']"));
