@@ -1,0 +1,10 @@
+branches:
+  only:
+    - gh-pages
+install:
+  - git clone git://github.com/n1k0/casperjs.git
+  - cd casperjs; git checkout tags/1.0.2; cd -
+before_script:
+  - "export PHANTOMJS_EXECUTABLE='phantomjs --local-to-remote-url-access=yes --ignore-ssl-errors=yes'"
+script:
+  - ./casperjs/bin/casperjs tests/test_navigation.js
