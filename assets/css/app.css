@@ -1,9 +1,9 @@
 .row{max-width:100%;}
 #header{padding-top:0.5em;}
-.tagline{font-size:1.2em;font-weight:bold;}
+.tagline{font-size:1.2em;font-weight:bold;margin-bottom:0.2em;}
 #search{background-color:#b1ca00;padding-top:1em;}#search .search-label{display:inline;font-weight:bold;}
 .map-body{margin:0;padding:0;position:static;}
-.map-full{position:absolute;top:14em;bottom:0;width:100%;}
+.map-full{position:absolute;top:12.7em;bottom:0;width:100%;}
 .map-pane{position:absolute;top:100px;bottom:0;width:50%;}
 #map-l{left:0;}
 #map-r{right:0;}

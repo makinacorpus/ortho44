@@ -5,14 +5,16 @@
 	</div>
 </div>
 <div id="search" class="row">
-	<div class="large-3 columns">
-		<img src="assets/images/drapeau.png" />
-		<label class="search-label">Recherche par adresse ou par mot-clé</label>
-	</div>
-	<div class="large-6 columns">
-		<input type="text" data-placeholder="3 quai Ceineray, Nantes" name="search" />
-	</div>
-	<div class="large-3 columns">
-		<button class="small button">Rechercher</button>
-	</div>
+	<form id="search-address">
+		<div class="large-3 columns">
+			<img src="assets/images/drapeau.png" />
+			<label class="search-label">Recherche par adresse ou par mot-clé</label>
+		</div>
+		<div class="large-6 columns">
+			<input type="text" data-placeholder="3 quai Ceineray, Nantes" name="search" id="search-input" />
+		</div>
+		<div class="large-3 columns">
+			<input type="submit" class="small button" value="Rechercher" />
+		</div>
+	</form>
 </div>
