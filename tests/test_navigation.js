@@ -7,16 +7,16 @@ var casper = require('casper').create();
 casper.options.viewportSize = {width: 1615, height: 964};
 casper.start('http://makinacorpus.github.io/ortho44/');
 
-casper.waitForSelector(x("//a[normalize-space(text())='Démonstration']"),
+casper.waitForSelector(x("//a[normalize-space(text())='Contact']"),
     function success() {
-        this.test.assertExists(x("//a[normalize-space(text())='Démonstration']"));
-        this.click(x("//a[normalize-space(text())='Démonstration']"));
+        this.test.assertExists(x("//a[normalize-space(text())='Contact']"));
+        this.click(x("//a[normalize-space(text())='Contact']"));
     },
     function fail() {
-        this.test.assertExists(x("//a[normalize-space(text())='Démonstration']"));
+        this.test.assertExists(x("//a[normalize-space(text())='Contact']"));
 });
 casper.then(function() {
-    this.test.assertUrlMatch(/^http:\/\/makinacorpus.github.io\/ortho44\/demo.html$/);
+    this.test.assertUrlMatch(/^http:\/\/makinacorpus.github.io\/ortho44\/contact.html$/);
 });
 
 casper.run(function() {this.test.renderResults(true);});
