@@ -1,7 +1,7 @@
 .row{max-width:100%;}
 #header{padding-top:0.5em;}
 .tagline{font-size:1.2em;font-weight:bold;margin-bottom:0.2em;}
-#search{background-color:#b1ca00;padding-top:1em;}#search #search-label label{display:block;font-weight:bold;margin:0.7em 0 0 2em;}
+#search{background-color:#b1ca00;padding-top:1em;position:relative;}#search #search-label label{font-weight:bold;position:absolute;bottom:0;left:3em;margin:0;}
 #search #search-label img{float:left;}
 #search #search-input{font-weight:bold;}
 .map-body{margin:0;padding:0;position:static;}
