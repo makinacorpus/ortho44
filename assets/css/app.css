@@ -7,3 +7,4 @@
 .map-pane{position:absolute;top:100px;bottom:0;width:50%;}
 #map-l{left:0;}
 #map-r{right:0;}
+@media only screen and (max-width:48em){.map-full{top:14.7em;}}
