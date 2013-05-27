@@ -1,3 +1,6 @@
+@green: #b1ca00;
+
+/* FIX FOUNDATION */
 .row {
   max-width: 100%;
 }
@@ -12,7 +15,7 @@
   margin-bottom: 0.2em;
 }
 #search {
-  background-color: #b1ca00;
+  background-color: @green;
   padding-top: 1em;
 
   .search-label {
@@ -29,7 +32,7 @@
 .map-full{
   position:absolute;
   top: 12.7em;
-  bottom: 0;
+  bottom: 5em;
   width: 100%;
 }
 .map-pane{
@@ -43,6 +46,43 @@
 }
 #map-r{
   right:0;
+}
+
+/* FOOTER */
+.map-body #footer {
+  position: absolute;
+  bottom: 0;
+}
+#footer {
+  #slogan {
+    text-align: right;
+    border-top: 0.2em solid @green;
+    padding-right: 0;
+
+    span {
+      background-color: @green;
+      padding: 0 1em;
+      margin-right: -0.05em;
+    }
+  }
+  nav ul {
+    margin-bottom: 0;
+    font-size: 80%;
+      li {
+        display: inline;
+        padding: 0 2em;
+        border-right: 1px solid grey;
+
+        a {
+          color: black;
+          font-weight: bold;
+        }
+      }
+      li:last-child {
+          border-right: 0;
+      }
+      
+    }
 }
 
 /* RESPONSIVE */

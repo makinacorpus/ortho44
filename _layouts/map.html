@@ -15,6 +15,7 @@
   <!-- CSS Files -->
   <link rel="stylesheet" href="assets/css/foundation.min.css">
   <link rel="stylesheet" href="assets/css/app.css">
+  <link rel="stylesheet" type="text/css" href="https://raw.github.com/k4r573n/leaflet-control-osm-geocoder/master/Control.OSMGeocoder.css">
 
   
 <!-- JS Files -->
@@ -24,6 +25,7 @@
 <script src="assets/js/map.js"></script>
       <link rel="stylesheet" type="text/css" href="http://cdn.leafletjs.com/leaflet-0.5/leaflet.css">
       <script type='text/javascript' src="http://cdn.leafletjs.com/leaflet-0.5/leaflet.js"></script>
+      <script type='text/javascript' src="https://raw.github.com/k4r573n/leaflet-control-osm-geocoder/master/Control.OSMGeocoder.js"></script>
 
 
   <!-- IE Fix for HTML5 Tags -->
@@ -35,9 +37,12 @@
 </head>
 	<body class="map-body">
 
-{% include nav.html %}
+{% include header.html %}
+{% include search.html %}
 
 {{ content }}
+
+{% include footer.html %}
 </body>
 </html>
 
