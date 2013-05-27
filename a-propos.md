@@ -5,12 +5,6 @@ title: À propos
 
 ---
 
----
-layout: default
-title: À propos
-published: true
-
----
 # À	propos de ce service
 
 
