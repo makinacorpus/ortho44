@@ -43,12 +43,18 @@ var Ortho44 = {
 };
 
 window.onload=function(){
-  var max_bounds = new L.LatLngBounds(new L.LatLng(46.86008, -2.55754), new L.LatLng(47.83486, -0.92346));
+  var max_bounds_address = new L.LatLngBounds(new L.LatLng(46.86008, -2.55754), new L.LatLng(47.83486, -0.92346));
+  var max_bounds = new L.LatLngBounds(new L.LatLng(46.8, -3.0), new L.LatLng(48.0, -0.5));
   var map = L.map('map',
       {
         'maxBounds': max_bounds,
       }
-    ).setView([47.12, -1.40], 11);
+    ).locate({setView: true});
+  map.on('locationerror', function() {
+    console.log("Too far away, go to default location");
+    map.setView([47.21806, -1.55278], 11);
+  })
+
   map.attributionControl.setPrefix('Réalisé par <a href="http://www.makina-corpus.com">Makina Corpus</a>');
 
   var streets = L.tileLayer('http://{s}.tiles.mapbox.com/v3/examples.map-20v6611k/{z}/{x}/{y}.png', {
@@ -56,6 +62,13 @@ window.onload=function(){
     maxZoom: 18,
     attribution: "OpenStreetMap"
   }); //.addTo(map);
+
+/*var streets = L.tileLayer('http://otile{s}.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.jpeg', {
+    opacity: 0.5,
+    maxZoom: 18,
+    attribution: "MapQuest / OpenStreetMap",
+    subdomains: '1234'
+  }); //.addTo(map); */
 
   var ortho2012 = L.tileLayer('http://{s}.tiles.cg44.makina-corpus.net/ortho2012/{z}/{x}/{y}.png', {
     continuousWorld: true,  // very important
@@ -78,7 +91,7 @@ window.onload=function(){
     document.getElementById('search-address'),
     document.getElementById("search-input"),
     map,
-    max_bounds,
+    max_bounds_address,
     function (results) {
       console.log(results);
       if(results.length > 0) {
