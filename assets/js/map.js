@@ -49,19 +49,9 @@ window.onload=function(){
       {
         'maxBounds': max_bounds,
       }
-    ).locate({setView: true});
-  map.on('locationerror', function() {
-    console.log("Too far away, go to default location");
-    map.setView([47.21806, -1.55278], 11);
-  })
+    ).setView([47.21806, -1.55278], 11);
 
   map.attributionControl.setPrefix('Réalisé par <a href="http://www.makina-corpus.com">Makina Corpus</a>');
-
-  var streets = L.tileLayer('http://{s}.tiles.mapbox.com/v3/examples.map-20v6611k/{z}/{x}/{y}.png', {
-    opacity: 0.5,
-    maxZoom: 18,
-    attribution: "OpenStreetMap"
-  }); //.addTo(map);
 
 /*var streets = L.tileLayer('http://otile{s}.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.jpeg', {
     opacity: 0.5,
@@ -78,9 +68,26 @@ window.onload=function(){
     attribution: "Source: Département de Loire-Atlantique"
   }).addTo(map);
 
-  var baseMaps = {
-    "Orthophotographie 2012": ortho2012
-  };
+  L.geoJson(loire_atlantique_buffer_json, {
+    style: function (feature) {
+        return {
+          fillColor: "#2ba6cb",
+          fillOpacity: 1,
+          weight: 2,
+          opacity: 1,
+          color: 'white',
+          dashArray: '3',
+          };
+    }
+  }).addTo(map);
+
+  var streets = L.tileLayer('http://{s}.tiles.mapbox.com/v3/examples.map-20v6611k/{z}/{x}/{y}.png', {
+    opacity: 0.5,
+    maxZoom: 18,
+    attribution: "OpenStreetMap"
+  }); //.addTo(map);
+
+  var baseMaps = {};
   var overlayMaps = {
     "Rues": streets
   };
@@ -103,4 +110,8 @@ window.onload=function(){
         Ortho44._map.fitBounds(bounds);
       }
     });
+  map.locate({setView: true});
+  map.on('locationerror', function() {
+    console.log("Too far away, keep default location");
+  })
 }
