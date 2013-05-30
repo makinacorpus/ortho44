@@ -59,6 +59,15 @@
 #map-r{
   right:0;
 }
+.leaflet-tile-pane {
+  z-index: auto !important;
+  .leaflet-layer:last-child {
+    z-index: 5 !important;
+  }
+  .leaflet-layer:first-child {
+    z-index: 1 !important;
+  }
+}
 
 /* FOOTER */
 .map-body #footer {
