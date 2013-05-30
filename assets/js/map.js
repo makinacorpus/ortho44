@@ -224,13 +224,6 @@ var HAS_HASHCHANGE = (function() {
 
   map.attributionControl.setPrefix('Réalisé par <a href="http://www.makina-corpus.com">Makina Corpus</a>');
 
-/*var streets = L.tileLayer('http://otile{s}.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.jpeg', {
-    opacity: 0.5,
-    maxZoom: 18,
-    attribution: "MapQuest / OpenStreetMap",
-    subdomains: '1234'
-  }); //.addTo(map); */
-
   var ortho2012 = L.tileLayer('http://{s}.tiles.cg44.makina-corpus.net/ortho2012/{z}/{x}/{y}.jpg', {
     continuousWorld: true,  // very important
     tms: true,
@@ -252,15 +245,22 @@ var HAS_HASHCHANGE = (function() {
     }
   }).addTo(map);
 
-  var streets = L.tileLayer('http://{s}.tiles.mapbox.com/v3/examples.map-20v6611k/{z}/{x}/{y}.png', {
+  /*var streets_mapbox = L.tileLayer('http://{s}.tiles.mapbox.com/v3/examples.map-20v6611k/{z}/{x}/{y}.png', {
     opacity: 0.5,
     maxZoom: 18,
     attribution: "OpenStreetMap"
-  }); //.addTo(map);
+  }); //.addTo(map); */
+  var streets_mapquest = L.tileLayer('http://otile{s}.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.jpeg', {
+    opacity: 0.5,
+    maxZoom: 18,
+    attribution: "MapQuest / OpenStreetMap",
+    subdomains: '1234'
+  }); //.addTo(map); 
 
   var baseMaps = {};
   var overlayMaps = {
-    "Rues": streets
+    //"Rues (test)": streets_mapbox,
+    "Rues": streets_mapquest
   };
   L.control.layers(baseMaps, overlayMaps).addTo(map);
 
