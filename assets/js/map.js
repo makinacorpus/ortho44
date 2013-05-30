@@ -70,7 +70,7 @@ window.onload=function(){
     subdomains: '1234'
   }); //.addTo(map); */
 
-  var ortho2012 = L.tileLayer('http://{s}.tiles.cg44.makina-corpus.net/ortho2012/{z}/{x}/{y}.png', {
+  var ortho2012 = L.tileLayer('http://{s}.tiles.cg44.makina-corpus.net/ortho2012/{z}/{x}/{y}.jpg', {
     continuousWorld: true,  // very important
     tms: true,
     maxZoom: 18,
