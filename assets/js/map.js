@@ -74,6 +74,7 @@ window.onload=function(){
     continuousWorld: true,  // very important
     tms: true,
     maxZoom: 18,
+    subdomains: "abcdefgh",
     attribution: "Source: Département de Loire-Atlantique"
   }).addTo(map);
 
