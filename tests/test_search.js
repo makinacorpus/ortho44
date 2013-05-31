@@ -5,7 +5,7 @@
 var x = require('casper').selectXPath;
 
 casper.options.viewportSize = {width: 1301, height: 682};
-casper.start('http://localhost:4000/index.html');
+casper.start('http://makinacorpus.github.io/ortho44/');
 casper.waitForSelector("form#search-address input[name='search']",
     function success() {
         this.test.assertExists("form#search-address input[name='search']");
@@ -42,5 +42,5 @@ casper.waitForSelector(".search-success", function() {
 });
 
 casper.run(function() {
-    this.test.done(4);
+    this.test.done();
 });

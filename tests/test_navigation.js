@@ -20,5 +20,5 @@ casper.then(function() {
 });
 
 casper.run(function() {
-	this.test.done(2);
+	this.test.done();
 });
