@@ -3,7 +3,7 @@
 //==============================================================================
 
 var x = require('casper').selectXPath;
-var casper = require('casper').create();
+
 casper.options.viewportSize = {width: 1615, height: 964};
 casper.start('http://makinacorpus.github.io/ortho44/');
 
@@ -19,4 +19,6 @@ casper.then(function() {
     this.test.assertUrlMatch(/^http:\/\/makinacorpus.github.io\/ortho44\/contact.html$/);
 });
 
-casper.run(function() {this.test.renderResults(true);});
+casper.run(function() {
+	this.test.done(2);
+});
