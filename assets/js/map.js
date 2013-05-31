@@ -328,11 +328,11 @@ var HAS_HASHCHANGE = (function() {
   //  MAP INIT
   // #############
 
-  var max_bounds_address = new L.LatLngBounds(new L.LatLng(46.86008, -2.55754), new L.LatLng(47.83486, -0.92346));
-  var max_bounds = new L.LatLngBounds(new L.LatLng(46.8, -3.0), new L.LatLng(48.0, -0.5));
+  var max_bounds_strict = new L.LatLngBounds(new L.LatLng(46.86008, -2.55754), new L.LatLng(47.83486, -0.92346));
+  var max_bounds_buffer = new L.LatLngBounds(new L.LatLng(46.8, -3.0), new L.LatLng(48.0, -0.5));
   var map = L.map('map',
       {
-        'maxBounds': max_bounds,
+        maxBounds: max_bounds_buffer,
         zoomControl:false
       }
     ).setView([47.21806, -1.55278], 11);
@@ -387,7 +387,7 @@ var HAS_HASHCHANGE = (function() {
     document.getElementById('search-address'),
     document.getElementById("search-input"),
     map,
-    max_bounds_address,
+    max_bounds_strict,
     function (results) {
       if(results.length > 0) {
         Ortho44.setClass(document.getElementById('search-address'), "search-success");

@@ -4,8 +4,10 @@
 
 var x = require('casper').selectXPath;
 
+var start_url = casper.cli.options['start'];
+
 casper.options.viewportSize = {width: 1615, height: 964};
-casper.start('http://makinacorpus.github.io/ortho44/');
+casper.start(start_url);
 
 casper.waitForSelector(x("//a[normalize-space(text())='Contact']"),
     function success() {
@@ -16,9 +18,9 @@ casper.waitForSelector(x("//a[normalize-space(text())='Contact']"),
         this.test.assertExists(x("//a[normalize-space(text())='Contact']"));
 });
 casper.then(function() {
-    this.test.assertUrlMatch(/^http:\/\/makinacorpus.github.io\/ortho44\/contact.html$/);
+    this.test.assertUrlMatch(/^http:\/\/.+\/contact.html$/);
 });
 
 casper.run(function() {
-	this.test.done();
+	this.test.done(2);
 });

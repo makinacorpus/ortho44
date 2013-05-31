@@ -7,4 +7,4 @@ install:
 before_script:
   - "export PHANTOMJS_EXECUTABLE='phantomjs --local-to-remote-url-access=yes --ignore-ssl-errors=yes'"
 script:
-  - ./casperjs/bin/casperjs test ./tests
+  - ./casperjs/bin/casperjs test ./tests --start=http://makinacorpus.github.io/ortho44/
