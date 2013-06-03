@@ -125,7 +125,7 @@ var HAS_HASHCHANGE = (function() {
       if(hash.indexOf('#') === 0) {
         hash = hash.substr(1);
       }
-      var args = hash.split("/");
+      var args = hash.split("@");
       if (args.length == 3) {
         var zoom = parseInt(args[0], 10),
         lat = parseFloat(args[1]),
@@ -151,7 +151,7 @@ var HAS_HASHCHANGE = (function() {
       return "#" + [zoom,
         center.lat.toFixed(precision),
         center.lng.toFixed(precision)
-      ].join("/");
+      ].join("@");
     },
 
     init: function(map, callback) {
