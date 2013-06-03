@@ -377,7 +377,7 @@ var HAS_HASHCHANGE = (function() {
         maxBounds: max_bounds_buffer,
         zoomControl:false
       }
-    ).setView([47.21806, -1.55278], 11);
+    );
 
   map.attributionControl.setPrefix('Réalisé par <a href="http://www.makina-corpus.com">Makina Corpus</a>');
 
@@ -444,12 +444,17 @@ var HAS_HASHCHANGE = (function() {
         Ortho44.removeClass(document.getElementById('search-address'), "search-success");
       }
     });
+
+  map.on('load', function() {
+    var hash = new L.Hash(map, Ortho44.updateSocialLink);
+    Ortho44.setClass(document.querySelector('body'), "map-initialized");
+  });
+  map.setView([47.21806, -1.55278], 11);
+
   map.locate({setView: true});
   map.on('locationerror', function() {
     console.log("Too far away, keep default location");
   });
-
-  var hash = new L.Hash(map, Ortho44.updateSocialLink);
 
   // #############
   //  MISC INIT
