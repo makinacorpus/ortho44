@@ -22,3 +22,8 @@
 #footer nav ul{margin-bottom:0;font-size:80%;}#footer nav ul li{display:inline;padding:0 1em;border-right:1px solid grey;}#footer nav ul li a{color:black;font-weight:bold;}
 #footer nav ul li:last-child{border-right:0;}
 @media only screen and (max-width:48em){.map-full{top:14.7em;bottom:3.5em;}}.screamshot .tagline{display:none;}
+.screamshot #search{display:none;}
+.screamshot #footer-navigation{display:none;}
+.screamshot .map-full{top:5em;}
+.screamshot .leaflet-control{display:none;}
+.screamshot .leaflet-control-scale{display:block;}
