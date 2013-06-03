@@ -40,7 +40,7 @@ casper.waitForSelector("form#search-address input[type=submit][value='Rechercher
 });
 
 casper.waitForSelector(".search-success", function() {
-    this.test.assertUrlMatch(/^http:.+#12@47\.27\d+@-2\.24\d+$/);
+    this.test.assertUrlMatch(/^http:.+#12\/47\.27\d+\/-2\.24\d+$/);
     this.test.assertExists("img[src$='ortho2012/12/2022/2659.jpg']");
 });
 
