@@ -109,11 +109,11 @@ var HAS_HASHCHANGE = (function() {
       (doc_mode === undefined || doc_mode > 7);
   })();
 
-  L.Hash = function(map) {
+  L.Hash = function(map, callback) {
     this.onHashChange = L.Util.bind(this.onHashChange, this);
 
     if (map) {
-      this.init(map);
+      this.init(map, callback);
     }
   };
 
@@ -154,8 +154,9 @@ var HAS_HASHCHANGE = (function() {
       ].join("/");
     },
 
-    init: function(map) {
+    init: function(map, callback) {
       this.map = map;
+      this._callback = callback
 
       // reset the hash
       this.lastHash = null;
@@ -204,6 +205,8 @@ var HAS_HASHCHANGE = (function() {
         this.movingMap = true;
 
         this.map.setView(parsed.center, parsed.zoom);
+        console.log(hash);
+        this._callback();
 
         this.movingMap = false;
       } else {
@@ -321,7 +324,46 @@ var HAS_HASHCHANGE = (function() {
           hasClass = pattern.test( classes );
       classes = hasClass ? classes.replace( pattern, '' ) : classes;
       element.className = classes.trim()
+    },
+
+    showSocialButtons: function() {
+
+      var html =
+                '<div id="social-buttons" class="fade">'
+              + '<div class="fb-like" data-href="YOUR_URL" data-send="true" data-layout="box_count" data-width="50" data-show-faces="true" data-colorscheme="dark"></div>'
+              + '<div class="g-plusone-frame"><div class="g-plusone" data-size="tall" data-href="YOUR_URL"></div></div>'
+              + '<a href="https://twitter.com/share" class="twitter-share-button" data-url="YOUR_URL" data-text="VuDuCiel Loire-Atlantique" data-count="vertical">Tweet</a>'
+              + '<div id="fb-root"></div>'
+              + '</div>';
+      document.getElementById( 'social-buttons-container' ).insertAdjacentHTML( 'beforeEnd', html );
+
+      var script = document.createElement( 'script' );
+      script.async = true;
+      script.src = document.location.protocol + '//connect.facebook.net/en_US/all.js#xfbml=1&appId=YOUR_FB_APP_ID';
+      document.getElementById( 'fb-root' ).appendChild( script );
+
+      script = document.createElement( 'script' );
+      script.async = true;
+      script.src = document.location.protocol + '//platform.twitter.com/widgets.js';
+      document.getElementById( 'social-buttons' ).appendChild( script );
+
+      script = document.createElement( 'script' );
+      script.async = true;
+      script.src = document.location.protocol + '//apis.google.com/js/plusone.js';
+      document.getElementById( 'social-buttons' ).appendChild( script );
+
+      window.setTimeout( function () {
+
+          document.getElementById( 'social-buttons' ).removeAttribute( 'class' );
+
+      }, 4000 ); //4 second delay
+
+    },
+
+    updateSocialLink: function() {
+      console.log(location.href);
     }
+
   };
 
   // #############
@@ -407,5 +449,11 @@ var HAS_HASHCHANGE = (function() {
     console.log("Too far away, keep default location");
   });
 
-  var hash = new L.Hash(map);
+  var hash = new L.Hash(map, Ortho44.updateSocialLink);
+
+  // #############
+  //  MISC INIT
+  // #############
+
+  //Ortho44.showSocialButtons();
 }
