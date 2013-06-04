@@ -7,7 +7,8 @@
 .map-body{margin:0;padding:0;position:static;}
 .map-full{position:absolute;top:12.7em;bottom:5em;width:100%;}
 .leaflet-fullscreen{z-index:1;}
-.leaflet-control-fullscreen,.leaflet-screenshot-control{line-height:1.8em;}
+.leaflet-control-zoom a{width:32px;height:32px;font-size:150%;line-height:1.8em;}
+.leaflet-bar-part-single{-webkit-border-radius:4px;border-radius:4px;}
 .map-pane{position:absolute;top:100px;bottom:0;width:50%;}
 #map-l{left:0;}
 #map-r{right:0;}

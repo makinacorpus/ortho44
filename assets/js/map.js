@@ -287,7 +287,8 @@ var HAS_HASHCHANGE = (function() {
     onAdd: function(map) {
         this.map = map;
         this._container = L.DomUtil.create('div', 'leaflet-control-zoom leaflet-control');
-        var link = L.DomUtil.create('a', 'leaflet-bar leaflet-bar-part leaflet-screenshot-control', this._container);
+        var div = L.DomUtil.create('div', 'leaflet-bar', this._container);
+        var link = L.DomUtil.create('a', 'leaflet-bar-part leaflet-bar-part-single leaflet-screenshot-control', div);
         link.href = '#';
         link.title = this.options.title;
         var span = L.DomUtil.create('span', 'icon-print', link);
