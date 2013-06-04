@@ -165,8 +165,6 @@ var HAS_HASHCHANGE = (function() {
       if (!this.isListening) {
         this.startListening();
       }
-
-      callback();
     },
 
     remove: function() {
@@ -207,8 +205,7 @@ var HAS_HASHCHANGE = (function() {
         this.movingMap = true;
 
         this.map.setView(parsed.center, parsed.zoom);
-        console.log(hash);
-        this._callback();
+        if(this._callback) this._callback();
 
         this.movingMap = false;
       } else {
@@ -363,44 +360,6 @@ var HAS_HASHCHANGE = (function() {
       element.className = classes.trim()
     },
 
-    showSocialButtons: function() {
-
-      var html =
-                '<div id="social-buttons" class="fade">'
-              + '<div class="fb-like" data-href="YOUR_URL" data-send="true" data-layout="box_count" data-width="50" data-show-faces="true" data-colorscheme="dark"></div>'
-              + '<div class="g-plusone-frame"><div class="g-plusone" data-size="tall" data-href="YOUR_URL"></div></div>'
-              + '<a href="https://twitter.com/share" class="twitter-share-button" data-url="YOUR_URL" data-text="VuDuCiel Loire-Atlantique" data-count="vertical">Tweet</a>'
-              + '<div id="fb-root"></div>'
-              + '</div>';
-      document.getElementById( 'social-buttons-container' ).insertAdjacentHTML( 'beforeEnd', html );
-
-      var script = document.createElement( 'script' );
-      script.async = true;
-      script.src = document.location.protocol + '//connect.facebook.net/en_US/all.js#xfbml=1&appId=YOUR_FB_APP_ID';
-      document.getElementById( 'fb-root' ).appendChild( script );
-
-      script = document.createElement( 'script' );
-      script.async = true;
-      script.src = document.location.protocol + '//platform.twitter.com/widgets.js';
-      document.getElementById( 'social-buttons' ).appendChild( script );
-
-      script = document.createElement( 'script' );
-      script.async = true;
-      script.src = document.location.protocol + '//apis.google.com/js/plusone.js';
-      document.getElementById( 'social-buttons' ).appendChild( script );
-
-      window.setTimeout( function () {
-
-          document.getElementById( 'social-buttons' ).removeAttribute( 'class' );
-
-      }, 4000 ); //4 second delay
-
-    },
-
-    updateSocialLink: function() {
-      console.log(location.href);
-    },
-
     fadeOut: function(selector, interval, callback) {
       document.querySelector(selector).style.display="block";
       var opacity = 9;
@@ -518,11 +477,5 @@ var HAS_HASHCHANGE = (function() {
   map.on('locationerror', function() {
     console.log("Too far away, keep default location");
   });
-
-  // #############
-  //  MISC INIT
-  // #############
-
-  //Ortho44.showSocialButtons();
 
 }
