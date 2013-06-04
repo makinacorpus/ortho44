@@ -156,7 +156,7 @@ var HAS_HASHCHANGE = (function() {
 
     init: function(map, callback) {
       this.map = map;
-      this._callback = callback
+      this._callback = callback;
 
       // reset the hash
       this.lastHash = null;
@@ -165,6 +165,8 @@ var HAS_HASHCHANGE = (function() {
       if (!this.isListening) {
         this.startListening();
       }
+
+      callback();
     },
 
     remove: function() {
@@ -275,7 +277,7 @@ var HAS_HASHCHANGE = (function() {
     },
 
     screenshot: function () {
-        fadeOut("#overlay", 40, function() {
+        Ortho44.fadeOut("#overlay", 40, function() {
           var page = location.href;
           var screamshot = "http://screamshot.makina-corpus.net/capture/?render=html&waitfor=.map-initialized&url=";
           window.open(screamshot + encodeURIComponent(page));
@@ -396,6 +398,24 @@ var HAS_HASHCHANGE = (function() {
 
     updateSocialLink: function() {
       console.log(location.href);
+    },
+
+    fadeOut: function(selector, interval, callback) {
+      document.querySelector(selector).style.display="block";
+      var opacity = 9;
+
+      function func() {
+          document.querySelector(selector).style.opacity = "0." + opacity;
+          opacity--;
+
+          if (opacity == -1) {
+            window.clearInterval(fading);
+            document.querySelector(selector).style.display="none";
+            if(callback) callback();
+          }
+      }
+
+      var fading = window.setInterval(func, interval);
     }
 
   };
@@ -422,6 +442,12 @@ var HAS_HASHCHANGE = (function() {
     subdomains: "abcdefgh",
     attribution: "Source: Département de Loire-Atlantique"
   }).addTo(map);
+  ortho2012.on('load', function() {
+    // wait for progressive jpeg to render
+    window.setTimeout(function() {
+      Ortho44.setClass(document.querySelector('body'), "map-initialized");
+    }, 500);
+  })
 
   L.geoJson(loire_atlantique_buffer_json, {
     style: function (feature) {
@@ -482,9 +508,9 @@ var HAS_HASHCHANGE = (function() {
     });
 
   map.on('load', function() {
-    var hash = new L.Hash(map, Ortho44.updateSocialLink);
-    Ortho44.setClass(document.querySelector('body'), "map-initialized");
+    var hash = new L.Hash(map);
   });
+  // default view if no hash
   map.setView([47.21806, -1.55278], 11);
 
   map.locate({setView: true});
@@ -498,24 +524,4 @@ var HAS_HASHCHANGE = (function() {
 
   //Ortho44.showSocialButtons();
 
-  // #############
-  //  UTILS
-  // #############
-  function fadeOut(selector, interval, callback) {
-    document.querySelector(selector).style.display="block";
-    var opacity = 9;
-
-    function func() {
-        document.querySelector(selector).style.opacity = "0." + opacity;
-        opacity--;
-
-        if (opacity == -1) {
-          window.clearInterval(fading);
-          document.querySelector(selector).style.display="none";
-          if(callback) callback();
-        }
-    }
-
-    var fading = window.setInterval(func, interval);
-  }
 }
