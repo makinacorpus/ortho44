@@ -7,11 +7,13 @@
 .map-body{margin:0;padding:0;position:static;}
 .map-full{position:absolute;top:12.7em;bottom:5em;width:100%;}
 .leaflet-fullscreen{z-index:1;}
+.leaflet-control-fullscreen,.leaflet-screenshot-control{line-height:1.8em;}
 .map-pane{position:absolute;top:100px;bottom:0;width:50%;}
 #map-l{left:0;}
 #map-r{right:0;}
 .leaflet-tile-pane{z-index:auto !important;}.leaflet-tile-pane .leaflet-layer:last-child{z-index:5 !important;}
 .leaflet-tile-pane .leaflet-layer:first-child{z-index:1 !important;}
+#overlay{display:none;z-index:5000;position:fixed;top:0;left:0;width:100%;height:100%;background-color:white;}
 #social-buttons-container #social-buttons{height:300px;transition:opacity 1000ms ease;-moz-transition:opacity 1000ms ease;-ms-transition:opacity 1000ms ease;-o-transition:opacity 1000ms ease;-webkit-transition:opacity 1000ms ease;width:90px;}
 #social-buttons-container .fb-like,#social-buttons-container .g-plusone-frame{margin:10px 0 10px 3px;}
 #social-buttons-container .g-plusone-frame{display:inline-block;}

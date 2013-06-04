@@ -50,6 +50,9 @@
 .leaflet-fullscreen {
   z-index: 1;
 }
+.leaflet-control-fullscreen, .leaflet-screenshot-control {
+  line-height: 1.8em;
+}
 .map-pane{
   position:absolute;
   top: 100px;
@@ -70,6 +73,17 @@
   .leaflet-layer:first-child {
     z-index: 1 !important;
   }
+}
+
+#overlay {
+  display: none;
+  z-index: 5000;
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background-color: white;
 }
 
 /* SOCIAL BUTTONS */

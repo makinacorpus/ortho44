@@ -264,6 +264,40 @@ var HAS_HASHCHANGE = (function() {
     this._hash.remove();
   };
 
+  // ############################
+  // Screenshot
+  // ############################
+  L.Control.Screenshot = L.Control.extend({
+    includes: L.Mixin.Events,
+    options: {
+        position: 'topleft',
+        title: 'Screenshot'
+    },
+
+    screenshot: function () {
+        fadeOut("#overlay", 40, function() {
+          var page = location.href;
+          var screamshot = "http://screamshot.makina-corpus.net/capture/?render=html&waitfor=.map-initialized&url=";
+          window.open(screamshot + encodeURIComponent(page));
+        });
+    },
+
+    onAdd: function(map) {
+        this.map = map;
+        this._container = L.DomUtil.create('div', 'leaflet-control-zoom leaflet-control');
+        var link = L.DomUtil.create('a', 'leaflet-bar leaflet-bar-part leaflet-screenshot-control', this._container);
+        link.href = '#';
+        link.title = this.options.title;
+        var span = L.DomUtil.create('span', 'icon-print', link);
+
+        L.DomEvent
+            .addListener(link, 'click', L.DomEvent.stopPropagation)
+            .addListener(link, 'click', L.DomEvent.preventDefault)
+            .addListener(link, 'click', this.screenshot, this);
+        return this._container;
+    }
+  });
+
   // ###################################
   // Ortho 44 specific geocoding & utils
   // ###################################
@@ -424,6 +458,8 @@ var HAS_HASHCHANGE = (function() {
   L.control.scale().addTo(map);
   var zoomFS = new L.Control.ZoomFS(); 
   map.addControl(zoomFS);
+  var screenshotControl = new L.Control.Screenshot();
+  map.addControl(screenshotControl);
 
   Ortho44.bindGeocode(
     document.getElementById('search-address'),
@@ -461,4 +497,25 @@ var HAS_HASHCHANGE = (function() {
   // #############
 
   //Ortho44.showSocialButtons();
+
+  // #############
+  //  UTILS
+  // #############
+  function fadeOut(selector, interval, callback) {
+    document.querySelector(selector).style.display="block";
+    var opacity = 9;
+
+    function func() {
+        document.querySelector(selector).style.opacity = "0." + opacity;
+        opacity--;
+
+        if (opacity == -1) {
+          window.clearInterval(fading);
+          document.querySelector(selector).style.display="none";
+          if(callback) callback();
+        }
+    }
+
+    var fading = window.setInterval(func, interval);
+  }
 }
