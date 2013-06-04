@@ -18,6 +18,15 @@
   <link rel="stylesheet" type="text/css" href="http://cdn.leafletjs.com/leaflet-0.5.1/leaflet.css">
   <link href="//netdna.bootstrapcdn.com/font-awesome/3.1.1/css/font-awesome.css" rel="stylesheet">
 
+  <!-- Fix leaflet issue with PhantomJS 
+  https://github.com/rassie/Leaflet/commit/1c8e0c690163b0e6aa2068dbf10b3745a2b70048
+  -->
+  <script type="text/javascript">
+  var ua = navigator.userAgent.toLowerCase();
+  if(ua.indexOf('phantom') !== -1) {
+    window.L_DISABLE_3D = true;
+  }
+  </script>
 </head>
 	<body class="map-body">
 
