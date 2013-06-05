@@ -48,6 +48,33 @@
 <script src="assets/js/map.js"></script>
 
 <script type='text/javascript' src="http://cdn.leafletjs.com/leaflet-0.5.1/leaflet.js"></script>
+
+<div id="snippet" class="reveal-modal">
+  <h2>Intégrez VuDuCiel Loire-Atlantique dans votre site web</h2>
+  <p class="lead">Copiez le code suivant</p>
+  <textarea id="snippet-code"></textarea>
+  <textarea id="snippet-template" style="display:none;">
+&lt;script&gt;
+function cg44_map(zoom, lat, lon) {
+var map = L.map(&#39;cg44_map_container&#39;);
+map.attributionControl.setPrefix(&#39;Par &lt;a href=&quot;http://www.makina-corpus.com&quot;&gt;Makina Corpus&lt;/a&gt;&#39;);
+var ortho2012 = L.tileLayer(&#39;http://{s}.tiles.cg44.makina-corpus.net/ortho2012/{z}/{x}/{y}.jpg&#39;, {
+continuousWorld: true,
+tms: true,
+maxZoom: 18,
+subdomains: &quot;abcdefgh&quot;,
+attribution: &quot;Source: D&amp;eacute;partement de Loire-Atlantique&quot;
+}).addTo(map);
+map.setView([lat, lon], zoom);
+}
+&lt;/script&gt;
+&lt;div id=&quot;cg44_map_container&quot; style=&quot;position:relative; height: 300px;&quot;&gt;&lt;/div&gt;
+&lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; href=&quot;http://cdn.leafletjs.com/leaflet-0.5.1/leaflet.css&quot; /&gt;
+&lt;script type=&#39;text/javascript&#39; src=&quot;http://cdn.leafletjs.com/leaflet-0.5.1/leaflet.js&quot; onload=&quot;cg44_map(_zoom_, _lat_, _lon_)&quot;&gt;&lt;/script&gt;
+  </textarea>
+  <a class="close-reveal-modal">&#215;</a>
+</div>
+
 </body>
 </html>
 

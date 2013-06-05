@@ -297,6 +297,9 @@ var HAS_HASHCHANGE = (function() {
         return this._container;
     }
   });
+  L.control.screenshot = function(map) {
+    return new L.Control.Screenshot(map);
+  };
 
   // ############################
   // Social buttons
@@ -341,6 +344,52 @@ var HAS_HASHCHANGE = (function() {
         return this._container;
     }
   });
+  L.control.social = function(map) {
+    return new L.Control.Social(map);
+  };
+
+  // ############################
+  // Snippet
+  // ############################
+  L.Control.Snippet = L.Control.extend({
+    includes: L.Mixin.Events,
+    options: {
+        position: 'topleft',
+        title: 'Snippet'
+    },
+
+    generate: function() {
+      var center = this.map.getCenter(),
+          zoom = this.map.getZoom(),
+          precision = Math.max(0, Math.ceil(Math.log(zoom) / Math.LN2));
+
+      script = document.querySelector("#snippet #snippet-template").innerText;
+      script = script.replace(/_zoom_/, zoom);
+      script = script.replace(/_lat_/, center.lat.toFixed(precision));
+      script = script.replace(/_lon_/, center.lng.toFixed(precision));
+      document.querySelector("#snippet #snippet-code").innerText = script;
+    },
+    onAdd: function(map) {
+        this.map = map;
+        this._container = L.DomUtil.create('div', 'leaflet-control-zoom leaflet-control');
+        var div = L.DomUtil.create('div', 'leaflet-bar', this._container);
+        var link = L.DomUtil.create('a', 'leaflet-bar-part leaflet-bar-part-single leaflet-snippet-control', div);
+        link.href = '#';
+        link.title = this.options.title;
+        link.setAttribute("data-reveal-id", "snippet");
+        var span = L.DomUtil.create('span', 'icon-code', link);
+
+        L.DomEvent
+        //     .addListener(link, 'click', L.DomEvent.stopPropagation)
+        //     .addListener(link, 'click', L.DomEvent.preventDefault)
+             .addListener(link, 'click', this.generate , this);
+
+        return this._container;
+    }
+  });
+  L.control.snippet = function(map) {
+    return new L.Control.Snippet(map);
+  };
 
   // ###################################
   // Ortho 44 specific geocoding & utils
@@ -487,8 +536,9 @@ var HAS_HASHCHANGE = (function() {
 
   L.control.scale().addTo(map);
   (new L.Control.ZoomFS()).addTo(map); 
-  (new L.Control.Screenshot()).addTo(map);
-  (new L.Control.Social()).addTo(map);
+  L.control.screenshot().addTo(map);
+  L.control.social().addTo(map);
+  L.control.snippet().addTo(map);
 
 
   Ortho44.bindGeocode(
@@ -521,5 +571,7 @@ var HAS_HASHCHANGE = (function() {
   map.on('locationerror', function() {
     console.log("Too far away, keep default location");
   });
+
+  $(document).foundation(null, null, null, null, true);
 
 }
