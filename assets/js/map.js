@@ -600,7 +600,7 @@ var HAS_HASHCHANGE = (function() {
     var hash = new L.Hash(map);
   });
   // default view if no hash
-  map.setView([47.21806, -1.55278], 11);
+  map.setView([47.3332, -1.7503], 10);
 
   map.on('locationerror', function() {
     console.log("Too far away, keep default location");
