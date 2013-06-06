@@ -1,4 +1,4 @@
-window.enchargement=function(){
+window.onload=function(){
 
   /*
    * L.Control.ZoomFS - default Leaflet.Zoom control with an added fullscreen button
