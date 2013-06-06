@@ -391,6 +391,41 @@ var HAS_HASHCHANGE = (function() {
     return new L.Control.Snippet(map);
   };
 
+  // ############################
+  // Locator
+  // ############################
+  L.Control.Locator = L.Control.extend({
+    includes: L.Mixin.Events,
+    options: {
+        position: 'topleft',
+        title: 'Localisation'
+    },
+
+    locate: function() {
+      this.map.locate();
+    },
+    onAdd: function(map) {
+        this.map = map;
+        this._container = L.DomUtil.create('div', 'leaflet-control-zoom leaflet-control');
+        var div = L.DomUtil.create('div', 'leaflet-bar', this._container);
+        var link = L.DomUtil.create('a', 'leaflet-bar-part leaflet-bar-part-single leaflet-locate-control', div);
+        link.href = '#';
+        link.title = this.options.title;
+        link.setAttribute("data-reveal-id", "snippet");
+        var span = L.DomUtil.create('span', 'icon-screenshot', link);
+
+        L.DomEvent
+             .addListener(link, 'click', L.DomEvent.stopPropagation)
+             .addListener(link, 'click', L.DomEvent.preventDefault)
+             .addListener(link, 'click', this.locate , this);
+
+        return this._container;
+    }
+  });
+  L.control.locator = function(map) {
+    return new L.Control.Locator(map);
+  };
+
   // ###################################
   // Ortho 44 specific geocoding & utils
   // ###################################
@@ -539,7 +574,7 @@ var HAS_HASHCHANGE = (function() {
   L.control.screenshot().addTo(map);
   L.control.social().addTo(map);
   L.control.snippet().addTo(map);
-
+  L.control.locator().addTo(map);
 
   Ortho44.bindGeocode(
     document.getElementById('search-address'),
@@ -567,7 +602,6 @@ var HAS_HASHCHANGE = (function() {
   // default view if no hash
   map.setView([47.21806, -1.55278], 11);
 
-  map.locate({setView: true});
   map.on('locationerror', function() {
     console.log("Too far away, keep default location");
   });
