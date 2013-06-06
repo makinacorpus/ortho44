@@ -486,7 +486,7 @@ var HAS_HASHCHANGE = (function() {
       }
     );
 
-  map.attributionControl.setPrefix('Réalisé par <a href="http://www.makina-corpus.com">Makina Corpus</a>');
+  map.attributionControl.setPrefix('');
 
   var ortho2012 = L.tileLayer('http://{s}.tiles.cg44.makina-corpus.net/ortho2012/{z}/{x}/{y}.jpg', {
     continuousWorld: true,  // very important
@@ -530,7 +530,7 @@ var HAS_HASHCHANGE = (function() {
   var baseMaps = {};
   var overlayMaps = {
     //"Rues (test)": streets_mapbox,
-    "Rues": streets_mapquest
+    "Afficher les rues": streets_mapquest
   };
   L.control.layers(baseMaps, overlayMaps).addTo(map);
 
