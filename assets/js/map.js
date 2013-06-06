@@ -1,4 +1,4 @@
-window.onload=function(){
+window.onloadImpression=function(){
 
   /*
    * L.Control.ZoomFS - default Leaflet.Zoom control with an added fullscreen button
@@ -270,7 +270,7 @@ var HAS_HASHCHANGE = (function() {
     includes: L.Mixin.Events,
     options: {
         position: 'topleft',
-        title: 'Screenshot'
+        title: 'Impression'
     },
 
     screenshot: function () {
@@ -355,7 +355,7 @@ var HAS_HASHCHANGE = (function() {
     includes: L.Mixin.Events,
     options: {
         position: 'topleft',
-        title: 'Snippet'
+        title: 'Insertion HTML'
     },
 
     generate: function() {
