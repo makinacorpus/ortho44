@@ -550,14 +550,14 @@ var HAS_HASHCHANGE = (function() {
     }
   }).addTo(map);
 
-  var streets_mapquest = L.tileLayer('http://otile{s}.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.jpeg', {
-    opacity: 0.5,
-    maxZoom: 18,
-    attribution: "MapQuest / OpenStreetMap",
-    subdomains: '1234'
-  });
+  // var streets_mapquest = L.tileLayer('http://otile{s}.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.jpeg', {
+  //   opacity: 0.5,
+  //   maxZoom: 18,
+  //   attribution: "MapQuest / OpenStreetMap",
+  //   subdomains: '1234'
+  // });
   var streets_custom_osm = L.tileLayer('http://{s}.tiles.cg44.makina-corpus.net/osm/{z}/{x}/{y}.png', {
-    opacity: 1,
+    opacity: 0.8,
     maxZoom: 15,
     attribution: "Makina Corpus / OpenStreetMap",
     subdomains: 'abcdefgh'
@@ -565,8 +565,8 @@ var HAS_HASHCHANGE = (function() {
 
   var baseMaps = {};
   var overlayMaps = {
-    "Afficher les rues (MapQuest)": streets_mapquest,
-    "Afficher les rues (custom)": streets_custom_osm
+    //"Afficher les rues (MapQuest)": streets_mapquest,
+    "Afficher les rues": streets_custom_osm
   };
   L.control.layers(baseMaps, overlayMaps).addTo(map);
 
