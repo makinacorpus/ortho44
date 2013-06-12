@@ -34,6 +34,25 @@
   #search-input {
     font-weight: bold;
   }
+  #zero-results {
+    position: absolute;
+    top: 0.5em;
+    right: 1.5em;
+    color: red;
+    display: none;
+  }
+  .show-choices {
+    top: auto;
+  }
+
+  #search-address.search-no-result {
+    #zero-results {
+      display: block;
+    }
+    #search-input {
+      color: red;
+    }
+  }
 }
 /* MAP */
 .map-body { 

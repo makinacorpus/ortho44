@@ -5,7 +5,10 @@
 			<label for="search-input">Recherche par adresse</label>
 		</div>
 		<div class="large-7 small-9 columns">
-			<input type="text" placeholder="exemple: 3 quai Ceineray, Nantes" name="search" id="search-input" />
+			<div id="zero-results" class="icon-exclamation-sign"></div>
+			<input type="text" placeholder="exemple: 3 quai Ceineray, Nantes" name="search" id="search-input"/>
+			<ul id="choice-list" class="f-dropdown medium">
+			</ul>
 		</div>
 		<div class="large-3 small-3 columns">
 			<input type="submit" class="small button" value="Rechercher" />

@@ -4,6 +4,10 @@
 #search{background-color:#b1ca00;padding-top:1em;position:relative;}#search #search-label label{font-weight:bold;position:absolute;bottom:0;left:3em;margin:0;}
 #search #search-label img{float:left;}
 #search #search-input{font-weight:bold;}
+#search #zero-results{position:absolute;top:0.5em;right:1.5em;color:red;display:none;}
+#search .show-choices{top:auto;}
+#search #search-address.search-no-result #zero-results{display:block;}
+#search #search-address.search-no-result #search-input{color:red;}
 .map-body{margin:0;padding:0;position:static;}
 .map-full{position:absolute;top:12.7em;bottom:5em;width:100%;}
 .leaflet-fullscreen{z-index:1;}

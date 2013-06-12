@@ -433,44 +433,66 @@ var HAS_HASHCHANGE = (function() {
   var Ortho44 = {
     _callbackIndex: 0,
 
-    bindGeocode: function(form, input, map, bounds, callback) {
+    bindGeocode: function(form, input, map, callback) {
       L.DomEvent.addListener(form, 'submit', this._geocode, this);
       this._map = map;
       this._input = input;
       this._callback = callback;
-      // Restrict to Loire-Atlantique
-      this._bounds = bounds;
+    },
+
+    _loadElasticSearchJSONP: function (params) {
+      var url = "http://localhost:9200/cg44/address/_search" + L.Util.getParamString(params);
+      var script = document.createElement("script");
+      script.type = "text/javascript";
+      script.src = url;
+      document.getElementsByTagName("head")[0].appendChild(script);
+      document.getElementsByTagName("head")[0].removeChild(script);
     },
 
     _geocode: function (event) {
       L.DomEvent.preventDefault(event);
-      //http://wiki.openstreetmap.org/wiki/Nominatim
-      var callbackId = "_l_ortho44geocoder_" + (this._callbackIndex++);
-      window[callbackId] = L.Util.bind(this._callback, this);
-
-      /* Set up params to send to Nominatim */
-      var params = {
-        // Defaults
-        q: this._input.value,
-        json_callback : callbackId,
-        format: 'json'
+      var self = this;
+      window._l_ortho44geocoder_namelookup = function(results) {
+        if(results.hits.total == 0) {
+          window._l_ortho44geocoder_fullsearch = L.Util.bind(self._callback, self);
+          /* search any macth */
+          self._loadElasticSearchJSONP({q: self._input.value, default_operator:"AND", callback: "_l_ortho44geocoder_fullsearch"});
+        } else {
+          self._callback(results);
+        }
       };
 
-      if( this._bounds instanceof L.LatLngBounds ) {
-        params.viewbox = this._bounds.toBBoxString();
-        params.bounded = 1;
-      } else {
-        console.log('bounds must be of type L.LatLngBounds');
-        return;
-      }
+      /* search name only */
+      this._loadElasticSearchJSONP({
+        source: JSON.stringify({
+          query: {
+                query_string: {
+                    default_field: "nom",
+                    query: this._input.value,
+                    default_operator: "AND"
+                }
+            }
+        }),
+        callback : "_l_ortho44geocoder_namelookup"
+      });
+    },
 
-      var url = "http://nominatim.openstreetmap.org/search" + L.Util.getParamString(params);
-      var script = document.createElement("script");
-
-      script.type = "text/javascript";
-      script.src = url;
-      script.id = callbackId;
-      document.getElementsByTagName("head")[0].appendChild(script);
+    showResult: function(hit) {
+      var label = hit.nom ? hit.nom : hit.numero + ' ' + hit.nom_voie + ' - ' + hit.commune;
+      var feature = {"type": "Feature",
+        "properties": {
+            "name": label
+        },
+        "geometry": hit.geometry
+      };
+      resultsLayer.clearLayers();
+      L.geoJson(feature, {
+          onEachFeature: function onEachFeature(feature, layer) {
+              layer.bindPopup(feature.properties.name);
+          }
+      }).addTo(resultsLayer);
+      var bounds = resultsLayer.getBounds();
+      if (bounds.isValid()) map.fitBounds(bounds);
     },
 
     setClass: function (element, cl) {
@@ -550,12 +572,12 @@ var HAS_HASHCHANGE = (function() {
     }
   }).addTo(map);
 
-  // var streets_mapquest = L.tileLayer('http://otile{s}.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.jpeg', {
-  //   opacity: 0.5,
-  //   maxZoom: 18,
-  //   attribution: "MapQuest / OpenStreetMap",
-  //   subdomains: '1234'
-  // });
+  var streets_mapquest = L.tileLayer('http://otile{s}.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.jpeg', {
+    opacity: 0.5,
+    maxZoom: 18,
+    attribution: "MapQuest / OpenStreetMap",
+    subdomains: '1234'
+  });
   var streets_custom_osm = L.tileLayer('http://{s}.tiles.cg44.makina-corpus.net/osm/{z}/{x}/{y}.png', {
     opacity: 0.8,
     maxZoom: 15,
@@ -565,7 +587,7 @@ var HAS_HASHCHANGE = (function() {
 
   var baseMaps = {};
   var overlayMaps = {
-    //"Afficher les rues (MapQuest)": streets_mapquest,
+    "Afficher les rues (MapQuest)": streets_mapquest,
     "Afficher les rues": streets_custom_osm
   };
   L.control.layers(baseMaps, overlayMaps).addTo(map);
@@ -576,21 +598,57 @@ var HAS_HASHCHANGE = (function() {
   L.control.screenshot().addTo(map);
   L.control.social().addTo(map);
   L.control.snippet().addTo(map);
+  var resultsLayer = L.featureGroup().addTo(map);
+
+  L.DomEvent.addListener(document.getElementById("search-input"), 'keyup', function(e) {
+    if(e.keyCode != 13) {
+      Ortho44.removeClass(document.getElementById('search-address'), "search-no-result");
+      Ortho44.removeClass(document.getElementById('search-address'), "search-success");
+    }
+  }, this);
 
   Ortho44.bindGeocode(
     document.getElementById('search-address'),
     document.getElementById("search-input"),
     map,
-    max_bounds_strict,
     function (results) {
-      if(results.length > 0) {
+      console.log(results);
+      if(results.hits.total > 0) {
+        var best = results.hits.hits[0]._source;
+        if(results.hits.total==1) {
+          Ortho44.showResult(best);
+        } else {
+          var choices = {};
+          for(var i=0;i<results.hits.hits.length;i++) {
+            var hit = results.hits.hits[i]._source;
+            var choice_label = hit.nom ? hit.nom : hit.nom_voie + ', <strong>' + hit.commune + "</strong>";
+            choices[choice_label] = hit;
+          }
+
+          var choices_box = document.getElementById('choice-list');
+          choices_box.innerHTML = "";
+          distinct = [];
+          for(var choice in choices) {
+            distinct.push(choice);
+            var li = document.createElement("li");
+            li.innerHTML = choice;
+            L.DomEvent.addListener(li, 'click', (function(label, hit) {
+              return function(){
+                document.getElementById("search-input").value = label;
+                Ortho44.removeClass(choices_box, "show-choices");
+                Ortho44.showResult(hit);
+              }
+            }(li.innerText, choices[choice])));
+            choices_box.appendChild(li);
+          }
+          if(distinct.length == 1) {
+            Ortho44.showResult(best);
+          } else {
+            Ortho44.setClass(choices_box, "show-choices");
+          }
+        }
         Ortho44.setClass(document.getElementById('search-address'), "search-success");
         Ortho44.removeClass(document.getElementById('search-address'), "search-no-result");
-        var bbox = results[0].boundingbox,
-          first = new L.LatLng(bbox[0], bbox[2]),
-          second = new L.LatLng(bbox[1], bbox[3]),
-          bounds = new L.LatLngBounds([first, second]);
-        Ortho44._map.fitBounds(bounds);
       } else {
         Ortho44.setClass(document.getElementById('search-address'), "search-no-result");
         Ortho44.removeClass(document.getElementById('search-address'), "search-success");
@@ -608,5 +666,6 @@ var HAS_HASHCHANGE = (function() {
   });
 
   $(document).foundation(null, null, null, null, true);
+  $(document).foundation('dropdown', 'off');
 
 }
