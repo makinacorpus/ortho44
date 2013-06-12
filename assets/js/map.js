@@ -548,7 +548,7 @@ var HAS_HASHCHANGE = (function() {
   var ortho2012 = L.tileLayer('http://{s}.tiles.cg44.makina-corpus.net/ortho2012/{z}/{x}/{y}.jpg', {
     continuousWorld: true,  // very important
     tms: true,
-    maxZoom: 18,
+    maxZoom: 19,
     subdomains: "abcdefgh",
     attribution: "Source: Département de Loire-Atlantique"
   }).addTo(map);
