@@ -441,7 +441,7 @@ var HAS_HASHCHANGE = (function() {
     },
 
     _loadElasticSearchJSONP: function (params) {
-      var url = "http://localhost:9200/cg44/address/_search" + L.Util.getParamString(params);
+      var url = "http://elastic.makina-corpus.net/cg44/address/_search" + L.Util.getParamString(params);
       var script = document.createElement("script");
       script.type = "text/javascript";
       script.src = url;
