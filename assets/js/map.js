@@ -269,7 +269,7 @@ var HAS_HASHCHANGE = (function() {
   L.Control.Screenshot = L.Control.extend({
     includes: L.Mixin.Events,
     options: {
-        position: 'topleft',
+        position: 'bottomright',
         title: 'Impression'
     },
 
@@ -354,7 +354,7 @@ var HAS_HASHCHANGE = (function() {
   L.Control.Snippet = L.Control.extend({
     includes: L.Mixin.Events,
     options: {
-        position: 'topleft',
+        position: 'bottomleft',
         title: 'Insertion HTML'
     },
 
@@ -572,12 +572,12 @@ var HAS_HASHCHANGE = (function() {
     }
   }).addTo(map);
 
-  var streets_mapquest = L.tileLayer('http://otile{s}.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.jpeg', {
-    opacity: 0.5,
-    maxZoom: 18,
-    attribution: "MapQuest / OpenStreetMap",
-    subdomains: '1234'
-  });
+  // var streets_mapquest = L.tileLayer('http://otile{s}.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.jpeg', {
+  //   opacity: 0.5,
+  //   maxZoom: 18,
+  //   attribution: "MapQuest / OpenStreetMap",
+  //   subdomains: '1234'
+  // });
   var streets_custom_osm = L.tileLayer('http://{s}.tiles.cg44.makina-corpus.net/osm/{z}/{x}/{y}.png', {
     opacity: 0.8,
     maxZoom: 15,
@@ -587,7 +587,7 @@ var HAS_HASHCHANGE = (function() {
 
   var baseMaps = {};
   var overlayMaps = {
-    "Afficher les rues (MapQuest)": streets_mapquest,
+    //"Afficher les rues (MapQuest)": streets_mapquest,
     "Afficher les rues": streets_custom_osm
   };
   L.control.layers(baseMaps, overlayMaps).addTo(map);
@@ -596,8 +596,9 @@ var HAS_HASHCHANGE = (function() {
   L.control.locator().addTo(map);
   (new L.Control.ZoomFS()).addTo(map); 
   L.control.screenshot().addTo(map);
-  L.control.social().addTo(map);
   L.control.snippet().addTo(map);
+  L.control.social().addTo(map);
+  
   var resultsLayer = L.featureGroup().addTo(map);
 
   L.DomEvent.addListener(document.getElementById("search-input"), 'keyup', function(e) {
