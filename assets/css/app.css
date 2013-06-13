@@ -6,6 +6,7 @@
 #search #search-input{font-weight:bold;}
 #search #zero-results{position:absolute;top:0.5em;right:1.5em;color:red;display:none;}
 #search .show-choices{top:auto;}
+#search #search-button{background-color:black;border:0;}#search #search-button i{color:yellow;}
 #search #search-address.search-no-result #zero-results{display:block;}
 #search #search-address.search-no-result #search-input{color:red;}
 .map-body{margin:0;padding:0;position:static;}
