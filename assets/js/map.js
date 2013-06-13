@@ -478,7 +478,7 @@ var HAS_HASHCHANGE = (function() {
     },
 
     showResult: function(hit) {
-      var label = hit.nom ? hit.nom : hit.numero + ' ' + hit.nom_voie + ' - ' + hit.commune;
+      var label = hit.nom ? hit.nom : (hit.numero ? hit.numero + ' ':'') + (hit.nom_voie ? hit.nom_voie + ' - ':'') + (hit.nom_ld ? hit.nom_ld + ', ':'') + hit.commune;
       var feature = {"type": "Feature",
         "properties": {
             "name": label
@@ -621,7 +621,7 @@ var HAS_HASHCHANGE = (function() {
           var choices = {};
           for(var i=0;i<results.hits.hits.length;i++) {
             var hit = results.hits.hits[i]._source;
-            var choice_label = hit.nom ? hit.nom : hit.nom_voie + ', <strong>' + hit.commune + "</strong>";
+            var choice_label = hit.nom ? hit.nom : (hit.nom_voie ? hit.nom_voie + ', ':'') + (hit.nom_ld ? hit.nom_ld + ', ':'') + '<strong>' + hit.commune + "</strong>";
             choices[choice_label] = hit;
           }
 
@@ -650,6 +650,7 @@ var HAS_HASHCHANGE = (function() {
         Ortho44.setClass(document.getElementById('search-address'), "search-success");
         Ortho44.removeClass(document.getElementById('search-address'), "search-no-result");
       } else {
+        resultsLayer.clearLayers();
         Ortho44.setClass(document.getElementById('search-address'), "search-no-result");
         Ortho44.removeClass(document.getElementById('search-address'), "search-success");
       }
