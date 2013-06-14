@@ -11,32 +11,10 @@ casper.start(start_url);
 casper.waitForSelector("form#search-address input[name='search']",
     function success() {
         this.test.assertExists("form#search-address input[name='search']");
-        this.click("form#search-address input[name='search']");
+        this.fill("form#search-address", {'search': "saint nazaire"}, true);
     },
     function fail() {
         this.test.assertExists("form#search-address input[name='search']");
-});
-casper.waitForSelector("input[name='search']",
-    function success() {
-        this.test.assertExists("input[name='search']");
-        this.evaluate(function enter_search() {
-            document.querySelector("input[name='search']").value = "saint nazaire";
-        });
-    },
-    function fail() {
-        this.test.assertExists("input[name='search']");
-    }
-);
-casper.waitForSelector("form#search-address input[type=submit][value='Rechercher']",
-    function success() {
-        this.test.assertExists("form#search-address input[type=submit][value='Rechercher']");
-        this.evaluate(function click_search() {
-            console.log(document.querySelector("input[name='search']").value);
-            document.querySelector("form#search-address input[type=submit][value='Rechercher']").click();
-        });
-    },
-    function fail() {
-        this.test.assertExists("form#search-address input[type=submit][value='Rechercher']");
 });
 
 casper.waitForSelector(".search-success", function() {
