@@ -56,7 +56,7 @@ def process_tile(image_data, path, filename):
         os.makedirs(d)
     img.save(path + filename, "PNG")
 
-border_geojson = open("/home/ebr/dev/projets/CG44/data/buffer-feature.geojson").read()
+border_geojson = open("./buffer-feature.geojson").read()
 border = geometry.asShape(json.loads(border_geojson))
 proj = GoogleProjection(levels = range(19), tms_scheme=True)
 
@@ -79,7 +79,6 @@ for tile in ortho44.tileslist(global_bbox, [11], tms_scheme=True):
             ))
     # print geometry.mapping(bbox_geom)
     if bbox_geom.intersects(border):
-        print "YOOOOOO"
         try:
             img = ortho44.tile(tile)
             #img = ortho44.tile((tile[0], tile[2], tile[1]))
@@ -89,7 +88,5 @@ for tile in ortho44.tileslist(global_bbox, [11], tms_scheme=True):
         path = "./%d/%d/" % (tile[0], tile[1])
         filename = "%d.png" % tile[2]
         process_tile(img, path, filename)
-    else:
-        print "Plouf"
 
 
