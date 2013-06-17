@@ -6,7 +6,7 @@ title: À propos
 
 # À	propos de ce service
 
-## vuduciel.loire-atlantique.fr : le meilleur point de vue sur la Loire-Atlantiqur
+## vuduciel.loire-atlantique.fr : le meilleur point de vue sur la Loire-Atlantique
 Le Département a lancé une campagne de photographies aériennes pendant l’été 2012. Un avion équipé d’une caméra numérique a réalisé une nouvelle série d’images aériennes afin d’actualiser la photographie aérienne départementale précédente, datant de 2009. Ce site est un outil de consultation cartographique qui rassemble les 6 500 photographies aériennes les plus récentes décrivant les différents territoires de Loire-Atlantique. 
 
 Ces images de 2012 améliorent grandement la résolution des clichés jusqu’à présent disponibles en dehors des agglomérations. Avec 20 cm de résolution (1 pixel à l’écran représente 20 cm sur le terrain, NDLR), elles permettent d’obtenir un niveau de détail permettant d’observer finement les peuplements végétaux, les marquages au sol, le tissu urbain, etc. Elles rendent ainsi accessibles un portrait aérien qui permet de découvrir de très près cet immense territoire de 6 815 km², ses innombrables facettes et la mosaïque d’espaces si particuliers qui le composent.
