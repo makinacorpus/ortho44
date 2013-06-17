@@ -1,4 +1,5 @@
 ---
+published: true
 layout: default
 title: Contact
 ---
@@ -7,4 +8,13 @@ title: Contact
 
 ## Nous écrire ##
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur placerat nibh in quam fringilla rutrum. Donec sed posuere lacus. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut suscipit vulputate semper. Proin ac luctus nisl. Nam sed augue leo. Cras sit amet enim ligula. Nam nec ipsum nibh. Donec congue sem a libero tincidunt tristique. Aliquam tincidunt elementum dolor sed tempor. Fusce egestas pulvinar justo in placerat. Maecenas mollis ipsum elementum risus ultricies dictum. Aenean varius semper nisl, nec consectetur lectus dignissim quis. Sed vitae commodo magna. Nullam semper porta erat ut pellentesque.
+Par courrier
+
+Département de Loire-Atlantique
+BP 94109
+44041 Nantes Cedex 1
+Par téléphone : 02 40 99 10 00
+Par fax : 02 40 99 11 48
+Par courriel :[contact@loire-atlantique.fr](mailto:contact@loire-atlantique.fr)
+
+
