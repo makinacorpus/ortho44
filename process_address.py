@@ -19,7 +19,8 @@ voies = {
 	'IMP': "IMPASSE",
 	'R': "RUE",
 	'AV': "AVENUE",
-	'PLA': "PLACE"
+	'PLA': "PLACE",
+	'QU': "QUAI"
 }
 
 index = 1
