@@ -621,46 +621,6 @@ var HAS_HASHCHANGE = (function() {
 
   map.attributionControl.setPrefix('');
 
-  var ortho2012 = L.tileLayer('http://{s}.tiles.cg44.makina-corpus.net/ortho2012/{z}/{x}/{y}.jpg', {
-    continuousWorld: true,  // very important
-    tms: true,
-    maxZoom: 19,
-    subdomains: "abcdefgh",
-    attribution: "Source: Département de Loire-Atlantique"
-  }).addTo(map);
-  ortho2012.on('load', function() {
-    // wait for progressive jpeg to render
-    window.setTimeout(function() {
-      Ortho44.setClass(document.querySelector('body'), "map-initialized");
-    }, 500);
-  })
-
-  L.geoJson(loire_atlantique_buffer_json, {
-    style: function (feature) {
-        return {
-          fillColor: "#2ba6cb",
-          fillOpacity: 1,
-          weight: 2,
-          opacity: 1,
-          color: 'white',
-          dashArray: '3',
-          };
-    }
-  }).addTo(map);
-
-  // var streets_mapquest = L.tileLayer('http://otile{s}.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.jpeg', {
-  //   opacity: 0.5,
-  //   maxZoom: 18,
-  //   attribution: "MapQuest / OpenStreetMap",
-  //   subdomains: '1234'
-  // });
-  var streets_custom_osm = L.tileLayer('http://{s}.tiles.cg44.makina-corpus.net/osm/{z}/{x}/{y}.png', {
-    opacity: 0.8,
-    maxZoom: 15,
-    attribution: "Makina Corpus / OpenStreetMap",
-    subdomains: 'abcdefgh'
-  });
-
   var matrixIds3857= new Array(22);
   for (var i= 0; i<22; i++) {
       matrixIds3857[i]= {
@@ -668,22 +628,91 @@ var HAS_HASHCHANGE = (function() {
           topLeftCorner : new L.LatLng(20037508,-20037508)
       };
   }
-              
+    
   var ign = new L.TileLayer.WMTS("http://wxs.ign.fr/1711091050407331029/geoportail/wmts",
     {
       layer: 'ORTHOIMAGERY.ORTHOPHOTOS',
       style: 'normal',
       maxZoom: 19,
+      minZoom: 13,
       tilematrixSet: "PM",
       matrixIds: matrixIds3857,
       format: 'image/jpeg',
       attribution: "&copy; <a href='http://www.ign.fr'>IGN</a>"
     }
-  );
+  ).addTo(map);
+
+  var streets_mapquest = L.tileLayer('http://otile{s}.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.jpeg', {
+    opacity: 0.5,
+    minZoom: 9,
+    maxZoom: 12,
+    attribution: "MapQuest / OpenStreetMap",
+    subdomains: '1234'
+  }).addTo(map);
+
+  L.TileLayer.include({
+    _tileOnError: function () {
+      var layer = this._layer;
+
+      layer.fire('tileerror', {
+        tile: this,
+        url: this.src
+      });
+
+      var newUrl;
+      if(this.src.indexOf(".jpg")>0) {
+        newUrl = this.src.replace("jpg", "png");
+      } else {
+        newUrl = layer.options.errorTileUrl;
+      }
+      if (newUrl) {
+        this.src = newUrl;
+      }
+
+      layer._tileLoaded();
+      
+    }
+  });
+
+  var ortho2012 = L.tileLayer('http://{s}.tiles.cg44.makina-corpus.net/ortho2012/{z}/{x}/{y}.jpg', {
+  //var ortho2012 = L.tileLayer('http://localhost:4000/test-tiles/{z}/{x}/{y}.png', {
+    continuousWorld: true,  // very important
+    tms: true,
+    maxZoom: 19,
+    subdomains: "abcdefgh",
+    attribution: "Source: Département de Loire-Atlantique"
+  }).addTo(map);
+
+  ortho2012.on('load', function() {
+    // wait for progressive jpeg to render
+    window.setTimeout(function() {
+      Ortho44.setClass(document.querySelector('body'), "map-initialized");
+    }, 500);
+  })
+
+  // L.geoJson(loire_atlantique_buffer_json, {
+  //   style: function (feature) {
+  //       return {
+  //         fillColor: "#2ba6cb",
+  //         fillOpacity: 1,
+  //         weight: 2,
+  //         opacity: 1,
+  //         color: 'white',
+  //         dashArray: '3',
+  //         };
+  //   }
+  // }).addTo(map);
+
+  var streets_custom_osm = L.tileLayer('http://{s}.tiles.cg44.makina-corpus.net/osm/{z}/{x}/{y}.png', {
+    opacity: 0.8,
+    maxZoom: 15,
+    attribution: "Makina Corpus / OpenStreetMap",
+    subdomains: 'abcdefgh'
+  });
 
   var baseMaps = {};
   var overlayMaps = {
-    "Ortho IGN": ign,
+    //"Ortho IGN": ign,
     //"Afficher les rues (MapQuest)": streets_mapquest,
     "Afficher les rues": streets_custom_osm
   };
