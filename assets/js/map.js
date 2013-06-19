@@ -363,11 +363,11 @@ var HAS_HASHCHANGE = (function() {
           zoom = this.map.getZoom(),
           precision = Math.max(0, Math.ceil(Math.log(zoom) / Math.LN2));
 
-      script = document.querySelector("#snippet #snippet-template").innerText;
+      script = document.querySelector("#snippet #snippet-template").textContent;
       script = script.replace(/_zoom_/, zoom);
       script = script.replace(/_lat_/, center.lat.toFixed(precision));
       script = script.replace(/_lon_/, center.lng.toFixed(precision));
-      document.querySelector("#snippet #snippet-code").innerText = script;
+      document.querySelector("#snippet #snippet-code").textContent = script;
     },
     onAdd: function(map) {
         this.map = map;
