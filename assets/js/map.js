@@ -690,8 +690,7 @@ var HAS_HASHCHANGE = (function() {
     }
   });
 
-  var ortho2012 = L.tileLayer('http://{s}.tiles.cg44.makina-corpus.net/ortho2012/{z}/{x}/{y}.jpg', {
-  //var ortho2012 = L.tileLayer('http://localhost:4000/test-tiles/{z}/{x}/{y}.png', {
+  var ortho2012 = L.tileLayer('http://{s}.tiles.cg44.makina-corpus.net/ortho-2012/{z}/{x}/{y}.jpg', {
     continuousWorld: true,  // very important
     tms: true,
     maxZoom: 19,
