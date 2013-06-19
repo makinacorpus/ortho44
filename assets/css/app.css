@@ -25,6 +25,7 @@
 #footer #slogan{text-align:right;border-top:0.2em solid #b1ca00;padding-right:0;}#footer #slogan span{background-color:#b1ca00;padding:0 1em;margin-right:-0.05em;}
 #footer nav ul{margin-bottom:0;font-size:80%;font-family:Verdana,Geneva,sans-serif;}#footer nav ul li{display:inline;padding:0 1em;border-right:1px solid grey;}#footer nav ul li a{color:black;font-weight:bold;}
 #footer nav ul li:last-child{border-right:0;}
+.secondary-page #wrapper{font-size:80%;}
 @media only screen and (max-width:48em){.map-full{top:14.7em;bottom:3.5em;}}.screamshot .tagline{display:none;}
 .screamshot #search{display:none;}
 .screamshot #footer-navigation{display:none;}
