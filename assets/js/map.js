@@ -16,18 +16,18 @@ window.onload=function(){
       this._map = map;
       this._isFullscreen = false;
 
-      this._zoomFullScreenButton = this._createButton('<span class="icon-fullscreen"></span>','Full Screen',
+      this._zoomFullScreenButton = this._createButton('<span class="icon-fullscreen"></span>','Affichage plein écran',
               'leaflet-control-fullscreen ' +
               partName + ' ' +
               partName + '-top',
               container, this.fullscreen, this);
 
-      this._zoomInButton = this._createButton('+', 'Zoom in',
+      this._zoomInButton = this._createButton('+', 'Zoom avant',
               zoomName + '-in ' +
               partName + ' ',
               container, this._zoomIn,  this);
 
-      this._zoomOutButton = this._createButton('-', 'Zoom out',
+      this._zoomOutButton = this._createButton('-', 'Zoom arrière',
               zoomName + '-out ' +
               partName + ' ' +
               partName + '-bottom',
@@ -311,9 +311,9 @@ var HAS_HASHCHANGE = (function() {
         title: 'Social networks',
         text: "VuDuCiel Loire-Atlantique",
         links: [
-          ['facebook', "Facebook", "https://www.facebook.com/sharer.php?u=_url_&t=_text_"],
-          ['twitter', "Twitter", "http://twitter.com/intent/tweet?text=_text_&url=_url_"],
-          ['google-plus', "Google Plus", "https://plus.google.com/share?url=_url_"]
+          ['facebook', "Partager sur Facebook", "https://www.facebook.com/sharer.php?u=_url_&t=_text_"],
+          ['twitter', "Partager sur Twitter", "http://twitter.com/intent/tweet?text=_text_&url=_url_"],
+          ['google-plus', "Partager sur Google Plus", "https://plus.google.com/share?url=_url_"]
         ]
     },
 
@@ -330,10 +330,10 @@ var HAS_HASHCHANGE = (function() {
         for (var i = 0; i < this.options.links.length; i++) {
           infos = this.options.links[i];
           var div = L.DomUtil.create('div', 'leaflet-social-control', this._container);
-          var link = L.DomUtil.create('a', 'leaflet-social-control-'+infos[0], div);
+          var link = L.DomUtil.create('a', 'leaflet-bar-part leaflet-bar-part-single leaflet-social-control-'+infos[0], div);
           link.href = infos[2];
           link.title = infos[1];
-          var span = L.DomUtil.create('span', 'icon-'+infos[0]+'-sign', link);
+          var span = L.DomUtil.create('span', 'icon-'+infos[0], link);
 
           L.DomEvent
               .addListener(link, 'click', L.DomEvent.stopPropagation)
@@ -355,7 +355,7 @@ var HAS_HASHCHANGE = (function() {
     includes: L.Mixin.Events,
     options: {
         position: 'bottomleft',
-        title: 'Insertion HTML'
+        title: 'Partager sur votre site ou blog'
     },
 
     generate: function() {
@@ -371,9 +371,8 @@ var HAS_HASHCHANGE = (function() {
     },
     onAdd: function(map) {
         this.map = map;
-        this._container = L.DomUtil.create('div', 'leaflet-control-zoom leaflet-control');
-        var div = L.DomUtil.create('div', 'leaflet-bar', this._container);
-        var link = L.DomUtil.create('a', 'leaflet-bar-part leaflet-bar-part-single leaflet-snippet-control', div);
+        this._container = L.DomUtil.create('div', 'leaflet-control-embed leaflet-control');
+        var link = L.DomUtil.create('a', 'leaflet-bar-part leaflet-bar-part-single leaflet-snippet-control', this._container);
         link.href = '#';
         link.title = this.options.title;
         link.setAttribute("data-reveal-id", "snippet");
@@ -735,12 +734,12 @@ var HAS_HASHCHANGE = (function() {
   };
   L.control.layers(baseMaps, overlayMaps).addTo(map);
 
-  L.control.scale({'imperial': false}).addTo(map);
   L.control.locator().addTo(map);
   (new L.Control.ZoomFS()).addTo(map); 
   L.control.screenshot().addTo(map);
   L.control.snippet().addTo(map);
   L.control.social().addTo(map);
+  L.control.scale({'imperial': false}).addTo(map);
   
   var resultsLayer = L.featureGroup().addTo(map);
 

@@ -8,15 +8,18 @@
 /* HEADER */
 #header {
   padding-top: 0.5em;
-}
-.tagline {
-  font-size: 1.2em;
-  font-weight: bold;
-  margin-bottom: 0.2em;
+
+  #logo {
+    margin-top: 0.2em;
+  }
+  .tagline {
+    font-size: 1.4em;
+    margin-bottom: 0.2em;
+  }
 }
 #search {
   background-color: @green;
-  padding-top: 1em;
+  padding-top: 0.6em;
   position: relative;
 
   #search-label {
@@ -84,14 +87,29 @@
   font-size: 150%;
   line-height: 1.8em;
 }
+.leaflet-bottom.leaflet-left {
+  .leaflet-control, .leaflet-social-control {
+    float: left;
+    clear: none;
+    margin-bottom: 0.2em;
+  }
+}
 .leaflet-bar-part-single {
   -webkit-border-radius: 4px;
           border-radius: 4px;
 }
-.leaflet-social-control a {
-  margin: 0.5em 0;
-  font-size: 200%;
-  color: white;
+
+.leaflet-control-embed a, .leaflet-social-control a {
+    margin: 0 0.5em;
+    padding: 0 0.2em;
+    font-size: 200%;
+    color: black;
+}
+.leaflet-control-scale {
+  margin-top: 1.5em;
+}
+.leaflet-social-control-facebook {
+  padding: 0 0.4em;
 }
 .leaflet-left .leaflet-control {
   margin-left: 12px;
@@ -134,6 +152,7 @@
   nav ul {
     margin-bottom: 0;
     font-size: 80%;
+    font-family: Verdana, Geneva, sans-serif
       li {
         display: inline;
         padding: 0 1em;
