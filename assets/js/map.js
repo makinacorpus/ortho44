@@ -781,7 +781,7 @@ var HAS_HASHCHANGE = (function() {
                 Ortho44.removeClass(choices_box, "show-choices");
                 Ortho44.showResult(hit);
               }
-            }(li.innerText, choices[choice])));
+            }(li.textContent, choices[choice])));
             choices_box.appendChild(li);
           }
           if(distinct.length == 1) {
