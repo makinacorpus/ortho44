@@ -705,18 +705,18 @@ var HAS_HASHCHANGE = (function() {
     }, 500);
   })
 
-  // L.geoJson(loire_atlantique_buffer_json, {
-  //   style: function (feature) {
-  //       return {
-  //         fillColor: "#2ba6cb",
-  //         fillOpacity: 1,
-  //         weight: 2,
-  //         opacity: 1,
-  //         color: 'white',
-  //         dashArray: '3',
-  //         };
-  //   }
-  // }).addTo(map);
+  L.geoJson(loire_atlantique_json, {
+    style: function (feature) {
+        return {
+          fillColor: "transparent",
+          fillOpacity: 0,
+          weight: 2,
+          opacity: 1,
+          color: 'white',
+          dashArray: '3',
+          };
+    }
+  }).addTo(map);
 
   var streets_custom_osm = L.tileLayer('http://{s}.tiles.cg44.makina-corpus.net/osm/{z}/{x}/{y}.png', {
     opacity: 0.8,
