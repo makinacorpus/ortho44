@@ -553,8 +553,25 @@ var HAS_HASHCHANGE = (function() {
       });
     },
 
+    _getLabel: function(hit, mode) {
+      var label = "";
+      if(hit.nom) {
+        label = hit.nom;
+        if(hit.type && hit.type == "LIEUDIT") {
+          label += " (Lieu-dit)"
+          if(hit.commune) {
+            label += " - <strong>" + hit.commune + "</strong>";
+          }
+        } else {
+          label = "<strong>" + label + "</strong>";
+        }
+      } else {
+        label = (mode == "POPUP" && hit.numero ? hit.numero + ' ':'') + (hit.nom_voie ? hit.nom_voie + ' - ':'') + (hit.nom_ld ? hit.nom_ld + ', ':'') + '<strong>' + (hit.commune ? hit.commune:'') + '</strong>';
+      }
+      return label;
+    },
     showResult: function(hit) {
-      var label = hit.nom ? hit.nom : (hit.numero ? hit.numero + ' ':'') + (hit.nom_voie ? hit.nom_voie + ' - ':'') + (hit.nom_ld ? hit.nom_ld + ', ':'') + hit.commune;
+      var label = Ortho44._getLabel(hit, "POPUP");
       var feature = {"type": "Feature",
         "properties": {
             "name": label
@@ -748,7 +765,8 @@ var HAS_HASHCHANGE = (function() {
           var choices = {};
           for(var i=0;i<results.hits.hits.length;i++) {
             var hit = results.hits.hits[i]._source;
-            var choice_label = hit.nom ? hit.nom : (hit.nom_voie ? hit.nom_voie + ', ':'') + (hit.nom_ld ? hit.nom_ld + ', ':'') + '<strong>' + hit.commune + "</strong>";
+            var choice_label = Ortho44._getLabel(hit, "LISTING");
+            //hit.nom ? hit.nom : (hit.nom_voie ? hit.nom_voie + ', ':'') + (hit.nom_ld ? hit.nom_ld + ', ':'') + '<strong>' + hit.commune + "</strong>";
             choices[choice_label] = hit;
           }
 
