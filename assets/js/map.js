@@ -805,6 +805,9 @@ var HAS_HASHCHANGE = (function() {
   // default view if no hash
   map.setView([47.3332, -1.7503], 10);
 
+  var osm = new L.TileLayer("http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {maxZoom: 11, attribution: "Map data &copy; OpenStreetMap contributors"});
+  var miniMap = new L.Control.MiniMap(osm, {zoomLevelFixed: 7}).addTo(map);
+
   map.on('locationerror', function() {
     console.log("Too far away, keep default location");
   });
