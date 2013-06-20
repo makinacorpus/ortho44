@@ -637,26 +637,26 @@ var HAS_HASHCHANGE = (function() {
 
   map.attributionControl.setPrefix('');
 
-  var matrixIds3857= new Array(22);
-  for (var i= 0; i<22; i++) {
-      matrixIds3857[i]= {
-          identifier    : "" + i,
-          topLeftCorner : new L.LatLng(20037508,-20037508)
-      };
-  }
+  // var matrixIds3857= new Array(22);
+  // for (var i= 0; i<22; i++) {
+  //     matrixIds3857[i]= {
+  //         identifier    : "" + i,
+  //         topLeftCorner : new L.LatLng(20037508,-20037508)
+  //     };
+  // }
     
-  var ign = new L.TileLayer.WMTS("http://wxs.ign.fr/1711091050407331029/geoportail/wmts",
-    {
-      layer: 'ORTHOIMAGERY.ORTHOPHOTOS',
-      style: 'normal',
-      maxZoom: 19,
-      minZoom: 13,
-      tilematrixSet: "PM",
-      matrixIds: matrixIds3857,
-      format: 'image/jpeg',
-      attribution: "&copy; <a href='http://www.ign.fr'>IGN</a>"
-    }
-  ).addTo(map);
+  // var ign = new L.TileLayer.WMTS("http://wxs.ign.fr/1711091050407331029/geoportail/wmts",
+  //   {
+  //     layer: 'ORTHOIMAGERY.ORTHOPHOTOS',
+  //     style: 'normal',
+  //     maxZoom: 19,
+  //     minZoom: 13,
+  //     tilematrixSet: "PM",
+  //     matrixIds: matrixIds3857,
+  //     format: 'image/jpeg',
+  //     attribution: "&copy; <a href='http://www.ign.fr'>IGN</a>"
+  //   }
+  // ).addTo(map);
 
   var streets_mapquest = L.tileLayer('http://otile{s}.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.jpeg', {
     opacity: 0.5,
@@ -693,7 +693,7 @@ var HAS_HASHCHANGE = (function() {
   var ortho2012 = L.tileLayer('http://{s}.tiles.cg44.makina-corpus.net/ortho-2012/{z}/{x}/{y}.jpg', {
     continuousWorld: true,  // very important
     tms: true,
-    maxZoom: 14,
+    maxZoom: 19,
     subdomains: "abcdefgh",
     attribution: "Source: Département de Loire-Atlantique"
   }).addTo(map);
@@ -705,7 +705,7 @@ var HAS_HASHCHANGE = (function() {
     }, 500);
   })
 
-  L.geoJson(loire_atlantique_json, {
+  var border = L.geoJson(loire_atlantique_json, {
     style: function (feature) {
         return {
           fillColor: "transparent",
@@ -717,6 +717,13 @@ var HAS_HASHCHANGE = (function() {
           };
     }
   }).addTo(map);
+  map.on('zoomend', function(e) {
+    if (map.getZoom() > 14) {
+      border.setStyle({color: 'transparent'});
+    } else {
+      border.setStyle({color: 'white'});
+    }
+  });
 
   var streets_custom_osm = L.tileLayer('http://{s}.tiles.cg44.makina-corpus.net/osm/{z}/{x}/{y}.png', {
     opacity: 0.8,
