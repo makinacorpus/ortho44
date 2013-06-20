@@ -661,7 +661,7 @@ var HAS_HASHCHANGE = (function() {
   var streets_mapquest = L.tileLayer('http://otile{s}.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.jpeg', {
     opacity: 0.5,
     minZoom: 9,
-    maxZoom: 12,
+    maxZoom: 19,
     attribution: "MapQuest / OpenStreetMap",
     subdomains: '1234'
   }).addTo(map);
