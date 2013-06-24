@@ -543,7 +543,8 @@ var HAS_HASHCHANGE = (function() {
           query: {
                 query_string: {
                     fields: ["nom", "type"],
-                    query: this._input.value + " AND COMMUNE"
+                    query: this._input.value + " AND COMMUNE",
+                    default_operator: "AND"
                 }
             }
         }),
@@ -578,9 +579,12 @@ var HAS_HASHCHANGE = (function() {
       };
       resultsLayer.clearLayers();
       L.geoJson(feature, {
-          onEachFeature: function onEachFeature(feature, layer) {
-              layer.bindPopup(feature.properties.name);
-          }
+        style: function (feature) {
+          if(feature.geometry.type=='Polygon') return {fillColor: 'transparent'};
+        },
+        onEachFeature: function onEachFeature(feature, layer) {
+            layer.bindPopup(feature.properties.name);
+        }
       }).addTo(resultsLayer);
       var bounds = resultsLayer.getBounds();
       if (bounds.isValid()) map.fitBounds(bounds);
@@ -651,8 +655,14 @@ var HAS_HASHCHANGE = (function() {
           topLeftCorner : new L.LatLng(20037508,-20037508)
       };
   }
-    
-  var ign = new L.TileLayer.WMTS("http://wxs.ign.fr/ymg58ktvpimfa7zyxjxyr1a5/geoportail/wmts",
+  
+  var ign_keys = {
+    'localhost': 'ymg58ktvpimfa7zyxjxyr1a5',
+    'makinacorpus.github.io' : '9z9o6i52lxwch6mxt9wmwro5',
+    'vuduciel.loire-atlantique.fr' :'287bdvzzjnxqhh4s0mqfto41'
+  };
+  var ign_key = ign_keys[location.hostname];
+  var ign = new L.TileLayer.WMTS("http://wxs.ign.fr/"+ign_key+"/geoportail/wmts",
     {
       layer: 'ORTHOIMAGERY.ORTHOPHOTOS',
       style: 'normal',
