@@ -542,9 +542,8 @@ var HAS_HASHCHANGE = (function() {
         source: JSON.stringify({
           query: {
                 query_string: {
-                    default_field: "nom",
-                    query: this._input.value,
-                    default_operator: "AND"
+                    fields: ["nom", "type"],
+                    query: this._input.value + " AND COMMUNE"
                 }
             }
         }),
@@ -637,34 +636,34 @@ var HAS_HASHCHANGE = (function() {
 
   map.attributionControl.setPrefix('');
 
-  // var matrixIds3857= new Array(22);
-  // for (var i= 0; i<22; i++) {
-  //     matrixIds3857[i]= {
-  //         identifier    : "" + i,
-  //         topLeftCorner : new L.LatLng(20037508,-20037508)
-  //     };
-  // }
-    
-  // var ign = new L.TileLayer.WMTS("http://wxs.ign.fr/1711091050407331029/geoportail/wmts",
-  //   {
-  //     layer: 'ORTHOIMAGERY.ORTHOPHOTOS',
-  //     style: 'normal',
-  //     maxZoom: 19,
-  //     minZoom: 13,
-  //     tilematrixSet: "PM",
-  //     matrixIds: matrixIds3857,
-  //     format: 'image/jpeg',
-  //     attribution: "&copy; <a href='http://www.ign.fr'>IGN</a>"
-  //   }
-  // ).addTo(map);
-
   var streets_mapquest = L.tileLayer('http://otile{s}.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.jpeg', {
     opacity: 0.5,
     minZoom: 9,
-    maxZoom: 19,
+    maxZoom: 12,
     attribution: "MapQuest / OpenStreetMap",
     subdomains: '1234'
   }).addTo(map);
+
+  var matrixIds3857= new Array(22);
+  for (var i= 0; i<22; i++) {
+      matrixIds3857[i]= {
+          identifier    : "" + i,
+          topLeftCorner : new L.LatLng(20037508,-20037508)
+      };
+  }
+    
+  var ign = new L.TileLayer.WMTS("http://wxs.ign.fr/ymg58ktvpimfa7zyxjxyr1a5/geoportail/wmts",
+    {
+      layer: 'ORTHOIMAGERY.ORTHOPHOTOS',
+      style: 'normal',
+      maxZoom: 19,
+      minZoom: 13,
+      tilematrixSet: "PM",
+      matrixIds: matrixIds3857,
+      format: 'image/jpeg',
+      attribution: "&copy; <a href='http://www.ign.fr'>IGN</a>"
+    }
+  ).addTo(map);
 
   L.TileLayer.include({
     _tileOnError: function () {
@@ -761,7 +760,8 @@ var HAS_HASHCHANGE = (function() {
     document.getElementById("search-input"),
     map,
     function (results) {
-      console.log(results);
+      var choices_box = document.getElementById('choice-list');
+      Ortho44.removeClass(choices_box, "show-choices");
       if(results.hits.total > 0) {
         var best = results.hits.hits[0]._source;
         if(results.hits.total==1) {
@@ -775,7 +775,6 @@ var HAS_HASHCHANGE = (function() {
             choices[choice_label] = hit;
           }
 
-          var choices_box = document.getElementById('choice-list');
           choices_box.innerHTML = "";
           distinct = [];
           for(var choice in choices) {
