@@ -20,6 +20,9 @@ L.Control.MiniMap = L.Control.extend({
 	initialize: function (layer, options) {
 		L.Util.setOptions(this, options);
 		this._layer = layer;
+		if(this.options.center) {
+			this._center = new L.LatLng(this.options.center[1], this.options.center[0]);
+		}
 	},
 	
 	onAdd: function (map) {
@@ -60,6 +63,11 @@ L.Control.MiniMap = L.Control.extend({
 			this._addToggleButton();
 		}
 
+		// No dragging if fixed position
+		if(this.options.fixedPosition) {
+			this._miniMap.dragging.disable();
+		}
+		
 		this._miniMap.whenReady(L.Util.bind(function () {
 			this._aimingRect = L.rectangle(this._mainMap.getBounds(), {color: "blue", weight: 15, clickable: false}).addTo(this._miniMap);
 			this._shadowRect = L.rectangle(this._mainMap.getBounds(), {color: "grey", weight: 15, clickable: false,opacity:0,fillOpacity:0}).addTo(this._miniMap);
@@ -76,9 +84,7 @@ L.Control.MiniMap = L.Control.extend({
 	addTo: function (map) {
 		L.Control.prototype.addTo.call(this, map);
 		if(this.options.center) {
-			console.log(new L.LatLng(this.options.center[1], this.options.center[0]));
-			var center = new L.LatLng(this.options.center[1], this.options.center[0]);
-			this._miniMap.setView(center, this._decideZoom(true));
+			this._miniMap.setView(this._center, this._decideZoom(true));
 		} else {
 			this._miniMap.setView(this._mainMap.getCenter(), this._decideZoom(true));
 		}
