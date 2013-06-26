@@ -318,15 +318,13 @@ var HAS_HASHCHANGE = (function() {
     },
 
     download: function () {
-      var self = this;
-      Ortho44.fadeOut("#overlay", 40, function() {
-        var bounds = self.map.getBounds();
-        var southwest = self.projectToL93(bounds.getSouthWest().lng, bounds.getSouthWest().lat);
-        var northeast = self.projectToL93(bounds.getNorthEast().lng, bounds.getNorthEast().lat);
-        var wms = "http://services.vuduciel.loire-atlantique.fr/wms/?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&BBOX="+southwest[0]+","+southwest[1]+","+northeast[0]+","+northeast[1]+"&SRS=EPSG:2154&WIDTH=1351&HEIGHT=736&LAYERS=ortho2012&STYLES=&FORMAT=image/png&DPI=96&MAP_RESOLUTION=96&FORMAT_OPTIONS=dpi:96&TRANSPARENT=TRUE";
-        //window.open(wms);
-        console.log(wms);
-      });
+      var bounds = this.map.getBounds();
+      var southwest = this.projectToL93(bounds.getSouthWest().lng, bounds.getSouthWest().lat);
+      var northeast = this.projectToL93(bounds.getNorthEast().lng, bounds.getNorthEast().lat);
+      var wms = "http://services.vuduciel.loire-atlantique.fr/wms/?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&BBOX="+southwest[0]+","+southwest[1]+","+northeast[0]+","+northeast[1]+"&SRS=EPSG:2154&WIDTH=1351&HEIGHT=736&LAYERS=ortho2012&STYLES=&FORMAT=image/png&DPI=96&MAP_RESOLUTION=96&FORMAT_OPTIONS=dpi:96&TRANSPARENT=TRUE";
+      var link = document.querySelector("#download-link");
+      link.href = wms;
+      console.log(wms);
     },
 
     onAdd: function(map) {
@@ -339,11 +337,10 @@ var HAS_HASHCHANGE = (function() {
       var link = L.DomUtil.create('a', 'leaflet-bar-part leaflet-bar-part-single leaflet-download-control', div);
       link.href = '#';
       link.title = this.options.title;
+      link.setAttribute("data-reveal-id", "download-infos");
       var span = L.DomUtil.create('span', 'icon-camera', link);
 
       L.DomEvent
-        .addListener(link, 'click', L.DomEvent.stopPropagation)
-        .addListener(link, 'click', L.DomEvent.preventDefault)
         .addListener(link, 'click', this.download, this);
       return this._container;
     }
@@ -461,7 +458,6 @@ var HAS_HASHCHANGE = (function() {
         var link = L.DomUtil.create('a', 'leaflet-bar-part leaflet-bar-part-single leaflet-locate-control', div);
         link.href = '#';
         link.title = this.options.title;
-        link.setAttribute("data-reveal-id", "snippet");
         var span = L.DomUtil.create('span', 'icon-screenshot', link);
 
         L.DomEvent
