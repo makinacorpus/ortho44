@@ -1,7 +1,9 @@
 L.Control.MiniMap = L.Control.extend({
 	options: {
-		position: 'bottomright',
+		position: 'topright',
 		toggleDisplay: false,
+		fixedPosition: false,
+		center: null,
 		zoomLevelOffset: -5,
 		zoomLevelFixed: false,
 		zoomAnimation: false,
@@ -73,7 +75,13 @@ L.Control.MiniMap = L.Control.extend({
 
 	addTo: function (map) {
 		L.Control.prototype.addTo.call(this, map);
-		this._miniMap.setView(this._mainMap.getCenter(), this._decideZoom(true));
+		if(this.options.center) {
+			console.log(new L.LatLng(this.options.center[1], this.options.center[0]));
+			var center = new L.LatLng(this.options.center[1], this.options.center[0]);
+			this._miniMap.setView(center, this._decideZoom(true));
+		} else {
+			this._miniMap.setView(this._mainMap.getCenter(), this._decideZoom(true));
+		}
 		this._setDisplay(this._decideMinimized());
 		return this;
 	},
@@ -160,7 +168,9 @@ L.Control.MiniMap = L.Control.extend({
 	_onMainMapMoved: function (e) {
 		if (!this._miniMapMoving) {
 			this._mainMapMoving = true;
-			this._miniMap.setView(this._mainMap.getCenter(), this._decideZoom(true));
+			if(!this.options.fixedPosition) {
+				this._miniMap.setView(this._mainMap.getCenter(), this._decideZoom(true));
+			}
 			this._setDisplay(this._decideMinimized());
 		} else {
 			this._miniMapMoving = false;

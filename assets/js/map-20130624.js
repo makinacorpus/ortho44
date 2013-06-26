@@ -740,7 +740,7 @@ var HAS_HASHCHANGE = (function() {
   // #############
 
   var max_bounds_strict = new L.LatLngBounds(new L.LatLng(46.86008, -2.55754), new L.LatLng(47.83486, -0.92346));
-  var max_bounds_buffer = new L.LatLngBounds(new L.LatLng(46.8, -3.0), new L.LatLng(48.0, -0.5));
+  var max_bounds_buffer = new L.LatLngBounds(new L.LatLng(46.8, -3.0), new L.LatLng(47.87, -0.8));
   var map = L.map('map',
       {
         maxBounds: max_bounds_buffer,
@@ -749,7 +749,12 @@ var HAS_HASHCHANGE = (function() {
     );
 
   map.attributionControl.setPrefix('');
+  map.on('load', function() {
+    var hash = new L.Hash(map);
+  });
+  Ortho44.randomDisplay();
 
+  // LAYERS
   var streets_mapquest = L.tileLayer('http://otile{s}.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.jpeg', {
     opacity: 0.5,
     minZoom: 9,
@@ -844,6 +849,18 @@ var HAS_HASHCHANGE = (function() {
     }
   });
 
+  // CONTROLS
+  var osm = new L.TileLayer("http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {maxZoom: 11, attribution: "Map data &copy; OpenStreetMap contributors"});
+  var miniMap = new L.Control.MiniMap(osm, {
+    zoomLevelFixed: 7,
+    fixedPosition: true,
+    center: [-1.8237, 47.35],
+    width: 160
+  }).addTo(map);
+
+  map.on('locationerror', function() {
+    console.log("Too far away, keep default location");
+  });
   var streets_custom_osm = L.tileLayer('http://{s}.tiles.cg44.makina-corpus.net/osm/{z}/{x}/{y}.png', {
     opacity: 0.8,
     maxZoom: 15,
@@ -851,13 +868,11 @@ var HAS_HASHCHANGE = (function() {
     subdomains: 'abcdefgh'
   });
 
-  var baseMaps = {};
   var overlayMaps = {
-    //"Ortho IGN": ign,
-    //"Afficher les rues (MapQuest)": streets_mapquest,
-    "Afficher les rues": streets_custom_osm
+    "Afficher les rues": streets_custom_osm,
+    "Frontières du Département": border
   };
-  L.control.layers(baseMaps, overlayMaps).addTo(map);
+  L.control.layers(null, overlayMaps).addTo(map);
 
   L.control.locator().addTo(map);
   (new L.Control.ZoomFS()).addTo(map); 
@@ -926,18 +941,6 @@ var HAS_HASHCHANGE = (function() {
         Ortho44.removeClass(document.getElementById('search-address'), "search-success");
       }
     });
-
-  map.on('load', function() {
-    var hash = new L.Hash(map);
-  });
-  Ortho44.randomDisplay();
-
-  var osm = new L.TileLayer("http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {maxZoom: 11, attribution: "Map data &copy; OpenStreetMap contributors"});
-  var miniMap = new L.Control.MiniMap(osm, {zoomLevelFixed: 7}).addTo(map);
-
-  map.on('locationerror', function() {
-    console.log("Too far away, keep default location");
-  });
 
   $(document).foundation(null, null, null, null, true);
   $(document).foundation('dropdown', 'off');
