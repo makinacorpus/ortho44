@@ -29,7 +29,7 @@
 .leaflet-control-minimap a.minimized{background-position:1px -18px;}
 .leaflet-control-minimap-toggle-display{background-image:url("images/toggle.png");border-radius:4px 4px 4px 4px;height:19px;width:19px;position:absolute;bottom:0;right:0;}
 .map-body #footer{position:absolute;bottom:0;}
-#footer #slogan{text-align:right;border-top:0.2em solid #b1ca00;padding-right:0;}#footer #slogan span{background-color:#b1ca00;padding:0 1em;margin-right:-0.05em;}
+#footer #slogan{text-align:right;border-top:0.2em solid #b1ca00;padding-right:0;}#footer #slogan span{background:#b1ca00 url(../images/service.png) no-repeat 0 0;padding:0 6em;margin-right:-0.05em;}
 #footer nav ul{margin-bottom:0;font-size:80%;font-family:Verdana,Geneva,sans-serif;}#footer nav ul li{display:inline;padding:0 1em;border-right:1px solid grey;}#footer nav ul li a{color:black;font-weight:bold;}
 #footer nav ul li:last-child{border-right:0;}
 .secondary-page #wrapper{font-size:80%;}
