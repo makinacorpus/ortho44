@@ -939,6 +939,11 @@ var HAS_HASHCHANGE = (function() {
         resultsLayer.clearLayers();
         Ortho44.setClass(document.getElementById('search-address'), "search-no-result");
         Ortho44.removeClass(document.getElementById('search-address'), "search-success");
+        choices_box.innerHTML = "";
+        var p = document.createElement("p");
+        p.textContent = "Aucun résultat trouvé.";
+        choices_box.appendChild(p);
+        Ortho44.setClass(choices_box, "show-choices");
       }
     });
 
