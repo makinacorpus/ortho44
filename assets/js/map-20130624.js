@@ -510,6 +510,14 @@ var HAS_HASHCHANGE = (function() {
 
     bindGeocode: function(form, input, map, callback) {
       L.DomEvent.addListener(form, 'submit', this._geocode, this);
+      var clearRandom = function() {
+        if(this.className == "random-display") {
+          this.value = "";
+          Ortho44.removeClass(this, "random-display");
+        }
+      };
+      L.DomEvent.addListener(input, 'click', clearRandom, input);
+      L.DomEvent.addListener(input, 'focus', clearRandom, input);
       this._map = map;
       this._input = input;
       this._callback = callback;
@@ -621,6 +629,28 @@ var HAS_HASHCHANGE = (function() {
       }
 
       var fading = window.setInterval(func, interval);
+    },
+
+    randomDisplay: function() {
+      // random view if no hash
+      var niceLocations = [
+        ["Le Terril, Abbaretz", 18, 47.56142, -1.54120],
+        ["La Bôle de Merquel, Mesquer", 16, 47.4179, -2.4539],
+        ["La Brière, Saint-Joachim", 16, 47.3734, -2.2223],
+        ["Marais de Lyarne, Les Moutiers-en-Retz", 17, 47.04490, -1.97523],
+        ["Château de Clisson et Domaine de la Garenne Lemot, Clisson", 18, 47.08590, -1.27772],
+        ["Estuaire de la Loire", 15, 47.2907, -1.9411],
+        ["Château, Châteaubriant", 18, 47.71958, -1.37327],
+        ["La Loire, Ancenis", 16, 47.3705, -1.0800],
+        ["Le Pont de Saint-Nazaire", 14, 47.2789, -2.1653],
+        ["Lac de Vioreau", 15, 47.5232, -1.4230],
+      ];
+      var random = niceLocations[Math.floor(Math.random()*niceLocations.length)];
+      map.setView([random[2], random[3]], random[1]);
+      if(!location.hash) {
+        document.getElementById("search-input").value = random[0];
+        Ortho44.setClass(document.getElementById('search-input'), "random-display");
+      }
     }
 
   };
@@ -818,8 +848,7 @@ var HAS_HASHCHANGE = (function() {
   map.on('load', function() {
     var hash = new L.Hash(map);
   });
-  // default view if no hash
-  map.setView([47.3332, -1.7503], 10);
+  Ortho44.randomDisplay();
 
   var osm = new L.TileLayer("http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {maxZoom: 11, attribution: "Map data &copy; OpenStreetMap contributors"});
   var miniMap = new L.Control.MiniMap(osm, {zoomLevelFixed: 7}).addTo(map);
