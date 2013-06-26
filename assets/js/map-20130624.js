@@ -350,6 +350,39 @@ var HAS_HASHCHANGE = (function() {
   };
 
   // ############################
+  // WMS link
+  // ############################
+  L.Control.WMSLink = L.Control.extend({
+    includes: L.Mixin.Events,
+    options: {
+      position: 'bottomright',
+      title: "Flux SIG (WMS)"
+    },
+
+    display: function () {
+      
+    },
+
+    onAdd: function(map) {
+      this.map = map;
+      this._container = L.DomUtil.create('div', 'leaflet-control-zoom leaflet-control');
+      var div = L.DomUtil.create('div', 'leaflet-bar', this._container);
+      var link = L.DomUtil.create('a', 'leaflet-bar-part leaflet-bar-part-single leaflet-wms-control', div);
+      link.href = '#';
+      link.title = this.options.title;
+      link.setAttribute("data-reveal-id", "wms-infos");
+      var span = L.DomUtil.create('span', 'icon-cloud-download', link);
+
+      L.DomEvent
+        .addListener(link, 'click', this.display, this);
+      return this._container;
+    }
+  });
+  L.control.wmsLink = function(map) {
+    return new L.Control.WMSLink(map);
+  };
+
+  // ############################
   // Social buttons
   // ############################
   L.Control.Social = L.Control.extend({
@@ -830,6 +863,7 @@ var HAS_HASHCHANGE = (function() {
   (new L.Control.ZoomFS()).addTo(map); 
   L.control.screenshot().addTo(map);
   L.control.imageDownload().addTo(map);
+  L.control.wmsLink().addTo(map);
   L.control.snippet().addTo(map);
   L.control.social().addTo(map);
   L.control.scale({'imperial': false}).addTo(map);
