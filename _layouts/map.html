@@ -47,7 +47,7 @@
   <![endif]-->
 <script src="http://cg44.makina-corpus.net/geojson/44.js"></script>
 <script src="assets/js/foundation.js"></script>
-<script src="assets/js/map-20130624.js"></script>
+<script src="assets/js/map.js"></script>
 <script src="assets/js/proj4.js"></script>
 
 <script type='text/javascript' src="http://cdn.leafletjs.com/leaflet-0.5.1/leaflet.js"></script>
@@ -80,9 +80,7 @@ map.setView([lat, lon], zoom);
 </div>
 
 <div id="download-infos" class="reveal-modal">
-  <p>Pour télécharger l'image complète de la position actuelle, veuillez cliquer sur ce lien ci-dessous.</p>
-  <p>Note: l'image peut être assez volumineuse suivant la taille de la zone affichée.</p>
-  <p><a href="#" id="download-link" target="_new">Télécharger l'image</a></p>
+  <p id="download-link"></p>
   <a class="close-reveal-modal">&#215;</a>
 </div>
 <div id="wms-infos" class="reveal-modal">

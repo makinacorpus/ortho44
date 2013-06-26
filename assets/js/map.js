@@ -318,13 +318,17 @@ var HAS_HASHCHANGE = (function() {
     },
 
     download: function () {
-      var bounds = this.map.getBounds();
-      var southwest = this.projectToL93(bounds.getSouthWest().lng, bounds.getSouthWest().lat);
-      var northeast = this.projectToL93(bounds.getNorthEast().lng, bounds.getNorthEast().lat);
-      var wms = "http://services.vuduciel.loire-atlantique.fr/wms/?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&BBOX="+southwest[0]+","+southwest[1]+","+northeast[0]+","+northeast[1]+"&SRS=EPSG:2154&WIDTH=1351&HEIGHT=736&LAYERS=ortho2012&STYLES=&FORMAT=image/png&DPI=96&MAP_RESOLUTION=96&FORMAT_OPTIONS=dpi:96&TRANSPARENT=TRUE";
-      var link = document.querySelector("#download-link");
-      link.href = wms;
-      console.log(wms);
+      var p = document.querySelector("#download-link");
+      if(this.map.getZoom()>12) {
+        var bounds = this.map.getBounds();
+        var southwest = this.projectToL93(bounds.getSouthWest().lng, bounds.getSouthWest().lat);
+        var northeast = this.projectToL93(bounds.getNorthEast().lng, bounds.getNorthEast().lat);
+        var wms = "http://services.vuduciel.loire-atlantique.fr/wms/?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&BBOX="+southwest[0]+","+southwest[1]+","+northeast[0]+","+northeast[1]+"&SRS=EPSG:2154&WIDTH=1351&HEIGHT=736&LAYERS=ortho2012&STYLES=&FORMAT=image/png&DPI=96&MAP_RESOLUTION=96&FORMAT_OPTIONS=dpi:96&TRANSPARENT=TRUE";
+        p.innerHTML = "<p>Pour télécharger l'image complète de la position actuelle, veuillez cliquer sur ce lien ci-dessous.</p><p>Note: le temps de chargement peut être assez long suivant la taille de la zone affichée.</p><a href='"+wms+"' id= target='_new'>Télécharger l'image</a>";
+      } else {
+        p.innerHTML = "<strong>La zone sélectionnée est trop importante, merci de la réduire.</strong>"
+      }
+      
     },
 
     onAdd: function(map) {
