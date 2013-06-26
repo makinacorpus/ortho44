@@ -269,7 +269,7 @@ var HAS_HASHCHANGE = (function() {
   L.Control.Screenshot = L.Control.extend({
     includes: L.Mixin.Events,
     options: {
-        position: 'bottomright',
+        position: 'topleft',
         title: 'Impression'
     },
 
@@ -332,14 +332,15 @@ var HAS_HASHCHANGE = (function() {
       this.source = new Proj4js.Proj('EPSG:4326');
       Proj4js.defs["EPSG:2154"] = '+proj=lcc +lat_1=49 +lat_2=44 +lat_0=46.5 +lon_0=3 +x_0=700000 +y_0=6600000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs';
       this.dest = new Proj4js.Proj('EPSG:2154');
-      this._container = L.DomUtil.create('div', 'leaflet-control-zoom leaflet-control');
-      var div = L.DomUtil.create('div', 'leaflet-bar', this._container);
-      var link = L.DomUtil.create('a', 'leaflet-bar-part leaflet-bar-part-single leaflet-download-control', div);
+      this._container = L.DomUtil.create('div', 'leaflet-control-attribution leaflet-control');
+      var link = L.DomUtil.create('a', 'leaflet-download-control', this._container);
       link.href = '#';
       link.title = this.options.title;
       link.setAttribute("data-reveal-id", "download-infos");
-      var span = L.DomUtil.create('span', 'icon-camera', link);
-
+      link.textContent = 'Extraire les images';
+      var help = L.DomUtil.create('span', 'icon-question-sign has-tip tip-top noradius', this._container);
+      help.setAttribute('data-tooltip', "");
+      help.setAttribute('title', "Permet de télécharger une photo complète de la zone courante.");
       L.DomEvent
         .addListener(link, 'click', this.download, this);
       return this._container;
@@ -365,14 +366,15 @@ var HAS_HASHCHANGE = (function() {
 
     onAdd: function(map) {
       this.map = map;
-      this._container = L.DomUtil.create('div', 'leaflet-control-zoom leaflet-control');
-      var div = L.DomUtil.create('div', 'leaflet-bar', this._container);
-      var link = L.DomUtil.create('a', 'leaflet-bar-part leaflet-bar-part-single leaflet-wms-control', div);
+      this._container = L.DomUtil.create('div', 'leaflet-control-attribution leaflet-control');
+      var link = L.DomUtil.create('a', 'leaflet-wms-control', this._container);
       link.href = '#';
       link.title = this.options.title;
       link.setAttribute("data-reveal-id", "wms-infos");
-      var span = L.DomUtil.create('span', 'icon-cloud-download', link);
-
+      link.textContent = 'Utiliser le flux (SIG)';
+      var help = L.DomUtil.create('span', 'icon-question-sign has-tip tip-top noradius', this._container);
+      help.setAttribute('data-tooltip', "");
+      help.setAttribute('title', "Permet d'accéder aux données orthophotographique par le biais d'un flux WMS.");
       L.DomEvent
         .addListener(link, 'click', this.display, this);
       return this._container;
