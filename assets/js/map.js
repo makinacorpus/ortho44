@@ -308,7 +308,7 @@ var HAS_HASHCHANGE = (function() {
     includes: L.Mixin.Events,
     options: {
       position: 'bottomright',
-      title: "Extraire l'image"
+      title: "Exporter l'image"
     },
 
     projectToL93: function(x, y) {
@@ -341,10 +341,10 @@ var HAS_HASHCHANGE = (function() {
       link.href = '#';
       link.title = this.options.title;
       link.setAttribute("data-reveal-id", "download-infos");
-      link.textContent = 'Extraire les images';
+      link.textContent = "Exporter l'image";
       var help = L.DomUtil.create('span', 'icon-question-sign has-tip tip-top noradius', this._container);
       help.setAttribute('data-tooltip', "");
-      help.setAttribute('title', "Permet de télécharger une photo complète de la zone courante.");
+      help.setAttribute('title', "Fonction permettant de télécharger les images en haute résolution, avec leurs coordonnées.");
       L.DomEvent
         .addListener(link, 'click', this.download, this);
       return this._container;
@@ -361,7 +361,7 @@ var HAS_HASHCHANGE = (function() {
     includes: L.Mixin.Events,
     options: {
       position: 'bottomright',
-      title: "Flux SIG (WMS)"
+      title: "Accéder au serveur WMS"
     },
 
     display: function () {
@@ -375,10 +375,10 @@ var HAS_HASHCHANGE = (function() {
       link.href = '#';
       link.title = this.options.title;
       link.setAttribute("data-reveal-id", "wms-infos");
-      link.textContent = 'Utiliser le flux (SIG)';
+      link.textContent = 'Accéder au serveur WMS';
       var help = L.DomUtil.create('span', 'icon-question-sign has-tip tip-top noradius', this._container);
       help.setAttribute('data-tooltip', "");
-      help.setAttribute('title', "Permet d'accéder aux données orthophotographique par le biais d'un flux WMS.");
+      help.setAttribute('title', "Fonction permettant d'accéder au serveur WMS du site.");
       L.DomEvent
         .addListener(link, 'click', this.display, this);
       return this._container;
@@ -718,7 +718,6 @@ var HAS_HASHCHANGE = (function() {
     },
 
     randomDisplay: function() {
-      // random view if no hash
       var niceLocations = [
         ["Le Terril, Abbaretz", 18, 47.56142, -1.54120],
         ["La Bôle de Merquel, Mesquer", 16, 47.4179, -2.4539],
@@ -729,7 +728,7 @@ var HAS_HASHCHANGE = (function() {
         ["Château, Châteaubriant", 18, 47.71958, -1.37327],
         ["La Loire, Ancenis", 16, 47.3705, -1.0800],
         ["Le Pont de Saint-Nazaire", 14, 47.2789, -2.1653],
-        ["Lac de Vioreau", 15, 47.5232, -1.4230],
+        ["Lac de Vioreau, Joué-sur-Erdre", 15, 47.5232, -1.4230],
       ];
       var random = niceLocations[Math.floor(Math.random()*niceLocations.length)];
       map.setView([random[2], random[3]], random[1]);
@@ -754,7 +753,7 @@ var HAS_HASHCHANGE = (function() {
       }
     );
 
-  map.attributionControl.setPrefix('');
+  map.attributionControl.setPrefix('Source: Département de Loire-Atlantique');
   map.on('load', function() {
     var hash = new L.Hash(map);
   });
@@ -792,7 +791,7 @@ var HAS_HASHCHANGE = (function() {
       tilematrixSet: "PM",
       matrixIds: matrixIds3857,
       format: 'image/jpeg',
-      attribution: "&copy; <a href='http://www.ign.fr'>IGN</a>"
+      attribution: "&copy; IGN"
     }
   ).addTo(map);
 
@@ -825,7 +824,7 @@ var HAS_HASHCHANGE = (function() {
     tms: true,
     maxZoom: 19,
     subdomains: "abcdefgh",
-    attribution: "Source: Département de Loire-Atlantique"
+    attribution: ""
   }).addTo(map);
 
   ortho2012.on('load', function() {
@@ -876,7 +875,7 @@ var HAS_HASHCHANGE = (function() {
 
   var overlayMaps = {
     "Afficher les rues": streets_custom_osm,
-    "Frontières du Département": border
+    "Afficher les limites départementales": border
   };
   L.control.layers(null, overlayMaps).addTo(map);
 

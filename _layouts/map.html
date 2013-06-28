@@ -13,6 +13,8 @@
   <title>{{ page.title }}</title>
   <meta name="description" content="{{ page.description }}" />
   <link rel="icon" href="favicon.ico"/>
+  <meta property="og:image" content="http://vuduciel.loire-atlantique.fr/assets/images/logo.png" />
+  <meta property="og:title" content="{{ page.description }}" />
 
   <!-- CSS Files -->
   <link rel="stylesheet" href="assets/css/foundation.min.css" />
@@ -84,7 +86,7 @@ map.setView([lat, lon], zoom);
   <a class="close-reveal-modal">&#215;</a>
 </div>
 <div id="wms-infos" class="reveal-modal">
-  <p>Pour obtenir le flux WMS, l'url du service est http://services.vuduciel.loire-atlantique.fr/.</p>
+  <p>Conformément aux prescriptions de la directive européenne INSPIRE, vous pouvez visualiser les photographies aériennes de la Loire-Atlantique à partir d’un flux WMS.</p><p>Son principal intérêt est de vous permettre d’afficher sur votre poste de travail les images publiées dans Vuduciel et d’y superposer vos propres données.</p><p>Son utilisation nécessite de disposer d’un client WMS tel que Quantum GIS, JUMP, Gv SIG, uDig, ou GAIA pour les SIG open source; Géoconcept, ArcGIS, ou Mapinfo pour les SIG d’éditeurs.</p><p>Après avoir lancé la commande permettant d’ouvrir une couche WMS, le logiciel SIG demande de saisir une adresse WMS. Pour le site Vuduciel, elle correspond à l’URL du serveur cartographique http://services.vuduciel.loire-atlantique.fr/</p>
   <a class="close-reveal-modal">&#215;</a>
 </div>
 </body>
