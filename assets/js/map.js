@@ -954,5 +954,14 @@ var HAS_HASHCHANGE = (function() {
 
   $(document).foundation(null, null, null, null, true);
   $(document).foundation('dropdown', 'off');
+  $("nav li a").each(function(i, el) {
+    $(el).click(function(event) {
+      $('#secondary-page-zone').html="Chargement";
+      $('#secondary-page-reveal').foundation('reveal', 'open');
+      $('#secondary-page-zone').load(this.href + ' #wrapper');
+      event.preventDefault ? event.preventDefault() : event.returnValue = false;
+      return false;
+    })
+  });
 
 }

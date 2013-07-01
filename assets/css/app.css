@@ -32,6 +32,8 @@
 #footer nav ul{margin-bottom:0;font-size:80%;font-family:Verdana,Geneva,sans-serif;}#footer nav ul li{display:inline;padding:0 1em;border-right:1px solid grey;}#footer nav ul li a{color:black;font-weight:bold;}
 #footer nav ul li:last-child{border-right:0;}
 .secondary-page #wrapper{font-size:80%;}
+#secondary-page-zone{font-size:75%;}#secondary-page-zone h1{font-size:2em;}
+#secondary-page-zone h2{font-size:1.3em;}
 @media only screen and (max-width:48em){.map-full{top:14.7em;bottom:3.5em;}}.screamshot .tagline{display:none;}
 .screamshot #search{display:none;}
 .screamshot #footer-navigation{display:none;}
