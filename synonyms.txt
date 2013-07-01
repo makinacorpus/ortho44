@@ -1,0 +1,11 @@
+all => allee
+av, ave => avenue
+bd, boul, bvd => boulevard
+car, carr => carrefour
+ctre => centre
+ch, che, chem => chemin
+esc => escalier
+imp => impasse
+pl => place
+r => rue
+rte => route
