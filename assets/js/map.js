@@ -868,7 +868,7 @@ var HAS_HASHCHANGE = (function() {
   });
   var streets_custom_osm = L.tileLayer('http://{s}.tiles.cg44.makina-corpus.net/osm/{z}/{x}/{y}.png', {
     opacity: 0.8,
-    maxZoom: 15,
+    maxZoom: 19,
     attribution: "Makina Corpus / OpenStreetMap",
     subdomains: 'abcdefgh'
   });
