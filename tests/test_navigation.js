@@ -11,14 +11,14 @@ casper.start(start_url);
 
 casper.waitForSelector(x("//a[normalize-space(text())='Contact']"),
     function success() {
-        this.test.assertExists(x("//a[normalize-space(text())='Contact']"));
+        this.test.assertExists(x("//a[normalize-space(text())='Contact']"), "Footer navigation is visible");
         this.click(x("//a[normalize-space(text())='Contact']"));
     },
     function fail() {
-        this.test.assertExists(x("//a[normalize-space(text())='Contact']"));
+        this.test.assertExists(x("//a[normalize-space(text())='Contact']"), "Footer navigation is invisible");
 });
 casper.then(function() {
-    this.test.assertUrlMatch(/^http:\/\/.+\/contact.html$/);
+    this.test.assertExists("#secondary-page-zone h1#nous_contacter", "Footer links displayed in reveal mode");
 });
 
 casper.run(function() {

@@ -1,42 +1,42 @@
-.row{max-width:100%;}
-#header{padding-top:0.5em;}#header #logo{margin-top:0.2em;}
-#header .tagline{font-size:1.4em;margin-bottom:0.2em;}
-#search{background-color:#b1ca00;padding-top:0.6em;position:relative;}#search #search-label label{color:black;font-weight:bold;position:absolute;bottom:0;left:3em;margin:0;}
-#search #search-label img{float:left;}
-#search #search-input{font-weight:bold;}
-#search #zero-results{position:absolute;top:0.5em;right:1.5em;color:red;display:none;}
-#search .show-choices{top:auto;}
-#search #search-button{background-color:black;border:0;}#search #search-button i{color:yellow;}
-#search #search-address.search-no-result #zero-results{display:block;}
-#search #search-address.search-no-result #search-input{color:red;}
-.map-body{margin:0;padding:0;position:static;}
-.map-full{position:absolute;top:12.7em;bottom:5em;width:100%;}
-.leaflet-fullscreen{z-index:1;}
-.leaflet-control-zoom a{width:32px;height:32px;font-size:150%;line-height:1.8em;}
-.leaflet-bottom.leaflet-left .leaflet-control,.leaflet-bottom.leaflet-left .leaflet-social-control{float:left;clear:none;margin-bottom:0.2em;}
-.leaflet-bar-part-single{-webkit-border-radius:4px;border-radius:4px;}
-.leaflet-control-embed a,.leaflet-social-control a{margin:0 0.5em;padding:0 0.2em;font-size:200%;color:black;}
-.leaflet-control-scale{margin-top:1.5em;}
-.leaflet-social-control a.leaflet-social-control-facebook{padding:0 0.4em;}
-.leaflet-left .leaflet-control{margin-left:12px;}
-.leaflet-bottom.leaflet-right .leaflet-control{float:left;clear:none;margin:0 0 0.2em 1em;}.leaflet-bottom.leaflet-right .leaflet-control span{margin-left:0.5em;}
-.show-infos{top:auto;}
-.map-pane{position:absolute;top:100px;bottom:0;width:50%;}
-#overlay{display:none;z-index:5000;position:fixed;top:0;left:0;width:100%;height:100%;background-color:white;}
-.leaflet-control-minimap{border:solid rgba(255, 255, 255, 0.7) 3px;box-shadow:0 1px 7px #999;background:#f8f8f9;-moz-border-radius:8px;-webkit-border-radius:8px;border-radius:8px;}
-.leaflet-control-minimap a{background-color:rgba(255, 255, 255, 0.75);background-position:1px 2px;background-repeat:no-repeat;display:block;outline:none;z-index:99999;}
-.leaflet-control-minimap a.minimized{background-position:1px -18px;}
-.leaflet-control-minimap-toggle-display{background-image:url("images/toggle.png");border-radius:4px 4px 4px 4px;height:19px;width:19px;position:absolute;bottom:0;right:0;}
-.map-body #footer{position:absolute;bottom:0;}
-#footer #slogan{text-align:right;border-top:0.2em solid #b1ca00;padding-right:0;}#footer #slogan span{background-color:#b1ca00;padding:0;margin-right:-0.05em;}
-#footer nav ul{margin-bottom:0;font-size:80%;font-family:Verdana,Geneva,sans-serif;}#footer nav ul li{display:inline;padding:0 1em;border-right:1px solid grey;}#footer nav ul li a{color:black;font-weight:bold;}
-#footer nav ul li:last-child{border-right:0;}
-.secondary-page #wrapper{font-size:80%;}
-#secondary-page-zone{font-size:75%;}#secondary-page-zone h1{font-size:2em;}
-#secondary-page-zone h2{font-size:1.3em;}
-@media only screen and (max-width:48em){.map-full{top:14.7em;bottom:3.5em;}}.screamshot .tagline{display:none;}
-.screamshot #search{display:none;}
-.screamshot #footer-navigation{display:none;}
-.screamshot .map-full{top:5em;}
-.screamshot .leaflet-control{display:none;}
-.screamshot .leaflet-control-scale{display:block;}
+.row{max-width:100%}
+#header{padding-top:.5em}#header #logo{margin-top:.2em}
+#header .tagline{font-size:1.4em;margin-bottom:.2em}
+#search{background-color:#b1ca00;padding-top:.6em;position:relative}#search #search-label label{color:#000;font-weight:bold;position:absolute;bottom:0;left:3em;margin:0}
+#search #search-label img{float:left}
+#search #search-input{font-weight:bold}
+#search #zero-results{position:absolute;top:.5em;right:1.5em;color:#f00;display:none}
+#search .show-choices{top:auto}
+#search #search-button{background-color:#000;border:0}#search #search-button i{color:#ff0}
+#search #search-address.search-no-result #zero-results{display:block}
+#search #search-address.search-no-result #search-input{color:#f00}
+.map-body{margin:0;padding:0;position:static}
+.map-full{position:absolute;top:12.7em;bottom:5em;width:100%}
+.leaflet-fullscreen{z-index:1}
+.leaflet-control-zoom a{width:32px;height:32px;font-size:150%;line-height:1.8em}
+.leaflet-bottom.leaflet-left .leaflet-control,.leaflet-bottom.leaflet-left .leaflet-social-control{float:left;clear:none;margin-bottom:.2em}
+.leaflet-bar-part-single{-webkit-border-radius:4px;border-radius:4px}
+.leaflet-control-embed a,.leaflet-social-control a{margin:0 .5em;padding:0 .2em;font-size:200%;color:#000}
+.leaflet-control-scale{margin-top:1.5em}
+.leaflet-social-control a.leaflet-social-control-facebook{padding:0 .4em}
+.leaflet-left .leaflet-control{margin-left:12px}
+.leaflet-bottom.leaflet-right .leaflet-control{float:left;clear:none;margin:0 0 .2em 1em}.leaflet-bottom.leaflet-right .leaflet-control span{margin-left:.5em}
+.show-infos{top:auto}
+.map-pane{position:absolute;top:100px;bottom:0;width:50%}
+#overlay{display:none;z-index:5000;position:fixed;top:0;left:0;width:100%;height:100%;background-color:#fff}
+.leaflet-control-minimap{border:solid rgba(255,255,255,0.7) 3px;box-shadow:0 1px 7px #999;background:#f8f8f9;-moz-border-radius:8px;-webkit-border-radius:8px;border-radius:8px}
+.leaflet-control-minimap a{background-color:rgba(255,255,255,0.75);background-position:1px 2px;background-repeat:no-repeat;display:block;outline:none;z-index:99999}
+.leaflet-control-minimap a.minimized{background-position:1px -18px}
+.leaflet-control-minimap-toggle-display{background-image:url("images/toggle.png");border-radius:4px 4px 4px 4px;height:19px;width:19px;position:absolute;bottom:0;right:0}
+.map-body #footer{position:absolute;bottom:0}
+#footer #slogan{text-align:right;border-top:.2em solid #b1ca00;padding-right:0}#footer #slogan span{background-color:#b1ca00;padding:0;margin-right:-0.05em}
+#footer nav ul{margin-bottom:0;font-size:80%;font-family:Verdana,Geneva,sans-serif}#footer nav ul li{display:inline;padding:0 1em;border-right:1px solid #808080}#footer nav ul li a{color:#000;font-weight:bold}
+#footer nav ul li:last-child{border-right:0}
+.secondary-page #wrapper{font-size:80%}
+#secondary-page-zone{font-size:75%}#secondary-page-zone h1{font-size:2em}
+#secondary-page-zone h2{font-size:1.3em}
+@media only screen and (max-width:48em){.map-full{top:14.7em;bottom:3.5em}}.screamshot .tagline{display:none}
+.screamshot #search{display:none}
+.screamshot #footer-navigation{display:none}
+.screamshot .map-full{top:5em}
+.screamshot .leaflet-control{display:none}
+.screamshot .leaflet-control-scale{display:block}

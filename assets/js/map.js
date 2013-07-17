@@ -587,6 +587,41 @@ var HAS_HASHCHANGE = (function() {
   L.tileLayer.wtms = function (url, options) {
           return new L.TileLayer.WMTS(url, options);
   };
+
+  // ###################################
+  // TileLayer fallback
+  // Fallback to PNG if JPG is not available to allow transparency on borders
+  // ###################################
+  L.FallbackTileLayer = L.TileLayer.extend({
+
+    _tileOnError: function () {
+      var layer = this._layer;
+
+      layer.fire('tileerror', {
+        tile: this,
+        url: this.src
+      });
+
+      var newUrl;
+      if(this.src.indexOf(".jpg")>0) {
+        layer._limit = true;
+        newUrl = this.src.replace("jpg", "png");
+      } else {
+        newUrl = layer.options.errorTileUrl;
+      }
+      if (newUrl) {
+        this.src = newUrl;
+      }
+
+      layer._tileLoaded();
+      
+    },
+
+    reachLimit: function() {
+      return this._limit;
+    }
+  });
+
   // ###################################
   // Ortho 44 specific geocoding & utils
   // ###################################
@@ -607,6 +642,7 @@ var HAS_HASHCHANGE = (function() {
       this._map = map;
       this._input = input;
       this._callback = callback;
+      Ortho44.setClass(document.getElementById('search-address'), "search-ready");
     },
 
     _loadElasticSearchJSONP: function (params) {
@@ -766,7 +802,7 @@ var HAS_HASHCHANGE = (function() {
     maxZoom: 12,
     attribution: "MapQuest / OpenStreetMap",
     subdomains: '1234'
-  }).addTo(map);
+  });
 
   var matrixIds3857= new Array(22);
   for (var i= 0; i<22; i++) {
@@ -793,38 +829,15 @@ var HAS_HASHCHANGE = (function() {
       format: 'image/jpeg',
       attribution: "&copy; IGN"
     }
-  ).addTo(map);
+  );
 
-  L.TileLayer.include({
-    _tileOnError: function () {
-      var layer = this._layer;
-
-      layer.fire('tileerror', {
-        tile: this,
-        url: this.src
-      });
-
-      var newUrl;
-      if(this.src.indexOf(".jpg")>0) {
-        newUrl = this.src.replace("jpg", "png");
-      } else {
-        newUrl = layer.options.errorTileUrl;
-      }
-      if (newUrl) {
-        this.src = newUrl;
-      }
-
-      layer._tileLoaded();
-      
-    }
-  });
-
-  var ortho2012 = L.tileLayer('http://{s}.tiles.cg44.makina-corpus.net/ortho-2012/{z}/{x}/{y}.jpg', {
+  var ortho2012 = new L.FallbackTileLayer('http://{s}.tiles.cg44.makina-corpus.net/ortho-2012/{z}/{x}/{y}.jpg', {
     continuousWorld: true,  // very important
     tms: true,
     maxZoom: 19,
     subdomains: "abcdefgh",
-    attribution: ""
+    attribution: "",
+    errorTileUrl: "/assets/images/empty.png"
   }).addTo(map);
 
   ortho2012.on('load', function() {
@@ -832,7 +845,24 @@ var HAS_HASHCHANGE = (function() {
     window.setTimeout(function() {
       Ortho44.setClass(document.querySelector('body'), "map-initialized");
     }, 500);
-  })
+  });
+  ortho2012.on('tileload', function(tile) {
+    console.log(tile.url);
+  });
+  ortho2012.on('loading', function() {
+    ortho2012._limit = false;
+  });
+  ortho2012.on('load', function() {
+    console.log(ortho2012.reachLimit());
+    if(ortho2012.reachLimit()) {
+      map.addLayer(ign);
+      map.addLayer(streets_mapquest);
+      ortho2012._container.style.zIndex=1;
+    } else {
+      map.removeLayer(ign);
+      map.removeLayer(streets_mapquest);
+    }
+  });
 
   var border = L.geoJson(loire_atlantique_json, {
     style: function (feature) {
