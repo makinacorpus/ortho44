@@ -841,19 +841,7 @@ var HAS_HASHCHANGE = (function() {
   }).addTo(map);
 
   ortho2012.on('load', function() {
-    // wait for progressive jpeg to render
-    window.setTimeout(function() {
-      Ortho44.setClass(document.querySelector('body'), "map-initialized");
-    }, 500);
-  });
-  ortho2012.on('tileload', function(tile) {
-    console.log(tile.url);
-  });
-  ortho2012.on('loading', function() {
-    ortho2012._limit = false;
-  });
-  ortho2012.on('load', function() {
-    console.log(ortho2012.reachLimit());
+    // do not display external layers if not near limit
     if(ortho2012.reachLimit()) {
       map.addLayer(ign);
       map.addLayer(streets_mapquest);
@@ -862,6 +850,14 @@ var HAS_HASHCHANGE = (function() {
       map.removeLayer(ign);
       map.removeLayer(streets_mapquest);
     }
+
+    // wait for progressive jpeg to render
+    window.setTimeout(function() {
+      Ortho44.setClass(document.querySelector('body'), "map-initialized");
+    }, 500);
+  });
+  ortho2012.on('loading', function() {
+    ortho2012._limit = false;
   });
 
   var border = L.geoJson(loire_atlantique_json, {
