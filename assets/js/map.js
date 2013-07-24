@@ -639,7 +639,7 @@ var HAS_HASHCHANGE = (function() {
       script.type = "text/javascript";
       script.src = url;
       document.getElementsByTagName("head")[0].appendChild(script);
-      document.getElementsByTagName("head")[0].removeChild(script);
+      //document.getElementsByTagName("head")[0].removeChild(script);
     },
 
     _geocode: function (event) {

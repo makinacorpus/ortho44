@@ -13,14 +13,17 @@ casper.waitForSelector(".search-ready",
         this.test.assertExists("form#search-address input[name='search']", "Search is visible");
         this.sendKeys("form#search-address input[name='search']", "saint nazaire");
         this.evaluate(function(){
-        	document.querySelector("form #search-button").click();
+        	document.querySelector("form#search-address #search-button").click();
         });
     },
     function fail() {
         this.test.assertExists("form#search-address input[name='search']", "Search is invisible");
 });
 
-casper.waitForSelector(".search-success", function() {
+casper.then(function() {
+    casper.capture('screen1.png');
+})
+casper.waitForSelector(".search-success", function success() {
     this.test.assertUrlMatch(/^http:.+#12\/47\.27\d+\/-2\.24\d+$/, "Search is working");
     this.test.assertExists("img[src$='ortho-2012/12/2022/2659.png']");
 });
