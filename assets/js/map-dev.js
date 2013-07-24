@@ -269,7 +269,7 @@ var HAS_HASHCHANGE = (function() {
   L.Control.Screenshot = L.Control.extend({
     includes: L.Mixin.Events,
     options: {
-        position: 'topleft',
+        position: 'bottomleft',
         title: 'Impression'
     },
 
@@ -283,9 +283,8 @@ var HAS_HASHCHANGE = (function() {
 
     onAdd: function(map) {
         this.map = map;
-        this._container = L.DomUtil.create('div', 'leaflet-control-zoom leaflet-control');
-        var div = L.DomUtil.create('div', 'leaflet-bar', this._container);
-        var link = L.DomUtil.create('a', 'leaflet-bar-part leaflet-bar-part-single leaflet-screenshot-control', div);
+        this._container = L.DomUtil.create('div', 'leaflet-print-control leaflet-control');
+        var link = L.DomUtil.create('a', 'leaflet-bar-part leaflet-bar-part-single leaflet-screenshot-control', this._container);
         link.href = '#';
         link.title = this.options.title;
         var span = L.DomUtil.create('span', 'icon-print', link);
@@ -308,23 +307,15 @@ var HAS_HASHCHANGE = (function() {
     includes: L.Mixin.Events,
     options: {
       position: 'bottomright',
-      title: "Exporter l'image"
-    },
-
-    projectToL93: function(x, y) {
-      var p = new Proj4js.Point(x, y);
-      Proj4js.transform(this.source, this.dest, p);
-      return [p.x, p.y];
+      title: "Exporter les images"
     },
 
     download: function () {
       var p = document.querySelector("#download-link");
-      if(this.map.getZoom()>12) {
+      if(this.map.getZoom()>13) {
         var bounds = this.map.getBounds();
-        var southwest = this.projectToL93(bounds.getSouthWest().lng, bounds.getSouthWest().lat);
-        var northeast = this.projectToL93(bounds.getNorthEast().lng, bounds.getNorthEast().lat);
-        var wms = "http://services.vuduciel.loire-atlantique.fr/wms/?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&BBOX="+southwest[0]+","+southwest[1]+","+northeast[0]+","+northeast[1]+"&SRS=EPSG:2154&WIDTH=1351&HEIGHT=736&LAYERS=ortho2012&STYLES=&FORMAT=image/png&DPI=96&MAP_RESOLUTION=96&FORMAT_OPTIONS=dpi:96&TRANSPARENT=TRUE";
-        p.innerHTML = "<p>Pour télécharger l'image complète de la position actuelle, veuillez cliquer sur ce lien ci-dessous.</p><p>Note: le temps de chargement peut être assez long suivant la taille de la zone affichée.</p><a href='"+wms+"' id= target='_new'>Télécharger l'image</a>";
+        var download_url = "http://services.vuduciel.loire-atlantique.fr/download?x0="+bounds.getSouthWest().lng+"&y0="+bounds.getSouthWest().lat+"&x1="+bounds.getNorthEast().lng+"&y1="+bounds.getNorthEast().lat
+        p.innerHTML = "<p>Pour télécharger l'image complète de la position actuelle, veuillez cliquer sur ce lien ci-dessous.</p><p>Note: le temps de chargement peut être assez long suivant la taille de la zone affichée.</p><a href='"+download_url+"' id= target='_new'>Télécharger l'image</a>";
       } else {
         p.innerHTML = "<strong>La zone sélectionnée est trop importante, merci de la réduire.</strong>"
       }
@@ -333,9 +324,6 @@ var HAS_HASHCHANGE = (function() {
 
     onAdd: function(map) {
       this.map = map;
-      this.source = new Proj4js.Proj('EPSG:4326');
-      Proj4js.defs["EPSG:2154"] = '+proj=lcc +lat_1=49 +lat_2=44 +lat_0=46.5 +lon_0=3 +x_0=700000 +y_0=6600000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs';
-      this.dest = new Proj4js.Proj('EPSG:2154');
       this._container = L.DomUtil.create('div', 'leaflet-control-attribution leaflet-control');
       var link = L.DomUtil.create('a', 'leaflet-download-control', this._container);
       link.href = '#';
