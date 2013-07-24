@@ -15,7 +15,7 @@
 .leaflet-control-zoom a{width:32px;height:32px;font-size:150%;line-height:1.8em}
 .leaflet-bottom.leaflet-left .leaflet-control,.leaflet-bottom.leaflet-left .leaflet-social-control{float:left;clear:none;margin-bottom:.2em}
 .leaflet-bar-part-single{-webkit-border-radius:4px;border-radius:4px}
-.leaflet-control-embed a,.leaflet-social-control a{margin:0 .5em;padding:0 .2em;font-size:200%;color:#000}
+.leaflet-control-embed a,.leaflet-social-control a,.leaflet-print-control a{margin:0 .5em;padding:0 .2em;font-size:200%;color:#000}
 .leaflet-control-scale{margin-top:1.5em}
 .leaflet-social-control a.leaflet-social-control-facebook{padding:0 .4em}
 .leaflet-left .leaflet-control{margin-left:12px}
@@ -28,6 +28,7 @@
 .leaflet-control-minimap a.minimized{background-position:1px -18px}
 .leaflet-control-minimap-toggle-display{background-image:url("images/toggle.png");border-radius:4px 4px 4px 4px;height:19px;width:19px;position:absolute;bottom:0;right:0}
 .map-body #footer{position:absolute;bottom:0}
+#footer #cg-logo{padding-right:0;text-align:right}
 #footer #slogan{text-align:right;border-top:.2em solid #b1ca00;padding-right:0}#footer #slogan span{background-color:#b1ca00;padding:0;margin-right:-0.05em}
 #footer nav ul{margin-bottom:0;font-size:80%;font-family:Verdana,Geneva,sans-serif}#footer nav ul li{display:inline;padding:0 1em;border-right:1px solid #808080}#footer nav ul li a{color:#000;font-weight:bold}
 #footer nav ul li:last-child{border-right:0}

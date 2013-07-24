@@ -269,7 +269,7 @@ var HAS_HASHCHANGE = (function() {
   L.Control.Screenshot = L.Control.extend({
     includes: L.Mixin.Events,
     options: {
-        position: 'bottomleft',
+        position: 'topleft',
         title: 'Impression'
     },
 
@@ -283,8 +283,9 @@ var HAS_HASHCHANGE = (function() {
 
     onAdd: function(map) {
         this.map = map;
-        this._container = L.DomUtil.create('div', 'leaflet-print-control leaflet-control');
-        var link = L.DomUtil.create('a', 'leaflet-bar-part leaflet-bar-part-single leaflet-screenshot-control', this._container);
+        this._container = L.DomUtil.create('div', 'leaflet-control-zoom leaflet-control');
+        var div = L.DomUtil.create('div', 'leaflet-bar', this._container);
+        var link = L.DomUtil.create('a', 'leaflet-bar-part leaflet-bar-part-single leaflet-screenshot-control', div);
         link.href = '#';
         link.title = this.options.title;
         var span = L.DomUtil.create('span', 'icon-print', link);
@@ -897,9 +898,27 @@ var HAS_HASHCHANGE = (function() {
     attribution: "Makina Corpus / OpenStreetMap",
     subdomains: 'abcdefgh'
   });
+  var ortho_1850 = L.tileLayer('http://{s}.tiles.cg44.makina-corpus.net/ortho-1850/{z}/{x}/{y}.jpg', {
+    maxZoom: 19,
+    tms: true,
+    subdomains: 'abcdefgh'
+  });
+  var ortho_1949 = L.tileLayer('http://{s}.tiles.cg44.makina-corpus.net/ortho-1949/{z}/{x}/{y}.jpg', {
+    maxZoom: 18,
+    tms: true,
+    subdomains: 'abcdefgh'
+  });
+  var ortho_1999 = L.tileLayer('http://{s}.tiles.cg44.makina-corpus.net/ortho-1999/{z}/{x}/{y}.jpg', {
+    maxZoom: 18,
+    tms: true,
+    subdomains: 'abcdefgh'
+  });
   var overlayMaps = {
     "Afficher les rues": streets_custom_osm,
-    "Afficher les limites départementales": border
+    "Afficher les limites départementales": border,
+    "1850": ortho_1850,
+    "1949": ortho_1949,
+    "1999": ortho_1999
   };
   L.control.layers(null, overlayMaps).addTo(map);
 
