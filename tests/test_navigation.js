@@ -17,7 +17,7 @@ casper.waitForSelector(x("//a[normalize-space(text())='Contact']"),
     function fail() {
         this.test.assertExists(x("//a[normalize-space(text())='Contact']"), "Footer navigation is invisible");
 });
-casper.then(function() {
+casper.waitForSelector("#secondary-page-zone h1#nous_contacter", function() {
     this.test.assertExists("#secondary-page-zone h1#nous_contacter", "Footer links displayed in reveal mode");
 });
 
