@@ -78,6 +78,27 @@
   bottom: 5em;
   width: 100%;
 }
+.map-dev {
+  .map-full{
+    top: 14.7em;
+  }
+  .map-hidden {
+    display: none;
+  }
+  .map-right {
+    z-index: 1;
+    position:absolute;
+    //top: 12.7em;
+    top: 14.7em;
+    bottom: 5em;
+    right:-50%;
+    width: 100%;
+    .leaflet-control-attribution {
+      display: none;
+    }
+  }
+}
+
 .leaflet-fullscreen {
   z-index: 1;
 }

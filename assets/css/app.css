@@ -11,6 +11,9 @@
 #search #search-address.search-no-result #search-input{color:#f00}
 .map-body{margin:0;padding:0;position:static}
 .map-full{position:absolute;top:12.7em;bottom:5em;width:100%}
+.map-dev .map-full{top:14.7em}
+.map-dev .map-hidden{display:none}
+.map-dev .map-right{z-index:1;position:absolute;top:14.7em;bottom:5em;right:-50%;width:100%}.map-dev .map-right .leaflet-control-attribution{display:none}
 .leaflet-fullscreen{z-index:1}
 .leaflet-control-zoom a{width:32px;height:32px;font-size:150%;line-height:1.8em}
 .leaflet-bottom.leaflet-left .leaflet-control,.leaflet-bottom.leaflet-left .leaflet-social-control{float:left;clear:none;margin-bottom:.2em}

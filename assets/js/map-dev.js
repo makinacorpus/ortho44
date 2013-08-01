@@ -617,6 +617,8 @@ var HAS_HASHCHANGE = (function() {
   var Ortho44 = {
     _callbackIndex: 0,
 
+    // GEOCODING
+    // -----------
     bindGeocode: function(form, input, map, callback) {
       L.DomEvent.addListener(form, 'submit', this._geocode, this);
       var clearRandom = function() {
@@ -639,7 +641,7 @@ var HAS_HASHCHANGE = (function() {
       script.type = "text/javascript";
       script.src = url;
       document.getElementsByTagName("head")[0].appendChild(script);
-      document.getElementsByTagName("head")[0].removeChild(script);
+      //document.getElementsByTagName("head")[0].removeChild(script);
     },
 
     _geocode: function (event) {
@@ -708,6 +710,64 @@ var HAS_HASHCHANGE = (function() {
       if (bounds.isValid()) map.fitBounds(bounds);
     },
 
+    // COMPARISON MAP
+    // ---------------
+    compareWith: function(map, compare_container, layer) {
+      Ortho44.removeClass(document.getElementById(compare_container), "map-hidden");
+      Ortho44.setClass(document.getElementById(compare_container), "map-right");
+
+      if(!Ortho44.mapcompare) {
+        Ortho44.mapcompare = L.map(compare_container,
+          {
+            maxBounds: map.options.maxBounds,
+            zoomControl:false,
+            attribution: ''
+          }
+        );
+      } else {
+        Ortho44.compareClean();
+      }
+      var mapcompare = Ortho44.mapcompare;
+
+      var update_main = function() {
+        map.setView(mapcompare.getCenter(), mapcompare.getZoom());
+        map.invalidateSize();
+      };
+      var update_compare = function() {
+        mapcompare.setView(map.getCenter(), map.getZoom());
+        mapcompare.invalidateSize();
+      };
+      map.on('move', function (e) {
+        mapcompare.off('move');
+        update_compare();
+        mapcompare.on('move', update_main);
+      });
+      mapcompare.on('move', function (e) {
+        map.off('move');
+        update_main();
+        map.on('move', update_compare);
+      });
+
+      update_compare();
+      layer.addTo(mapcompare);
+    },
+
+    compareOff: function(map) {
+      if(Ortho44.mapcompare) {
+        Ortho44.compareClean();
+        Ortho44.setClass(Ortho44.mapcompare._container, "map-hidden");
+        Ortho44.removeClass(Ortho44.mapcompare._container, "map-right");
+        map.off('move zoom');
+      }
+    },
+    compareClean: function() {
+      for(var l in Ortho44.mapcompare._layers) {
+        Ortho44.mapcompare.removeLayer(Ortho44.mapcompare._layers[l]);
+      }
+    },
+
+    // UTILS
+    // -----------
     setClass: function (element, cl) {
       var classes = element.className,
           pattern = new RegExp( cl );
@@ -886,27 +946,43 @@ var HAS_HASHCHANGE = (function() {
     attribution: "Makina Corpus / OpenStreetMap",
     subdomains: 'abcdefgh'
   });
-  var ortho_1850 = L.tileLayer('http://{s}.tiles.cg44.makina-corpus.net/ortho-1850/{z}/{x}/{y}.jpg', {
-    maxZoom: 19,
-    tms: true,
-    subdomains: 'abcdefgh'
-  });
-  var ortho_1949 = L.tileLayer('http://{s}.tiles.cg44.makina-corpus.net/ortho-1949/{z}/{x}/{y}.jpg', {
-    maxZoom: 18,
-    tms: true,
-    subdomains: 'abcdefgh'
-  });
-  var ortho_1999 = L.tileLayer('http://{s}.tiles.cg44.makina-corpus.net/ortho-1999/{z}/{x}/{y}.jpg', {
-    maxZoom: 18,
-    tms: true,
-    subdomains: 'abcdefgh'
-  });
+  var older_layers = {
+    'ortho1850': L.tileLayer('http://{s}.tiles.cg44.makina-corpus.net/ortho-1850/{z}/{x}/{y}.jpg', {
+      maxZoom: 19,
+      tms: true,
+      subdomains: 'abcdefgh'
+    }),
+    'ortho1949': L.tileLayer('http://{s}.tiles.cg44.makina-corpus.net/ortho-1949/{z}/{x}/{y}.jpg', {
+      maxZoom: 18,
+      tms: true,
+      subdomains: 'abcdefgh'
+    }),
+    'ortho1999': L.tileLayer('http://{s}.tiles.cg44.makina-corpus.net/ortho-1999/{z}/{x}/{y}.jpg', {
+      maxZoom: 18,
+      tms: true,
+      subdomains: 'abcdefgh'
+    }),
+    'ortho2004': L.tileLayer('http://{s}.tiles.cg44.makina-corpus.net/ortho-2004/{z}/{x}/{y}.jpg', {
+      maxZoom: 18,
+      tms: true,
+      subdomains: 'abcdefgh'
+    }),
+    'ortho2009': L.tileLayer('http://{s}.tiles.cg44.makina-corpus.net/ortho-2009/{z}/{x}/{y}.jpg', {
+      maxZoom: 18,
+      tms: true,
+      subdomains: 'abcdefgh'
+    })
+  };
+
+
   var overlayMaps = {
     "Afficher les rues": streets_custom_osm,
     "Afficher les limites départementales": border,
-    "1850": ortho_1850,
-    "1949": ortho_1949,
-    "1999": ortho_1999
+    // "1850": ortho_1850,
+    // "1949": ortho_1949,
+    // "1999": ortho_1999,
+    // "2004": ortho_2004,
+    // "2009": ortho_2009,
   };
   L.control.layers(null, overlayMaps).addTo(map);
 
@@ -982,7 +1058,24 @@ var HAS_HASHCHANGE = (function() {
         Ortho44.setClass(choices_box, "show-choices");
       }
     });
-
+  
+  // SECONDARY MAP
+  for(var l in older_layers) {
+    (function(old_layer) {
+      L.DomEvent.addListener(document.getElementById("compare-"+old_layer), 'click', function(e) {
+        Ortho44.compareWith(map, "map-compare", older_layers[old_layer]);
+        event.preventDefault ? event.preventDefault() : event.returnValue = false;
+        return false;
+      });
+    })(l);
+  }
+  L.DomEvent.addListener(document.getElementById("compare-off"), 'click', function(e) {
+    Ortho44.compareOff(map);
+    event.preventDefault ? event.preventDefault() : event.returnValue = false;
+    return false;
+  });
+  
+  // FOUNDATION INIT
   $(document).foundation(null, null, null, null, true);
   $(document).foundation('dropdown', 'off');
   $("nav li a").each(function(i, el) {
