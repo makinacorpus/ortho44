@@ -99,6 +99,50 @@ window.onload=function(){
     }
   });
 
+  /*
+   * Extends L.Map to synchronize two maps
+   */
+
+  L.Map = L.Map.extend({
+      sync: function (map) {
+
+          this._syncMap = L.extend(map, {
+              setView: function (center, zoom, options, sync) {
+                  if (!sync) {
+                      this._syncMap.setView(center, zoom, options, true);
+                  }
+                  return L.Map.prototype.setView.call(this, center, zoom, options);
+              },
+
+              panBy: function (offset, options, sync) {
+                  if (!sync) {
+                      this._syncMap.panBy(offset, options, true);
+                  }
+                  return L.Map.prototype.panBy.call(this, offset, options);
+              },
+
+              _onResize: function (evt, sync) {
+                  if (!sync) {
+                      this._syncMap._onResize(evt, true);
+                  }
+                  return L.Map.prototype._onResize.call(this, evt);
+              }
+          });
+
+          this.on('zoomend', function() {
+              this._syncMap.setView(this.getCenter(), this.getZoom(), {reset: false}, true);
+          }, this);
+
+          this.dragging._draggable._updatePosition = function () {
+              L.Draggable.prototype._updatePosition.call(this);
+              L.DomUtil.setPosition(map.dragging._draggable._element, this._newPos);
+              map.fire('move');
+          };
+
+          return this;
+      }
+  });
+
   // #################
   // Leaflet hash
   // #################
@@ -729,27 +773,10 @@ var HAS_HASHCHANGE = (function() {
       }
       var mapcompare = Ortho44.mapcompare;
 
-      var update_main = function() {
-        map.setView(mapcompare.getCenter(), mapcompare.getZoom());
-        map.invalidateSize();
-      };
-      var update_compare = function() {
-        mapcompare.setView(map.getCenter(), map.getZoom());
-        mapcompare.invalidateSize();
-      };
-      map.on('move', function (e) {
-        mapcompare.off('move');
-        update_compare();
-        mapcompare.on('move', update_main);
-      });
-      mapcompare.on('move', function (e) {
-        map.off('move');
-        update_main();
-        map.on('move', update_compare);
-      });
-
-      update_compare();
       layer.addTo(mapcompare);
+      map.sync(mapcompare);
+      mapcompare.sync(map);
+      mapcompare.setView(map.getCenter(), map.getZoom());
     },
 
     compareOff: function(map) {
@@ -1060,19 +1087,20 @@ var HAS_HASHCHANGE = (function() {
     });
   
   // SECONDARY MAP
-  for(var l in older_layers) {
-    (function(old_layer) {
-      L.DomEvent.addListener(document.getElementById("compare-"+old_layer), 'click', function(e) {
-        Ortho44.compareWith(map, "map-compare", older_layers[old_layer]);
-        event.preventDefault ? event.preventDefault() : event.returnValue = false;
-        return false;
-      });
-    })(l);
-  }
-  L.DomEvent.addListener(document.getElementById("compare-off"), 'click', function(e) {
-    Ortho44.compareOff(map);
-    event.preventDefault ? event.preventDefault() : event.returnValue = false;
-    return false;
+  L.DomEvent.addListener(document.querySelector("form#compare-with"), 'change', function(e) {
+    if(e.target.checked) {
+      Ortho44.compareWith(map, "map-compare", older_layers["ortho"+e.target.value]);
+      var inputs = document.querySelectorAll("form#compare-with input");
+      for(var i=0; i<inputs.length; i++) {
+        if(inputs[i].id != e.target.id) inputs[i].checked = false;
+      }
+    } else {
+      Ortho44.compareOff(map);
+      var inputs = document.querySelectorAll("form#compare-with input");
+      for(var i=0; i<inputs.length; i++) {
+        inputs[i].checked = false;
+      }
+    }
   });
   
   // FOUNDATION INIT

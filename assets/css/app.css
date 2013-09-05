@@ -1,7 +1,8 @@
 .row{max-width:100%}
 #header{padding-top:.5em}#header #logo{margin-top:.2em}
 #header .tagline{font-size:1.4em;margin-bottom:.2em}
-#search{background-color:#b1ca00;padding-top:.6em;position:relative}#search #search-label label{color:#000;font-weight:bold;position:absolute;bottom:0;left:3em;margin:0}
+#search{background-color:#b1ca00;padding-top:.3em;position:relative}#search form,#search input[type="text"]{margin:0}
+#search #search-label label{color:#000;font-weight:bold;position:absolute;bottom:0;left:3em;margin:0}
 #search #search-label img{float:left}
 #search #search-input{font-weight:bold}
 #search #zero-results{position:absolute;top:.5em;right:1.5em;color:#f00;display:none}
@@ -9,11 +10,12 @@
 #search #search-button{background-color:#000;border:0}#search #search-button i{color:#ff0}
 #search #search-address.search-no-result #zero-results{display:block}
 #search #search-address.search-no-result #search-input{color:#f00}
+#search #compare-with{font-size:80%;font-weight:bold}#search #compare-with .label-white{background-color:#fff;border:1px solid #000;padding:.2em .5em}#search #compare-with .label-white:after{width:0;display:inline-block;height:2em;border:1px solid #000;position:relative;top:2.4em;left:-1em;content:""}
+#search #compare-with .label-black{background-color:#000;color:#fff;border:1px solid #000;padding:.2em}#search #compare-with .label-black input:checked:after{width:0;display:inline-block;height:5em;border:1px solid #000;position:relative;top:1.2em;left:1.5em;content:""}
 .map-body{margin:0;padding:0;position:static}
 .map-full{position:absolute;top:12.7em;bottom:5em;width:100%}
-.map-dev .map-full{top:14.7em}
 .map-dev .map-hidden{display:none}
-.map-dev .map-right{z-index:1;position:absolute;top:14.7em;bottom:5em;right:-50%;width:100%}.map-dev .map-right .leaflet-control-attribution{display:none}
+.map-dev .map-right{z-index:1;position:absolute;top:12.7em;bottom:5em;right:-50%;width:100%}.map-dev .map-right .leaflet-control-attribution{display:none}
 .leaflet-fullscreen{z-index:1}
 .leaflet-control-zoom a{width:32px;height:32px;font-size:150%;line-height:1.8em}
 .leaflet-bottom.leaflet-left .leaflet-control,.leaflet-bottom.leaflet-left .leaflet-social-control{float:left;clear:none;margin-bottom:.2em}
