@@ -13,9 +13,9 @@
 #search #compare-with{font-size:80%;font-weight:bold}#search #compare-with .label-white{background-color:#fff;border:1px solid #000;padding:.2em .5em}#search #compare-with .label-white:after{width:0;display:inline-block;height:2em;border:1px solid #000;position:relative;top:2.4em;left:-1em;content:""}
 #search #compare-with .label-black{background-color:#000;color:#fff;border:1px solid #000;padding:.2em}#search #compare-with .label-black input:checked:after{width:0;display:inline-block;height:5em;border:1px solid #000;position:relative;top:1.2em;left:1.5em;content:""}
 .map-body{margin:0;padding:0;position:static}
-.map-full{position:absolute;top:12.7em;bottom:5em;width:100%}
+.map-full{position:absolute;top:12.1em;bottom:5em;width:100%}
 .map-dev .map-hidden{display:none}
-.map-dev .map-right{z-index:1;position:absolute;top:12.7em;bottom:5em;right:-50%;width:100%}.map-dev .map-right .leaflet-control-attribution{display:none}
+.map-dev .map-right{z-index:1;position:absolute;top:12.1em;bottom:5em;right:-50%;width:100%}.map-dev .map-right .leaflet-control-attribution{display:none}
 .leaflet-fullscreen{z-index:1}
 .leaflet-control-zoom a{width:32px;height:32px;font-size:150%;line-height:1.8em}
 .leaflet-bottom.leaflet-left .leaflet-control,.leaflet-bottom.leaflet-left .leaflet-social-control{float:left;clear:none;margin-bottom:.2em}
