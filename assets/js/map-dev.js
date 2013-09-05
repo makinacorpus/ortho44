@@ -769,8 +769,15 @@ var HAS_HASHCHANGE = (function() {
           }
         );
       } else {
-        Ortho44.compareClean();
+        Ortho44.compareClean(map);
       }
+
+      var maxZoom = layer.options.maxZoom;
+      if(map.getZoom() > maxZoom) {
+        map.setZoom(maxZoom);
+        map.options.maxZoom = maxZoom
+      }
+
       var mapcompare = Ortho44.mapcompare;
 
       layer.addTo(mapcompare);
@@ -781,13 +788,14 @@ var HAS_HASHCHANGE = (function() {
 
     compareOff: function(map) {
       if(Ortho44.mapcompare) {
-        Ortho44.compareClean();
+        Ortho44.compareClean(map);
         Ortho44.setClass(Ortho44.mapcompare._container, "map-hidden");
         Ortho44.removeClass(Ortho44.mapcompare._container, "map-right");
         map.off('move zoom');
       }
     },
-    compareClean: function() {
+    compareClean: function(map) {
+      map.options.maxZoom = 19;
       for(var l in Ortho44.mapcompare._layers) {
         Ortho44.mapcompare.removeLayer(Ortho44.mapcompare._layers[l]);
       }
@@ -975,7 +983,7 @@ var HAS_HASHCHANGE = (function() {
   });
   var older_layers = {
     'ortho1850': L.tileLayer('http://{s}.tiles.cg44.makina-corpus.net/ortho-1850/{z}/{x}/{y}.jpg', {
-      maxZoom: 19,
+      maxZoom: 16,
       tms: true,
       subdomains: 'abcdefgh'
     }),
