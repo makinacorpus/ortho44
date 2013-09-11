@@ -759,7 +759,7 @@ var HAS_HASHCHANGE = (function() {
     compareWith: function(map, compare_container, layer) {
       Ortho44.removeClass(document.getElementById(compare_container), "map-hidden");
       Ortho44.setClass(document.getElementById(compare_container), "map-right");
-
+      Ortho44.setClass(document.querySelector(".leaflet-control-minimap"), "map-hidden");
 
       if(!Ortho44.mapcompare) {
         Ortho44.mapcompare = L.map(compare_container,
@@ -803,6 +803,7 @@ var HAS_HASHCHANGE = (function() {
         Ortho44.compareClean(map);
         Ortho44.setClass(Ortho44.mapcompare._container, "map-hidden");
         Ortho44.removeClass(Ortho44.mapcompare._container, "map-right");
+        Ortho44.removeClass(document.querySelector(".leaflet-control-minimap"), "map-hidden");
         map.off('move zoom');
         map.removeLayer(Ortho44.cursorl);
         Ortho44.mapcompare.removeLayer(Ortho44.cursorl);
