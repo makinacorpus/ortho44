@@ -760,6 +760,7 @@ var HAS_HASHCHANGE = (function() {
       Ortho44.removeClass(document.getElementById(compare_container), "map-hidden");
       Ortho44.setClass(document.getElementById(compare_container), "map-right");
 
+
       if(!Ortho44.mapcompare) {
         Ortho44.mapcompare = L.map(compare_container,
           {
@@ -784,6 +785,17 @@ var HAS_HASHCHANGE = (function() {
       map.sync(mapcompare);
       mapcompare.sync(map);
       mapcompare.setView(map.getCenter(), map.getZoom());
+
+      Ortho44.cursorl = L.circleMarker([0,0], {radius:20, fillOpacity: 0.2, color: '#b1ca00', fillColor: '#fff'}).addTo(map);
+      Ortho44.cursorr = L.circleMarker([0,0], {radius:20, fillOpacity: 0.2, color: '#b1ca00', fillColor: '#fff'}).addTo(mapcompare);
+      map.on('mousemove', function (e) {
+        Ortho44.cursorl.setLatLng(e.latlng);
+        Ortho44.cursorr.setLatLng(e.latlng);
+      });
+      mapcompare.on('mousemove', function (e) {
+        Ortho44.cursorl.setLatLng(e.latlng);
+        Ortho44.cursorr.setLatLng(e.latlng);
+      });
     },
 
     compareOff: function(map) {
@@ -792,6 +804,8 @@ var HAS_HASHCHANGE = (function() {
         Ortho44.setClass(Ortho44.mapcompare._container, "map-hidden");
         Ortho44.removeClass(Ortho44.mapcompare._container, "map-right");
         map.off('move zoom');
+        map.removeLayer(Ortho44.cursorl);
+        Ortho44.mapcompare.removeLayer(Ortho44.cursorl);
       }
     },
     compareClean: function(map) {
