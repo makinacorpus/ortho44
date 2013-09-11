@@ -15,7 +15,7 @@
 .map-body{margin:0;padding:0;position:static}
 .map-full{position:absolute;top:12.1em;bottom:5em;width:100%}
 .map-dev .map-hidden{display:none}
-.map-dev .map-right{z-index:1;position:absolute;top:12.1em;bottom:5em;right:0;width:50%}.map-dev .map-right .leaflet-control-attribution{display:none}
+.map-dev .map-right{z-index:1;position:absolute;top:12.1em;bottom:5em;right:0;width:50%;border-left:1px solid #fff}.map-dev .map-right .leaflet-control-attribution{display:none}
 .compare-mode .leaflet-control-minimap,.compare-mode .leaflet-control-fullscreen{display:none}
 .leaflet-fullscreen{z-index:1}
 .leaflet-control-zoom a{width:32px;height:32px;font-size:150%;line-height:1.8em}
