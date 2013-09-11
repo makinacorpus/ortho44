@@ -128,13 +128,19 @@
     position:absolute;
     top: 12.1em;
     bottom: 5em;
-    right:-50%;
-    width: 100%;
+    right: 0;
+    width: 50%;
     .leaflet-control-attribution {
       display: none;
     }
   }
 }
+
+.compare-mode {
+  .leaflet-control-minimap, .leaflet-control-fullscreen {
+    display: none;
+  }
+} 
 
 .leaflet-fullscreen {
   z-index: 1;
