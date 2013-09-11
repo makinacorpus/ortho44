@@ -751,7 +751,21 @@ var HAS_HASHCHANGE = (function() {
         }
       }).addTo(resultsLayer);
       var bounds = resultsLayer.getBounds();
-      if (bounds.isValid()) map.fitBounds(bounds);
+      if (bounds.isValid()) {
+        map.fitBounds(bounds);
+        if(document.querySelector(".compare-mode")) {
+          // var center = map.getCenter();
+          // var west = map.getBounds().getSouthWest().lng;
+          // var new_lng = center.lng+(center.lng-west)/2;
+          // map.panTo({lat: center.lat, lng: new_lng});
+          L.geoJson(feature, {
+            style: function (feature) {
+              if(feature.geometry.type=='Polygon') return {fillColor: 'transparent'};
+            }
+          }).addTo(Ortho44.mapcompare);
+        }
+      }
+      
     },
 
     // COMPARISON MAP
