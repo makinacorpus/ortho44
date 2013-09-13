@@ -13,7 +13,7 @@
     margin-top: 0.2em;
   }
   .tagline {
-    font-size: 1.4em;
+    font-size: 1.2em;
     margin-bottom: 0.2em;
   }
 }
@@ -21,6 +21,7 @@
   background-color: @green;
   padding-top: 0.3em;
   position: relative;
+  height: 2.7em;
 
   form, input[type="text"] {
     margin: 0;
@@ -95,7 +96,7 @@
         height: 2em;
         border: 1px solid black;
         position: relative;
-        top: 2.4em;
+        top: 2.5em;
         left: -1em;
         content: "";
       }
@@ -127,7 +128,7 @@
 }
 .map-full{
   position:absolute;
-  top: 12.1em;
+  top: 10.3em;
   bottom: 5em;
   width: 100%;
 }
@@ -138,7 +139,7 @@
   .map-right {
     z-index: 1;
     position:absolute;
-    top: 12.1em;
+    top: 10.3em;
     bottom: 5em;
     right: -50%;
     width: 100%;
@@ -196,7 +197,7 @@
 
 .leaflet-bottom.leaflet-right {
   .leaflet-control {
-    float: left;
+    float: right;
     clear: none;
     margin: 0 0 0.2em 1em;
     span {
@@ -266,6 +267,7 @@
   bottom: 0;
 }
 #footer {
+  height: 3.5em;
   #cg-logo {
     padding-right: 0;
     text-align: right;
@@ -281,10 +283,13 @@
       margin-right: -0.05em;
     }
   }
-  nav ul {
-    margin-bottom: 0;
-    font-size: 80%;
-    font-family: Verdana, Geneva, sans-serif;
+  #footer-navigation {
+    position: relative;
+    top: -0.5em;
+    nav ul {
+      margin-bottom: 0;
+      font-size: 80%;
+      font-family: Verdana, Geneva, sans-serif;
       li {
         display: inline;
         padding: 0 1em;
@@ -293,6 +298,7 @@
         a {
           color: black;
           font-weight: bold;
+          font-size: 0.9em;
         }
       }
       li:last-child {
@@ -300,6 +306,7 @@
       }
       
     }
+  }
 }
 
 /* SECONDARY PAGES */
@@ -319,10 +326,22 @@
 }
 
 /* RESPONSIVE */
-@media only screen and (max-width: 48em) {
-  .map-full {
-    top: 14.7em;
-    bottom: 3.5em;
+.leaflet-left, .leaflet-right {
+  max-width: 50%;
+}
+@media only screen and (max-width: 54em) {
+  .leaflet-control-minimap {
+    display: none;
+  }
+  #footer {
+    #slogan {
+      img {
+        max-width: 33%;
+      }
+    }
+    #footer-navigation {
+      top: 0;
+    }
   }
 }
 

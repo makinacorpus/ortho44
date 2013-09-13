@@ -140,6 +140,23 @@ window.onload=function(){
           };
 
           return this;
+      },
+      fitBounds: function (bounds, options) {
+
+        options = options || {};
+        bounds = bounds.getBounds ? bounds.getBounds() : L.latLngBounds(bounds);
+
+        var paddingTL = L.point(options.paddingTopLeft || options.padding || [0, 0]),
+            paddingBR = L.point(options.paddingBottomRight || options.padding || [0, 0]),
+
+            zoom = this.getBoundsZoom(bounds, false, paddingTL.add(paddingBR)),
+            paddingOffset = paddingBR.subtract(paddingTL).divideBy(2),
+
+            swPoint = this.project(bounds.getSouthWest(), zoom),
+            nePoint = this.project(bounds.getNorthEast(), zoom),
+            center = this.unproject(swPoint.add(nePoint).divideBy(2).add(paddingOffset), zoom);
+
+        return this.setView(center, zoom, options);
       }
   });
 
@@ -752,20 +769,17 @@ var HAS_HASHCHANGE = (function() {
       }).addTo(resultsLayer);
       var bounds = resultsLayer.getBounds();
       if (bounds.isValid()) {
-        map.fitBounds(bounds);
         if(document.querySelector(".compare-mode")) {
-          // var center = map.getCenter();
-          // var west = map.getBounds().getSouthWest().lng;
-          // var new_lng = center.lng+(center.lng-west)/2;
-          // map.panTo({lat: center.lat, lng: new_lng});
+          map.fitBounds(bounds, {paddingTopLeft: [-Math.round($(window).width()/2), 0]});
           L.geoJson(feature, {
             style: function (feature) {
               if(feature.geometry.type=='Polygon') return {fillColor: 'transparent'};
             }
           }).addTo(Ortho44.mapcompare);
+        } else {
+          map.fitBounds(bounds);
         }
       }
-      
     },
 
     // COMPARISON MAP
@@ -1041,12 +1055,7 @@ var HAS_HASHCHANGE = (function() {
 
   var overlayMaps = {
     "Afficher les rues": streets_custom_osm,
-    "Afficher les limites départementales": border,
-    // "1850": ortho_1850,
-    // "1949": ortho_1949,
-    // "1999": ortho_1999,
-    // "2004": ortho_2004,
-    // "2009": ortho_2009,
+    "Afficher les limites départementales": border
   };
   L.control.layers(null, overlayMaps).addTo(map);
 
