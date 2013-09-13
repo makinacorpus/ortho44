@@ -804,7 +804,7 @@ var HAS_HASHCHANGE = (function() {
       var maxZoom = layer.options.maxZoom;
       if(map.getZoom() > maxZoom) {
         map.setZoom(maxZoom);
-        map.options.maxZoom = maxZoom
+        map._layersMaxZoom = maxZoom;
       }
 
       var mapcompare = Ortho44.mapcompare;
@@ -838,7 +838,7 @@ var HAS_HASHCHANGE = (function() {
       }
     },
     compareClean: function(map) {
-      map.options.maxZoom = 19;
+      map._layersMaxZoom = 19;
       for(var l in Ortho44.mapcompare._layers) {
         Ortho44.mapcompare.removeLayer(Ortho44.mapcompare._layers[l]);
       }
