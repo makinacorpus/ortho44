@@ -1,4 +1,5 @@
 .row{max-width:100%}
+.reveal-modal{z-index:1000}
 #header{padding-top:.5em}#header #logo{margin-top:.2em}
 #header .tagline{font-size:1.2em;margin-bottom:.2em}
 #search{background-color:#b1ca00;padding-top:.3em;position:relative;height:2.7em}#search form,#search input[type="text"]{margin:0}

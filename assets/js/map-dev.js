@@ -802,9 +802,9 @@ var HAS_HASHCHANGE = (function() {
       }
 
       var maxZoom = layer.options.maxZoom;
+      map._layersMaxZoom = maxZoom;
       if(map.getZoom() > maxZoom) {
         map.setZoom(maxZoom);
-        map._layersMaxZoom = maxZoom;
       }
 
       var mapcompare = Ortho44.mapcompare;
@@ -814,7 +814,7 @@ var HAS_HASHCHANGE = (function() {
       mapcompare.sync(map);
       mapcompare.setView(map.getCenter(), map.getZoom());
 
-      Ortho44.cursorl = L.circleMarker([0,0], {radius:20, fillOpacity: 0.2, color: '#b1ca00', fillColor: '#fff'}).addTo(map);
+      if (!Ortho44.cursorl) Ortho44.cursorl = L.circleMarker([0,0], {radius:20, fillOpacity: 0.2, color: '#b1ca00', fillColor: '#fff'}).addTo(map);
       Ortho44.cursorr = L.circleMarker([0,0], {radius:20, fillOpacity: 0.2, color: '#b1ca00', fillColor: '#fff'}).addTo(mapcompare);
       map.on('mousemove', function (e) {
         Ortho44.cursorl.setLatLng(e.latlng);
