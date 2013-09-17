@@ -14,6 +14,11 @@
 # ./installgis.sh
 
 cd $(dirname $0)
+
+export R=/var/makina
+export PREFIX=${PREFIX:-$R/circus}
+export ROOT=${ROOT:-$PREFIX/apps} 
+export PATH="$ROOT/bin:$PATH"
 if [[ -e $PREFIX/bin/activate ]];then
     . $PREFIX/bin/activate
 else
@@ -21,10 +26,9 @@ else
     virtualenv $PREFIX
     . $PREFIX/bin/activate
 fi
+
+
 export TMP=$PWD
-export PREFIX="${PREFIX:-/var/makina/circus}"
-export ROOT="$PREFIX/apps"
-export PATH="$ROOT/bin:$PATH"
 export CFLAGS="-I/usr/include/crunch -I$ROOT/include"
 export LDFLAGS="-Wl,-rpath -Wl,$ROOT/lib -L$ROOT/lib -Wl,-rpath -Wl,/usr/lib/jvm/java-7-openjdk-amd64/jre/lib/amd64/server"
 export CPPFLAGS="$CFLAGS" CXXFLAGS="$CFLAGS"
@@ -59,9 +63,12 @@ base() {
 gdal() {
         cd gdal-1.10.0
         sed -ire "s:^JAVA_HOME.*:JAVA_HOME = /usr/lib/jvm/java-7-openjdk-amd64:g" swig/java/java.opt
-        pushd swig/java/ && make && cp -v *so $ROOT/lib && cp gdal.jar $ROOT && popd
         # cd frmts/msg && unzip PublicDecompWTMakefiles.zip && cd ../..
-        ./configure --prefix=$ROOT --with-gif=/usr--with-hdf4=/usr --with-hdf5=/usr --with-jasper=/usr --with-openjpeg=$ROOT --with-ecw=$ROOT --with-expat=/usr --with-curl=/usr --with-odbc --with-spatialite=/usr --with-sqlite3=/usr --with-webp=/usr --with-poppler=/usr --with-perl=/usr --with-geos=/usr --with-mysql=/usr/bin/mysql_config --with-armadillo=/usr --with-libkml=$ROOT --with-dods_root=/usr --with-epsilon=/usr --with-java=yes --with-mdb --with-dds=/usr --with-gta=/usr --with-liblzma=yes --with-libtiff=internal --with-geotiff=internal --with-jpeg=internal --with-jpeg12 --without-ogdi && make && make install
+        ./configure --prefix=$ROOT --with-gif=/usr--with-hdf4=/usr --with-hdf5=/usr --with-jasper=/usr --with-openjpeg=$ROOT --with-ecw=$ROOT --with-expat=/usr --with-curl=/usr --with-odbc --with-spatialite=/usr --with-sqlite3=/usr --with-webp=/usr --with-poppler=/usr --with-perl=/usr --with-geos=/usr --with-mysql=/usr/bin/mysql_config --with-armadillo=/usr --with-libkml=$ROOT --with-dods_root=/usr --with-epsilon=/usr --with-java=yes --with-mdb --with-dds=/usr --with-gta=/usr --with-liblzma=yes --with-libtiff=internal --with-geotiff=internal --with-jpeg=internal --with-jpeg12 --without-ogdi --with-python=$PREFIX/bin/python &&\
+     make && make install &&\
+     pushd swig/python/ && make && make install&&\
+     pushd swig/java/ && make &&\
+     cp -v *so $ROOT/lib && cp gdal.jar $ROOT && popd
 
 }
 
@@ -147,17 +154,17 @@ assemble_map() {
     cd $GEO_LAYER_DIR || exit -1
     rm *ecw;
     j=0;
-    for i in $DATAS/*ecw;do 
+    for i in $DATAS/*ecw;do
         j=$((j+1));
         ln -sfv $i $j.ecw;
-    done 
+    done
 }
 
 #echo "127.0.0.1 services.makina-corpus.net">>/etc/hsots
 
 assemble_shapefile() {
-    pushd $WA/geoserver/data/orthophotos44/ 
-    rm -rf rm orthophotos44.shx orthophotos44.shp orthophotos44.prj orthophotos44.dbf    
+    pushd $WA/geoserver/data/orthophotos44/
+    rm -rf rm orthophotos44.shx orthophotos44.shp orthophotos44.prj orthophotos44.dbf
     time $PREFIX/apps/bin/gdaltindex --config GDAL_CACHEMAX 3000000002 orthophotos44.shp *ecw
     popd
 }
@@ -194,6 +201,7 @@ current() {
     done
 }
 
+gdal;exit -1
 current
 
 # vim: set ft=sh:

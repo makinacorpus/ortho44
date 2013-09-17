@@ -1,4 +1,18 @@
 #!/usr/bin/env python
+
+"""
+
+Modified version of gdal_retile.py
+- can give only first level options (for better quality on fullres)
+- do not rebuild already cooked tiles
+- generate only :
+    - from a specific level at a time
+    - until a specific level at a time
+
+"""
+
+
+
 ###############################################################################
 #  $Id: gdal_retile.py 24037 2012-02-28 17:21:35Z rouault $
 #
@@ -312,7 +326,7 @@ def getTargetDir (level = -1):
 
 
 
-def tileImage(minfo, ti ):
+def tileImage(minfo, ti, fullres=False ):
     """
 
     Tile image in mosaicinfo minfo  based on tileinfo ti
@@ -346,7 +360,7 @@ def tileImage(minfo, ti ):
                 tilename=getTileName(minfo,ti, xIndex, yIndex,0)
             else:
                 tilename=getTileName(minfo,ti, xIndex, yIndex)
-            createTile(minfo, offsetX, offsetY, width, height,tilename,OGRDS)
+            createTile(minfo, offsetX, offsetY, width, height,tilename,OGRDS, fullres=fullres)
 
 
     if TileIndexName is not None:
@@ -472,13 +486,32 @@ def createPyramidTile(levelMosaicInfo, offsetX, offsetY, width, height,tileName,
 
 
 
-def createTile( minfo, offsetX,offsetY,width,height, tilename,OGRDS):
+def notalready_cooked(func):
+    def wrapper(minfo, offsetX,offsetY,width,height, tilename,OGRDS, fullres=False): 
+        try:
+            fsstats = os.stat(tilename)
+            assert fsstats.st_size > 0
+            print("Already existing "+tilename + " : " + str(offsetX)+"|"+str(offsetY)+"-->"+str(width)+"-"+str(height))
+        except:
+            return func(minfo, offsetX,offsetY,width,height, tilename,OGRDS, fullres)
+    return wrapper
+
+
+@notalready_cooked
+def createTile( minfo, offsetX,offsetY,width,height, tilename,OGRDS, fullres=False):
     """
 
     Create tile
     return name of created tile
 
     """
+
+
+
+    create_opts = CreateOptions
+    if fullres:
+        if FullResCreateOptions:
+            create_opts = FullResCreateOptions
 
     if BandType is None:
         bt=minfo.band_type
@@ -509,7 +542,7 @@ def createTile( minfo, offsetX,offsetY,width,height, tilename,OGRDS):
     bands = minfo.bands
 
     if MemDriver is None:
-        t_fh = Driver.Create( tilename, width, height, bands,bt,CreateOptions)
+        t_fh = Driver.Create( tilename, width, height, bands,bt,create_opts)
     else:
         t_fh = MemDriver.Create( tilename, width, height, bands,bt)
 
@@ -536,7 +569,7 @@ def createTile( minfo, offsetX,offsetY,width,height, tilename,OGRDS):
     minfo.closeDataSet(s_fh);
 
     if MemDriver is not None:
-        tt_fh = Driver.CreateCopy( tilename, t_fh, 0, CreateOptions )
+        tt_fh = Driver.CreateCopy( tilename, t_fh, 0, create_opts )
 
     if Verbose:
         print(tilename + " : " + str(offsetX)+"|"+str(offsetY)+"-->"+str(width)+"-"+str(height))
@@ -607,8 +640,12 @@ def closeTileIndex(OGRDataSource):
 def buildPyramid(minfo,createdTileIndexDS,tileWidth, tileHeight):
 
     global LastRowIndx
+    global untilLevel
+    global fromLevel
     inputDS=createdTileIndexDS
     for level in range(1,Levels+1):
+        if untilLevel != -1 and level >= untilLevel: continue
+        if fromLevel != -1 and level <= fromLevel: continue
         LastRowIndx = -1
         levelMosaicInfo = mosaic_info(minfo.filename,inputDS)
         levelOutputTileInfo = tile_info(levelMosaicInfo.xsize/2,levelMosaicInfo.ysize/2,tileWidth,tileHeight)
@@ -688,8 +725,8 @@ def UsageFormat():
 
 # =============================================================================
 def Usage():
-     print('Usage: gdal_retile.py ')
-     print('        [-v] [-co NAME=VALUE]* [-of out_format]')
+     print('Usage: ortho44_gdal_retile.py ')
+     print('        [-v] [-fco NAME=VALUE]* [-co NAME=VALUE]* [-of out_format]')
      print('        [-ps pixelWidth pixelHeight]')
      print('        [-ot  {Byte/Int16/UInt16/UInt32/Int32/Float32/Float64/')
      print('               CInt16/CInt32/CFloat32/CFloat64}]')
@@ -698,6 +735,8 @@ def Usage():
      print('        [-s_srs srs_def]  [-pyramidOnly] -levels numberoflevels')
      print('        [-r {near/bilinear/cubic/cubicspline/lanczos}]')
      print('        [-useDirForEachRow]')
+     print('        [-untilLevel levelToStop]')
+     print('        [-fromLevel levelToStart]')
      print('        -targetDir TileDirectory input_files')
 
 # =============================================================================
@@ -711,12 +750,15 @@ def Usage():
 def main(args = None):
 
     global Verbose
+    global FullResCreateOptions
     global CreateOptions
     global Names
     global TileWidth
     global TileHeight
     global Format
     global BandType
+    global untilLevel
+    global fromLevel
     global Driver
     global Extension
     global MemDriver
@@ -732,6 +774,7 @@ def main(args = None):
     global Levels
     global PyramidOnly
     global UseDirForEachRow
+    global FullResCreateOptions
 
     gdal.AllRegister()
 
@@ -758,8 +801,9 @@ def main(args = None):
         elif arg == '-co':
             i+=1
             CreateOptions.append( argv[i] )
-
-
+        elif arg == '-fco':
+            i+=1
+            FullResCreateOptions.append( argv[i] )
         elif arg == '-v':
             Verbose = True
 
@@ -778,7 +822,12 @@ def main(args = None):
             TileWidth=int(argv[i])
             i+=1
             TileHeight=int(argv[i])
-
+        elif arg == '-fromLevel':
+            i+=1
+            fromLevel=int(argv[i]) 
+        elif arg == '-untilLevel':
+            i+=1
+            untilLevel=int(argv[i])
         elif arg == '-r':
             i+=1
             ResamplingMethodString=argv[i]
@@ -907,8 +956,8 @@ def main(args = None):
         ti.report()
 
 
-    if PyramidOnly==False:
-       dsCreatedTileIndex = tileImage(minfo,ti)
+    if PyramidOnly==False and fromLevel > 0:
+       dsCreatedTileIndex = tileImage(minfo,ti,fullres=True)
        tileIndexDS.Destroy()
     else:
        dsCreatedTileIndex=tileIndexDS
@@ -924,6 +973,7 @@ def initGlobals():
     """ Only used for unit tests """
     global Verbose
     global CreateOptions
+    global FullResCreateOptions
     global Names
     global TileWidth
     global TileHeight
@@ -943,11 +993,14 @@ def initGlobals():
     global Levels
     global PyramidOnly
     global LastRowIndx
+    global untilLevel
+    global fromLevel
     global UseDirForEachRow
 
 
     Verbose=False
     CreateOptions = []
+    FullResCreateOptions = []
     Names=[]
     TileWidth=256
     TileHeight=256
@@ -968,6 +1021,8 @@ def initGlobals():
     Levels=0
     PyramidOnly=False
     LastRowIndx=-1
+    untilLevel=-1
+    fromLevel=1
     UseDirForEachRow=False
 
 
@@ -975,6 +1030,7 @@ def initGlobals():
 #global vars
 Verbose=False
 CreateOptions = []
+FullResCreateOptions = []
 Names=[]
 TileWidth=256
 TileHeight=256
@@ -994,6 +1050,8 @@ ResamplingMethod=GRA_NearestNeighbour
 Levels=0
 PyramidOnly=False
 LastRowIndx=-1
+untilLevel=-1
+fromLevel=1
 UseDirForEachRow=False
 
 

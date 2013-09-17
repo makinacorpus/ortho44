@@ -2,14 +2,34 @@
 #
 # This script takes the ECW files and convert it to a pyramid of JPEG Layers
 # The top Layer will certainly by at a quality of 90% and others at 70%
-# Idea is then to feed geoserver with those layer on the behalf of pyramid plugin
+# Idea is then to feed geoserver with those layers on the behalf of pyramid plugin
 #
 cd $(dirname $0)
-CUR=$PWD
-OUT=$CUR/out
-MARKERS="$OUT/done"
-ECW_DATA=${DATA:-/var/makina/data/Ortho_2012_CG44}
-cd $ECW_DATA || exit -1
+
+export R=/var/makina
+export PREFIX=${PREFIX:-$R/circus}
+export ROOT=${ROOT:-$PREFIX/apps}
+export PATH="$ROOT/bin:$PATH"
+if [[ -e $PREFIX/bin/activate ]];then
+    . $PREFIX/bin/activate
+else
+    apt-get install python-virtualenv
+    virtualenv $PREFIX
+    . $PREFIX/bin/activate
+fi
+
+export CUR=$PWD
+export OUT=$CUR/out
+export PYRAMID=$OUT/pyramid
+export MARKERS="$OUT/done"
+export ECW_DATA=${ECW_DATA:-$R/data/Ortho_2012_CG44}
+
+export PATH=$ROOT/bin:$CUR:$PATH
+
+WRAP_OPTS=""
+TRANSLATE_OPTS=""
+RETILE_OPTS=""
+
 warp() {
     echo gdalwarp $WRAP_OPTS -s_srs EPSG:2154 -of "$1" "$2" "$3"
     gdalwarp $WRAP_OPTS -s_srs EPSG:2154 -of "$1" "$2" "$3"
@@ -20,6 +40,7 @@ translate() {
     gdal_translate $TRANSLATE_OPTS -of "$1" "$2" "$3"
     if [[ $? != 0 ]];then exit -1;fi
 }
+
 main() {
     format="$1" var="$2"
     echo "MAIN: $format -- $var"
@@ -111,5 +132,33 @@ level_zero() {
         if [[ -f "$tif_tmp_outfile" ]];then rm -fv $tif_tmp_outfile;fi
     done
 }
-level_zero
+#level_zero
+retile() {
+    if [[ ! -d $PYRAMID ]];then mkdir $PYRAMID;fi
+    optfile="$OUT/pyramid-files"
+    ls  $ECW_DATA/*ecw > $optfile
+    ortho44_gdal_retile.py -untilLevel 1 -v\
+        $RETILE_OPTS \
+        -tileIndex ortho44.shp \
+        -targetDir $PYRAMID \
+        -of JPEG \
+        -co 'QUALITY=70' \
+        -fco 'QUALITY=90' \
+        -levels 15 \
+        -s_srs EPSG:2154 \
+        --optfile "$optfile"   
+    exit -1
+    if [[ $? != 0 ]];then exit -1;fi
+}
+retile
+
+
+
+
+# to test
+# NB=40;for i in $(ls -1 /var/makina/data/Ortho_2012_CG44/*ecw|head -n $NB);do ln -fs $i ecws/;done;export ECW_DATA=$PWD/ecws
+
+
+
+
 
