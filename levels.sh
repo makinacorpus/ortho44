@@ -178,11 +178,13 @@ tif_retile() {
     # rename images for geoserver to parse them
     # handle the 8 limit chars ...
     # for ec in $(ls $ECW_DATA/*.ecw);do
-    #rm -rf $ECW_GEOSERVER;mkdir $ECW_GEOSERVER
-    #for ec in $(ls $ECW_DATA/*.ecw|sort|head -n$ECHANTILLON);do
-    #    j=$((j+1))
-    #    ln -sfv $ec $ECW_GEOSERVER/${j}.ecw
-    #done
+    if [[ ! -f $ECW_GEOSERVER/$((ECHANTILLON-3)).ecw ]];then
+        rm -rf $ECW_GEOSERVER;mkdir $ECW_GEOSERVER
+        for ec in $(ls $ECW_DATA/*.ecw|sort|head -n$ECHANTILLON);do
+            j=$((j+1))
+            ln -sfv $ec $ECW_GEOSERVER/${j}.ecw
+        done
+    fi
     ls  $ECW_GEOSERVER/*ecw > $optfile
     nb=$(ls  $ECW_GEOSERVER/*ecw|wc -l)
     export PYRAMID=$OUT/tif_pyramid_${nb}_${size_x}_${size_y}
