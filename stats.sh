@@ -16,4 +16,15 @@ done|sort
 
 #  nf         NB_PIC
 #  size       x
+# One of the tests gave:
+# ECW: 820(5663252) / 7954(59650808) ecws
+# JPEG: Estimated(820/7954): out/jpeg.70 37972008
+# JPEG: Estimated(820/7954): out/jpeg.80 48955783
+# JPEG: Estimated(820/7954): out/jpeg.90 74961483
+# JPEG: Files: out/jpeg.70: 820
+# JPEG: Files: out/jpeg.80: 820
+# JPEG: Files: out/jpeg.90: 820
+# JPEG: Size: out/jpeg.70: 3914640
+# JPEG: Size: out/jpeg.80: 5046988
+# JPEG: Size: out/jpeg.90: 7727988
 # vim:set et sts=4 ts=4 tw=80:
