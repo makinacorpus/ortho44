@@ -1,6 +1,5 @@
 # blacklist
 branches:
-  except:
-    - wms
-    - master
+  only:
+    - gh-pages
 
