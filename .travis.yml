@@ -1,0 +1,6 @@
+# blacklist
+branches:
+  except:
+    - wms
+    - master
+
