@@ -6,6 +6,9 @@
 #
 cd $(dirname $0)
 
+# XXX
+# reset this to super large to include all ecws
+# when tests will be finished
 ECHANTILLON=800
 export R=/var/makina
 export PREFIX=${PREFIX:-$R/circus}
@@ -178,7 +181,7 @@ tif_retile() {
     # rename images for geoserver to parse them
     # handle the 8 limit chars ...
     # for ec in $(ls $ECW_DATA/*.ecw);do
-    if [[ ! -f $ECW_GEOSERVER/$((ECHANTILLON-3)).ecw ]];then
+    if [[ ! -f $ECW_GEOSERVER/$((ECHANTILLON-2)).ecw ]];then
         rm -rf $ECW_GEOSERVER;mkdir $ECW_GEOSERVER
         for ec in $(ls $ECW_DATA/*.ecw|sort|head -n$ECHANTILLON);do
             j=$((j+1))
@@ -222,23 +225,18 @@ for i in $@;do
     tif_retile $i $i
 done
 
+
+# NOTES:
 # wget http://download.java.net/media/jai/builds/release/1_1_3/jai-1_1_3-lib-linux-amd64-jdk.bin -> exe in jdk folder
 
 # to test
 # NB=40;for i in $(ls -1 /var/makina/data/Ortho_2012_CG44/*ecw|head -n $NB);do ln -fs $i ecws/;done;export ECW_DATA=$PWD/ecws
 
-
-
 # use the pyramid plugin
 # download jai from java
-# reset a pyramid
+# - reset a pyramid
 # rm */{1,2,3,4,5,6}.{properties,shp,qix,shx,fix,prj,dbf} *properties
-
-
-
-
-
-
+# - think to remove zoom layers after the last one which have only one image
 
 
 
