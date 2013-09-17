@@ -1,4 +1,10 @@
 #!/usr/bin/env bash
+#
+# The mean of this script is to do a sample convert
+# to differents formats to see size differences between them and
+# test diffent gdal conversions
+#
+
 cd ecws || exit -1
 out=../out
 warp() {
