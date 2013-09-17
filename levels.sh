@@ -6,6 +6,7 @@
 #
 cd $(dirname $0)
 
+ECHANTILLON=800
 export R=/var/makina
 export PREFIX=${PREFIX:-$R/circus}
 export ROOT=${ROOT:-$PREFIX/apps}
@@ -135,15 +136,25 @@ level_zero() {
 retile() {
     size_x=${1:-256}
     size_y=${2:-256}
-    export PYRAMID=$OUT/pyramid_${size_x}_${size_y}
-    marker=PYRAMID=$MARKERS/pyramid_${size_x}_${size_y}
+    optfile="$OUT/files-pyramid-"
+    export ECW_GEOSERVER="$OUT/pyramid_geoser"
+    rm -rf $ECW_GEOSERVER;mkdir $ECW_GEOSERVER
+    # rename images for geoserver to parse them
+    # handle the 8 limit chars ...
+    j=0
+    for ec in $ECW_DATA/*.ecw;do
+        j=$((j+1))
+        ln -sfv $ec $ECW_GEOSERVER/${j}.ecw
+    done
+    ls  $ECW_GEOSERVER/*ecw > $optfile
+    nb=$(ls  $ECW_GEOSERVER/*ecw|wc -l)
+    export PYRAMID=$OUT/pyramid_${nb}_${size_x}_${size_y}
+    marker=$MARKERS/pyramid_${nb}_${size_x}_${size_y}
     if [[ ! -f $marker ]];then
         if [[ ! -d $PYRAMID ]];then mkdir $PYRAMID;fi
-        optfile="$OUT/files-pyramid-"
-        ls  $ECW_DATA/*ecw > $optfile
-        ortho44_gdal_retile.py -untilLevel 16 -v\
+            ortho44_gdal_retile.py -untilLevel 16 -v\
             $RETILE_OPTS \
-            -tileIndex level \
+            -tileIndex index \
             -targetDir $PYRAMID \
             -ps $size_x $size_y\
             -of JPEG \
@@ -151,22 +162,79 @@ retile() {
             -fco 'QUALITY=90' \
             -levels 15 \
             -s_srs EPSG:2154 \
-            --optfile "$optfile"   
+            --optfile "$optfile"
         if [[ $? != 0 ]];then exit -1;fi
         touch $marker
     else
-        "Pyramid $PYRAMID already tiled"
+        echo "Pyramid $PYRAMID already tiled"
     fi
 }
-for i in 128 512 1024 2048;do 
-    retile $i $i
+tif_retile() {
+    j=0
+    size_x=${1:-256}
+    size_y=${2:-256}
+    optfile="$OUT/files-pyramid-"
+    export ECW_GEOSERVER="$OUT/pyramid_geoser"
+    # rename images for geoserver to parse them
+    # handle the 8 limit chars ...
+    # for ec in $(ls $ECW_DATA/*.ecw);do
+    #rm -rf $ECW_GEOSERVER;mkdir $ECW_GEOSERVER
+    #for ec in $(ls $ECW_DATA/*.ecw|sort|head -n$ECHANTILLON);do
+    #    j=$((j+1))
+    #    ln -sfv $ec $ECW_GEOSERVER/${j}.ecw
+    #done
+    ls  $ECW_GEOSERVER/*ecw > $optfile
+    nb=$(ls  $ECW_GEOSERVER/*ecw|wc -l)
+    export PYRAMID=$OUT/tif_pyramid_${nb}_${size_x}_${size_y}
+    marker=$MARKERS/tif_pyramid_${nb}_${size_x}_${size_y}
+    dmarker=$MARKERS/tif_pyramid_${nb}_${size_x}_${size_y}_dates
+    if [[ ! -f $marker ]];then
+        if [[ ! -d $PYRAMID ]];then mkdir $PYRAMID;fi
+        echo "start $(date)">>$dmarker
+        ortho44_gdal_retile.py -untilLevel 16 -v\
+            $RETILE_OPTS \
+            -r bilinear  \
+            -tileIndex index \
+            -targetDir $PYRAMID \
+            -ps $size_x $size_y\
+            -of GTIFF \
+            -co 'TILED=YES' \
+            -co 'COMPRESS=JPEG' \
+            -co 'JPEG_QUALITY=90' \
+            -fco 'TILED=YES' \
+            -fco 'COMPRESS=JPEG' \
+            -fco 'JPEG_QUALITY=80' \
+            -levels 15 \
+            -s_srs EPSG:2154 \
+            --optfile "$optfile"
+        echo "end $(date)">>$dmarker
+        if [[ $? != 0 ]];then exit -1;fi
+        touch $marker
+    else
+        echo "Pyramid $PYRAMID already tiled"
+    fi
+}
+#for i in 256 128 512 1024 2048;do
+#for i in 256 128;do
+for i in $@;do
+    tif_retile $i $i
 done
 
-
-
+# wget http://download.java.net/media/jai/builds/release/1_1_3/jai-1_1_3-lib-linux-amd64-jdk.bin -> exe in jdk folder
 
 # to test
 # NB=40;for i in $(ls -1 /var/makina/data/Ortho_2012_CG44/*ecw|head -n $NB);do ln -fs $i ecws/;done;export ECW_DATA=$PWD/ecws
+
+
+
+# use the pyramid plugin
+# download jai from java
+# reset a pyramid
+# rm */{1,2,3,4,5,6}.{properties,shp,qix,shx,fix,prj,dbf} *properties
+
+
+
+
 
 
 

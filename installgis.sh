@@ -115,7 +115,17 @@ geoserver() {
     if [[ ! -f $GD_FIC ]];then
         wget http://downloads.sourceforge.net/project/geoserver/GeoServer%20Extensions/$GEOSERVER_VER/$GD_FIC
     fi
-    ls $WA/geoserver/WEB-INF/lib/gdal*
+    if [[ ! -e $WA/geoserver/WEB-INF/lib/gdal-$GEOSERVER_VER.jar ]];then
+        unzip -od gdalp_tmp $GD_FPFIC && cp -vf gdalp_tmp/*.jar $GD_$WA/geoserver/WEB-INF/lib && rm -rf gdalp_tmp
+    fi
+    GD_FIC=geoserver-$GEOSERVER_VER-pyramid-plugin.zip
+    GD_FPFIC=$PWD/$GD_FIC
+    if [[ ! -f $GD_FIC ]];then
+        wget http://downloads.sourceforge.net/project/geoserver/GeoServer%20Extensions/$GEOSERVER_VER/$GD_FIC
+    fi
+    if [[ ! -e $WA/geoserver/WEB-INF/lib/gt-imagepyramid-9.5.jar ]];then
+        unzip -od gdalp_tmp $GD_FPFIC && cp -vf gdalp_tmp/*.jar $GD_$WA/geoserver/WEB-INF/lib && rm -rf gdalp_tmp
+    fi 
     if [[ ! -e $WA/geoserver/WEB-INF/lib/gdal-$GEOSERVER_VER.jar ]];then
         unzip -od gdalp_tmp $GD_FPFIC && cp -vf gdalp_tmp/*.jar $GD_$WA/geoserver/WEB-INF/lib && rm -rf gdalp_tmp
     fi
@@ -200,8 +210,13 @@ current() {
         cook $i
     done
 }
+install_jdk() {
+    sudo add-apt-repository ppa:webupd8team/java
+    sudo apt-get update
+    sudo apt-get install oracle-java7-installer -y
+}
 
-gdal;exit -1
+geoserver;exit -1
 current
 
 # vim: set ft=sh:

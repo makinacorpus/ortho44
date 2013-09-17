@@ -4,6 +4,7 @@
 
 Modified version of gdal_retile.py to facilitate integration
 with geoserver pyramid raster image plugin
+- add some more logging
 - can give only first level options (for better quality on fullres)
 - do not rebuild already cooked tiles
 - The first tiles mosaic is called level '0'
@@ -60,6 +61,15 @@ except:
 import sys
 import os
 import math
+import logging
+
+FORMAT = '%(asctime)-15s - %(levelname)s - %(name)s - %(message)s'
+logging.basicConfig(format=FORMAT, filename='retile.log', level=logging.DEBUG)
+logger = logging.getLogger('retile')
+
+def log_print(msg):
+    print(msg)
+    logger.info(msg)
 
 class AffineTransformDecorator:
     """ A class providing some usefull methods for affine Transformations """
@@ -101,7 +111,7 @@ class DataSetCache:
             return self.dict[name]
         result = gdal.Open(name)
         if result is None:
-            print("Error openenig:%s" % NameError)
+            log_print("Error openenig:%s" % NameError)
             sys.exit(1)
         if len(self.queue)==self.cacheSize:
             toRemove = self.queue.pop(0)
@@ -140,12 +150,12 @@ class tile_info:
 
 
     def report( self ):
-        print('tileWidth       %d' % self.tileWidth)
-        print('tileHeight      %d' % self.tileHeight)
-        print('countTilesX:    %d' % self.countTilesX)
-        print('countTilesY:    %d' % self.countTilesY)
-        print('lastTileWidth:  %d' % self.lastTileWidth)
-        print('lastTileHeight: %d' % self.lastTileHeight)
+        log_print('tileWidth       %d' % self.tileWidth)
+        log_print('tileHeight      %d' % self.tileHeight)
+        log_print('countTilesX:    %d' % self.countTilesX)
+        log_print('countTilesY:    %d' % self.countTilesY)
+        log_print('lastTileWidth:  %d' % self.lastTileWidth)
+        log_print('lastTileHeight: %d' % self.lastTileHeight)
 
 
 
@@ -281,12 +291,12 @@ class mosaic_info:
 
 
     def report( self ):
-        print('Filename: '+ self.filename)
-        print('File Size: %dx%dx%d' \
+        log_print('Filename: '+ self.filename)
+        log_print('File Size: %dx%dx%d' \
               % (self.xsize, self.ysize, self.bands))
-        print('Pixel Size: %f x %f' \
+        log_print('Pixel Size: %f x %f' \
               % (self.scaleX,self.scaleY))
-        print('UL:(%f,%f)   LR:(%f,%f)' \
+        log_print('UL:(%f,%f)   LR:(%f,%f)' \
               % (self.ulx,self.uly,self.lrx,self.lry))
 
 
@@ -313,7 +323,7 @@ def getTileIndexFromFiles( inputTiles, driverTyp):
         del fhInputTile
 
     if Verbose:
-        print("finished")
+        log_print("finished")
     #ogrTileIndexDS.GetLayer().SyncToDisk()
     return ogrTileIndexDS
 
@@ -446,7 +456,7 @@ def createPyramidTile(levelMosaicInfo, offsetX, offsetY, width, height,tileName,
 
     if already_exists:
         if Verbose:
-            print("Already existing pyramid tile: "+tileName + " : " + str(offsetX)+"|"+str(offsetY)+"-->"+str(width)+"-"+str(height)) 
+            log_print("Already existing pyramid tile: "+tileName + " : " + str(offsetX)+"|"+str(offsetY)+"-->"+str(width)+"-"+str(height)) 
     else:
         s_fh = levelMosaicInfo.getDataSet(dec.ulx,dec.uly+height*dec.scaleY,
                              dec.ulx+width*dec.scaleX,dec.uly)
@@ -469,7 +479,7 @@ def createPyramidTile(levelMosaicInfo, offsetX, offsetY, width, height,tileName,
             t_fh = MemDriver.Create( tileName, width, height, bands,bt)
 
         if t_fh is None:
-            print('Creation failed, terminating gdal_tile.')
+            log_print('Creation failed, terminating gdal_tile.')
             sys.exit( 1 )
 
 
@@ -483,7 +493,7 @@ def createPyramidTile(levelMosaicInfo, offsetX, offsetY, width, height,tileName,
 
         res = gdal.ReprojectImage(s_fh,t_fh,None,None,ResamplingMethod)
         if  res!=0:
-            print("Reprojection failed for %s, error %d" % (tileName,res))
+            log_print("Reprojection failed for %s, error %d" % (tileName,res))
             sys.exit( 1 )
 
 
@@ -493,7 +503,7 @@ def createPyramidTile(levelMosaicInfo, offsetX, offsetY, width, height,tileName,
             tt_fh = Driver.CreateCopy( tileName, t_fh, 0, CreateOptions )
 
         if Verbose:
-            print(tileName + " : " + str(offsetX)+"|"+str(offsetY)+"-->"+str(width)+"-"+str(height))
+            log_print(tileName + " : " + str(offsetX)+"|"+str(offsetY)+"-->"+str(width)+"-"+str(height))
 
     if OGRDS is not None and os.path.exists(tileName):
         points = dec.pointsFor(width, height)
@@ -537,7 +547,7 @@ def createTile( minfo, offsetX,offsetY,width,height, tilename,OGRDS, fullres=Fal
                     dec.uly+offsetY*dec.scaleY,  0,dec.scaleY] 
 
     if already_exists:
-        print("Already existing "+tilename + " : " + str(offsetX)+"|"+str(offsetY)+"-->"+str(width)+"-"+str(height)) 
+        log_print("Already existing "+tilename + " : " + str(offsetX)+"|"+str(offsetY)+"-->"+str(width)+"-"+str(height)) 
     else:
         bands = minfo.bands   
         if MemDriver is None:
@@ -545,7 +555,7 @@ def createTile( minfo, offsetX,offsetY,width,height, tilename,OGRDS, fullres=Fal
         else:
             t_fh = MemDriver.Create( tilename, width, height, bands,bt)
         if t_fh is None:
-            print('Creation failed, terminating gdal_tile.')
+            log_print('Creation failed, terminating gdal_tile.')
             sys.exit( 1 )
 
         t_fh.SetGeoTransform( geotransform )
@@ -570,7 +580,7 @@ def createTile( minfo, offsetX,offsetY,width,height, tilename,OGRDS, fullres=Fal
             tt_fh = Driver.CreateCopy( tilename, t_fh, 0, create_opts )
 
         if Verbose:
-            print(tilename + " : " + str(offsetX)+"|"+str(offsetY)+"-->"+str(width)+"-"+str(height))
+            log_print(tilename + " : " + str(offsetX)+"|"+str(offsetY)+"-->"+str(width)+"-"+str(height))
 
     if (OGRDS is not None) and os.path.exists(tilename):
         dec2 = AffineTransformDecorator(geotransform)
@@ -582,7 +592,7 @@ def createTileIndex(dsName,fieldName,srs,driverName):
 
     OGRDriver = ogr.GetDriverByName(driverName);
     if OGRDriver is None:
-        print('ESRI Shapefile driver not found')
+        log_print('ESRI Shapefile driver not found')
         sys.exit( 1 )
 
     OGRDataSource=OGRDriver.Open(dsName)
@@ -590,26 +600,26 @@ def createTileIndex(dsName,fieldName,srs,driverName):
         OGRDataSource.Destroy()
         OGRDriver.DeleteDataSource(dsName)
         if Verbose:
-            print('truncating index '+ dsName)
+            log_print('truncating index '+ dsName)
 
     OGRDataSource=OGRDriver.CreateDataSource(dsName)
     if OGRDataSource is None:
-        print('Could not open datasource '+dsName)
+        log_print('Could not open datasource '+dsName)
         sys.exit( 1 )
 
     OGRLayer = OGRDataSource.CreateLayer("index", srs, ogr.wkbPolygon)
     if OGRLayer is None:
-        print('Could not create Layer')
+        log_print('Could not create Layer')
         sys.exit( 1 )
 
     OGRFieldDefn = ogr.FieldDefn(fieldName,ogr.OFTString)
     if OGRFieldDefn is None:
-        print('Could not create FieldDefn for '+fieldName)
+        log_print('Could not create FieldDefn for '+fieldName)
         sys.exit( 1 )
 
     OGRFieldDefn.SetWidth(256)
     if OGRLayer.CreateField(OGRFieldDefn) != 0:
-        print('Could not create Field for '+fieldName)
+        log_print('Could not create Field for '+fieldName)
         sys.exit( 1 )
 
     return OGRDataSource
@@ -619,7 +629,7 @@ def addFeature(OGRDataSource,location,xlist,ylist):
     OGRLayer=OGRDataSource.GetLayer();
     OGRFeature = ogr.Feature(OGRLayer.GetLayerDefn())
     if OGRFeature is None:
-        print('Could not create Feature')
+        log_print('Could not create Feature')
         sys.exit( 1 )
 
     OGRFeature.SetField(TileIndexFieldName,location);
@@ -627,7 +637,7 @@ def addFeature(OGRDataSource,location,xlist,ylist):
             xlist[1],ylist[1],xlist[2],ylist[2],xlist[3],ylist[3],xlist[0],ylist[0])
     OGRGeometry=ogr.CreateGeometryFromWkt(wkt,OGRLayer.GetSpatialRef())
     if (OGRGeometry is None):
-        print('Could not create Geometry')
+        log_print('Could not create Geometry')
         sys.exit( 1 )
 
     OGRFeature.SetGeometryDirectly(OGRGeometry)
@@ -729,27 +739,27 @@ def getTileName(minfo,ti,xIndex,yIndex,level = -1):
     return format % (yIndex,xIndex)
 
 def UsageFormat():
-    print('Valid formats:')
+    log_print('Valid formats:')
     count = gdal.GetDriverCount()
     for index in range(count):
        driver= gdal.GetDriver(index)
-       print(driver.ShortName)
+       log_print(driver.ShortName)
 
 # =============================================================================
 def Usage():
-     print('Usage: ortho44_gdal_retile.py ')
-     print('        [-v] [-fco NAME=VALUE]* [-co NAME=VALUE]* [-of out_format]')
-     print('        [-ps pixelWidth pixelHeight]')
-     print('        [-ot  {Byte/Int16/UInt16/UInt32/Int32/Float32/Float64/')
-     print('               CInt16/CInt32/CFloat32/CFloat64}]')
-     print('        [ -tileIndex tileIndexName [-tileIndexField fieldName]]')
-     print('            If tileIndexField == \'level\' if will take the current directory name as tileIndexName')
-     print('        [ -csv fileName [-csvDelim delimiter]]')
-     print('        [-s_srs srs_def]  [-pyramidOnly] -levels numberoflevels')
-     print('        [-r {near/bilinear/cubic/cubicspline/lanczos}]')
-     print('        [-useDirForEachRow]')
-     print('        [-untilLevel levelToStop]')
-     print('        -targetDir TileDirectory input_files')
+     log_print('Usage: ortho44_gdal_retile.py ')
+     log_print('        [-v] [-fco NAME=VALUE]* [-co NAME=VALUE]* [-of out_format]')
+     log_print('        [-ps pixelWidth pixelHeight]')
+     log_print('        [-ot  {Byte/Int16/UInt16/UInt32/Int32/Float32/Float64/')
+     log_print('               CInt16/CInt32/CFloat32/CFloat64}]')
+     log_print('        [ -tileIndex tileIndexName [-tileIndexField fieldName]]')
+     log_print('            If tileIndexField == \'level\' if will take the current directory name as tileIndexName')
+     log_print('        [ -csv fileName [-csvDelim delimiter]]')
+     log_print('        [-s_srs srs_def]  [-pyramidOnly] -levels numberoflevels')
+     log_print('        [-r {near/bilinear/cubic/cubicspline/lanczos}]')
+     log_print('        [-useDirForEachRow]')
+     log_print('        [-untilLevel levelToStop]')
+     log_print('        -targetDir TileDirectory input_files')
 
 # =============================================================================
 
@@ -760,7 +770,7 @@ def Usage():
 #
 
 def main(args = None):
-
+    log_print("start")
     global Verbose
     global FullResCreateOptions
     global CreateOptions
@@ -807,7 +817,7 @@ def main(args = None):
             i+=1
             BandType = gdal.GetDataTypeByName( argv[i] )
             if BandType == gdal.GDT_Unknown:
-                print('Unknown GDAL data type: %s' % argv[i])
+                log_print('Unknown GDAL data type: %s' % argv[i])
                 return 1
         elif arg == '-co':
             i+=1
@@ -823,7 +833,7 @@ def main(args = None):
             TargetDir=argv[i]
 
             if os.path.exists(TargetDir)==False:
-                print("TargetDir " + TargetDir + " does not exist")
+                log_print("TargetDir " + TargetDir + " does not exist")
                 return 1
             if TargetDir[len(TargetDir)-1:] != os.sep:
                 TargetDir =  TargetDir+os.sep
@@ -850,19 +860,19 @@ def main(args = None):
             elif ResamplingMethodString=="lanczos":
                 ResamplingMethod=GRA_Lanczos
             else:
-                print("Unknown resampling method: %s" % ResamplingMethodString)
+                log_print("Unknown resampling method: %s" % ResamplingMethodString)
                 return 1
         elif arg == '-levels':
             i+=1
             Levels=int(argv[i])
             if Levels<1:
-                print("Invalid number of levels : %d" % Levels)
+                log_print("Invalid number of levels : %d" % Levels)
                 return 1
         elif arg == '-s_srs':
             i+=1
             Source_SRS = osr.SpatialReference()
             if Source_SRS.SetFromUserInput( argv[i] ) != 0:
-                print('invalid -s_srs: ' + argv[i]);
+                log_print('invalid -s_srs: ' + argv[i]);
                 return 1;
 
         elif arg ==  "-pyramidOnly":
@@ -889,7 +899,7 @@ def main(args = None):
         elif arg == '-useDirForEachRow':
             UseDirForEachRow=True
         elif arg[:1] == '-':
-            print('Unrecognised command option: %s' % arg)
+            log_print('Unrecognised command option: %s' % arg)
             Usage()
             return 1
 
@@ -898,16 +908,16 @@ def main(args = None):
         i+=1
 
     if len(Names) == 0:
-        print('No input files selected.')
+        log_print('No input files selected.')
         Usage()
         return 1
 
     if (TileWidth==0 or TileHeight==0):
-        print("Invalid tile dimension %d,%d" % (TileWidth,TileHeight))
+        log_print("Invalid tile dimension %d,%d" % (TileWidth,TileHeight))
         return 1
 
     if (TargetDir is None):
-        print("Missing Directory for Tiles -targetDir")
+        log_print("Missing Directory for Tiles -targetDir")
         Usage()
         return 1
 
@@ -928,15 +938,15 @@ def main(args = None):
                 continue
             os.mkdir(leveldir)
             if (os.path.exists(leveldir)==False):
-                print("Cannot create level dir: %s" % leveldir)
+                log_print("Cannot create level dir: %s" % leveldir)
                 return 1
             if Verbose :
-                print("Created level dir: %s" % leveldir)
+                log_print("Created level dir: %s" % leveldir)
 
 
     Driver = gdal.GetDriverByName(Format)
     if Driver is None:
-        print('Format driver %s not found, pick a supported driver.' % Format)
+        log_print('Format driver %s not found, pick a supported driver.' % Format)
         UsageFormat()
         return 1
 
@@ -951,7 +961,7 @@ def main(args = None):
 
     tileIndexDS=getTileIndexFromFiles(Names,TileIndexDriverTyp)
     if tileIndexDS is None:
-        print("Error building tile index")
+        log_print("Error building tile index")
         return 1;
     minfo = mosaic_info(Names[0],tileIndexDS)
     ti=tile_info(minfo.xsize,minfo.ysize, TileWidth, TileHeight)
@@ -959,7 +969,7 @@ def main(args = None):
     if Source_SRS is None and len(minfo.projection) > 0 :
        Source_SRS = osr.SpatialReference()
        if Source_SRS.SetFromUserInput( minfo.projection ) != 0:
-           print('invalid projection  ' + minfo.projection);
+           log_print('invalid projection  ' + minfo.projection);
            return 1
 
     if Verbose:
@@ -984,7 +994,8 @@ def main(args = None):
                     TileHeight)
 
     if Verbose:
-        print("FINISHED")
+        log_print("FINISHED")
+    log_print("end")
     return 0
 
 def initGlobals():
