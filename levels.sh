@@ -20,7 +20,6 @@ fi
 
 export CUR=$PWD
 export OUT=$CUR/out
-export PYRAMID=$OUT/pyramid
 export MARKERS="$OUT/done"
 export ECW_DATA=${ECW_DATA:-$R/data/Ortho_2012_CG44}
 
@@ -134,23 +133,34 @@ level_zero() {
 }
 #level_zero
 retile() {
-    if [[ ! -d $PYRAMID ]];then mkdir $PYRAMID;fi
-    optfile="$OUT/pyramid-files"
-    ls  $ECW_DATA/*ecw > $optfile
-    ortho44_gdal_retile.py -untilLevel 1 -v\
-        $RETILE_OPTS \
-        -tileIndex ortho44.shp \
-        -targetDir $PYRAMID \
-        -of JPEG \
-        -co 'QUALITY=70' \
-        -fco 'QUALITY=90' \
-        -levels 15 \
-        -s_srs EPSG:2154 \
-        --optfile "$optfile"   
-    exit -1
-    if [[ $? != 0 ]];then exit -1;fi
+    size_x=${1:-256}
+    size_y=${2:-256}
+    export PYRAMID=$OUT/pyramid_${size_x}_${size_y}
+    marker=PYRAMID=$MARKERS/pyramid_${size_x}_${size_y}
+    if [[ ! -f $marker ]];then
+        if [[ ! -d $PYRAMID ]];then mkdir $PYRAMID;fi
+        optfile="$OUT/files-pyramid-"
+        ls  $ECW_DATA/*ecw > $optfile
+        ortho44_gdal_retile.py -untilLevel 16 -v\
+            $RETILE_OPTS \
+            -tileIndex level \
+            -targetDir $PYRAMID \
+            -ps $size_x $size_y\
+            -of JPEG \
+            -co 'QUALITY=70' \
+            -fco 'QUALITY=90' \
+            -levels 15 \
+            -s_srs EPSG:2154 \
+            --optfile "$optfile"   
+        if [[ $? != 0 ]];then exit -1;fi
+        touch $marker
+    else
+        "Pyramid $PYRAMID already tiled"
+    fi
 }
-retile
+for i in 128 512 1024 2048;do 
+    retile $i $i
+done
 
 
 
