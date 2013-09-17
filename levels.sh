@@ -1,4 +1,9 @@
 #!/usr/bin/env bash
+#
+# This script takes the ECW files and convert it to a pyramid of JPEG Layers
+# The top Layer will certainly by at a quality of 90% and others at 70%
+# Idea is then to feed geoserver with those layer on the behalf of pyramid plugin
+#
 cd $(dirname $0)
 CUR=$PWD
 OUT=$CUR/out
