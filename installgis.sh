@@ -80,6 +80,7 @@ install_jdk() {
 }
 
 gdal() {
+    apt-get install -y ant maven2 &&\
     $wget http://download.osgeo.org/gdal/1.10.0/gdal-1.10.0.tar.gz &&\
     tar xzvf gdal-1.10.0.tar.gz &&\
     cd gdal-1.10.0 &&\
@@ -87,7 +88,7 @@ gdal() {
     # cd frmts/msg && unzip PublicDecompWTMakefiles.zip && cd ../..
     ./configure --prefix=$ROOT --with-gif=/usr--with-hdf4=/usr --with-hdf5=/usr --with-jasper=/usr --with-openjpeg=$ROOT --with-ecw=$ROOT --with-expat=/usr --with-curl=/usr --with-odbc --with-spatialite=/usr --with-sqlite3=/usr --with-webp=/usr --with-poppler=/usr --with-perl=/usr --with-geos=/usr --with-mysql=/usr/bin/mysql_config --with-armadillo=/usr --with-libkml=$ROOT --with-dods_root=/usr --with-epsilon=/usr --with-java=yes --with-mdb --with-dds=/usr --with-gta=/usr --with-liblzma=yes --with-libtiff=internal --with-geotiff=internal --with-jpeg=internal --with-jpeg12 --without-ogdi --with-python=$PREFIX/bin/python &&\
         make && make install &&\
-        pushd swig/python/ && make && make install&&\
+        pushd swig/python/ && make && make install && popd &&\
         pushd swig/java/ && make &&\
         cp -v *so $ROOT/lib && cp gdal.jar $ROOT && popd
 
@@ -127,7 +128,7 @@ mapserver() {
 }
 
 geoserver() {
-    apt-get install -y ant maven2 tomcat7
+    apt-get install -y tomcat7
     cd $TMP
     GEOSERVER_VER=2.3.5
     FIC=geoserver-$GEOSERVER_VER-war.zip
