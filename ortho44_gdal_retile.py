@@ -64,12 +64,20 @@ import math
 import logging
 
 FORMAT = '%(asctime)-15s - %(levelname)s - %(name)s - %(message)s'
-logging.basicConfig(format=FORMAT, filename='retile.log', level=logging.DEBUG)
-logger = logging.getLogger('retile')
 
 def log_print(msg):
     print(msg)
+    logger = logging.getLogger('retile')
+    logger.setLevel(0)
     logger.info(msg)
+
+def reset_logging(filename='retile.log'):
+    # Remove all handlers associated with the root logger object.
+    for handler in logging.root.handlers[:]:
+        logging.root.removeHandler(handler)
+    logging.basicConfig(format=FORMAT,
+                        filename=filename,
+                        level=0)
 
 class AffineTransformDecorator:
     """ A class providing some usefull methods for affine Transformations """
@@ -445,7 +453,7 @@ def createPyramidTile(levelMosaicInfo, offsetX, offsetY, width, height,tileName,
         already_exists = True
     except:
         already_exists = False
-         
+
 
     sx= levelMosaicInfo.scaleX*2
     sy= levelMosaicInfo.scaleY*2
@@ -456,13 +464,13 @@ def createPyramidTile(levelMosaicInfo, offsetX, offsetY, width, height,tileName,
 
     if already_exists:
         if Verbose:
-            log_print("Already existing pyramid tile: "+tileName + " : " + str(offsetX)+"|"+str(offsetY)+"-->"+str(width)+"-"+str(height)) 
+            log_print("Already existing pyramid tile: "+tileName + " : " + str(offsetX)+"|"+str(offsetY)+"-->"+str(width)+"-"+str(height))
     else:
         s_fh = levelMosaicInfo.getDataSet(dec.ulx,dec.uly+height*dec.scaleY,
                              dec.ulx+width*dec.scaleX,dec.uly)
         if s_fh is None:
             return
- 
+
         if BandType is None:
             bt=levelMosaicInfo.band_type
         else:
@@ -507,7 +515,7 @@ def createPyramidTile(levelMosaicInfo, offsetX, offsetY, width, height,tileName,
 
     if OGRDS is not None and os.path.exists(tileName):
         points = dec.pointsFor(width, height)
-        addFeature(OGRDS, tileName, points[0], points[1])  
+        addFeature(OGRDS, tileName, points[0], points[1])
 
 
 def createTile( minfo, offsetX,offsetY,width,height, tilename,OGRDS, fullres=False):
@@ -544,12 +552,12 @@ def createTile( minfo, offsetX,offsetY,width,height, tilename,OGRDS, fullres=Fal
         return;
 
     geotransform = [dec.ulx+offsetX*dec.scaleX, dec.scaleX, 0,
-                    dec.uly+offsetY*dec.scaleY,  0,dec.scaleY] 
+                    dec.uly+offsetY*dec.scaleY,  0,dec.scaleY]
 
     if already_exists:
-        log_print("Already existing "+tilename + " : " + str(offsetX)+"|"+str(offsetY)+"-->"+str(width)+"-"+str(height)) 
+        log_print("Already existing "+tilename + " : " + str(offsetX)+"|"+str(offsetY)+"-->"+str(width)+"-"+str(height))
     else:
-        bands = minfo.bands   
+        bands = minfo.bands
         if MemDriver is None:
             t_fh = Driver.Create( tilename, width, height, bands,bt,create_opts)
         else:
@@ -921,6 +929,8 @@ def main(args = None):
         Usage()
         return 1
 
+    reset_logging('retile-%s_%s.log' % (TileWidth, TileHeight))
+    log_print('job start')
     # create level 0 directory if needed
     tg_dir = getTargetDir()
     if not os.path.exists(tg_dir):
@@ -990,12 +1000,12 @@ def main(args = None):
     if Levels>0:
        buildPyramid(minfo,
                     dsCreatedTileIndex,
-                    TileWidth, 
+                    TileWidth,
                     TileHeight)
 
+    log_print('job end')
     if Verbose:
         log_print("FINISHED")
-    log_print("end")
     return 0
 
 def initGlobals():

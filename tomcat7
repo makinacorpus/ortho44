@@ -87,7 +87,6 @@ for jdir in $JDK_DIRS; do
 	JAVA_HOME="$jdir"
     fi
 done
-export JAVA_HOME="/usr/lib/jvm/java-7-oracle/"
 
 # Directory where the Tomcat 6 binary distribution resides
 CATALINA_HOME=/usr/share/$NAME
@@ -106,7 +105,6 @@ TOMCAT7_SECURITY=no
 if [ -z "$JAVA_OPTS" ]; then
 	JAVA_OPTS="-Djava.awt.headless=true -Xmx128M"
 fi
-JAVA_OPTS="-Djava.awt.headless=true -Xmx5024m"
 
 # End of variables that can be overwritten in $DEFAULT
 
@@ -163,7 +161,7 @@ catalina_sh() {
 		JAVA_OPTS=\"$JAVA_OPTS\"; \
 		CATALINA_PID=\"$CATALINA_PID\"; \
 		CATALINA_TMPDIR=\"$CATALINA_TMPDIR\"; \
-		LANG=\"$LANG\"; JSSE_HOME=\"$JSSE_HOME\"; export LD_LIBRARY_PATH="/var/makina/circus/apps/lib:$LD_LIBRARY_PATH" export LD_LIBRARY_PATH="/var/makina/circus/apps/lib:$LD_LIBRARY_PATH" export LD_LIBRARY_PATH="/var/makina/circus/apps/lib:$LD_LIBRARY_PATH" export LD_LIBRARY_PATH="/var/makina/circus/apps/lib:$LD_LIBRARY_PATH" \
+		LANG=\"$LANG\"; JSSE_HOME=\"$JSSE_HOME\"; export LD_LIBRARY_PATH="/var/makina/circus/apps/lib:$LD_LIBRARY_PATH" \
 		cd \"$CATALINA_BASE\"; \
 		\"$CATALINA_SH\" $@"
 
