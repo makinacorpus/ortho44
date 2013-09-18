@@ -44,9 +44,9 @@ tif_retile() {
     case $OUTPUT_FORMAT in
         JPEG200)
             OUTPUT_FORMAT_OPTS="$OUTPUT_FORMAT_OPTS -co FORMAT=JP2 mode=int rate=1"
+            ppref="jp2_"
             ;;
         GTIFF)
-            ppref="jp2_"
             ppref="tif_"
             METHOD="${METHOD:-JPEG}"
             COMPRESS="-co COMPRESS=$METHOD"
