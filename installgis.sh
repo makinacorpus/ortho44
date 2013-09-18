@@ -14,19 +14,19 @@
 # ./installgis.sh
 
 cd $(dirname $0)
+wget="wget -c"
 
 export R=/var/makina
 export PREFIX=${PREFIX:-$R/circus}
-export ROOT=${ROOT:-$PREFIX/apps} 
+export ROOT=${ROOT:-$PREFIX/apps}
 export PATH="$ROOT/bin:$PATH"
 if [[ -e $PREFIX/bin/activate ]];then
     . $PREFIX/bin/activate
 else
-    apt-get install python-virtualenv
+    apt-get install -y python-virtualenv
     virtualenv $PREFIX
     . $PREFIX/bin/activate
 fi
-
 
 export TMP=$PWD
 export CFLAGS="-I/usr/include/crunch -I$ROOT/include"
@@ -40,80 +40,105 @@ export DATAS=$(ls -1rdt $DATA/*|grep -v ".sav"|grep -v $LAYERS|head -n1)
 export GEO_LAYER=orthophotos44
 export GEO_LAYER_DIR=$WA/geoserver/data/$GEO_LAYER
 
-base() {
-        add-apt-repository ppa:ubuntugis/ubuntugis-unstable && apt-get update
-        add-apt-repository ppa:mapnik/v2.2.0 && apt-get update
-        add-apt-repository ppa:marlam/gta && apt-get update
-        apt-get update
-        apt-get install -y mapserver cgi-mapserver mapserver-bin python-mapscript multiwatch daemontools-run daemontools spawn-fcgi libmapserver-dev libgd2-xpm-dev libfcgi-dev libpoppler-dev libpodofo-dev libopenjpeg-dev libwebp-dev libmysqlclient-dev libmysqld-dev libfreexl-dev libarmadillo-dev libkml-dev liblzma-dev libarchive-dev liburiparser-dev subversion build-essential m4 libtool pkg-config autoconf gettext bzip2 groff man-db automake libsigc++-2.0-dev tcl8.5 git opencl-headers libdap-dev libdap-bin librasqal3-dev rasqal-utils cmake liblcms2-dev liblcms1-dev libepsilon-dev libogdi3.2-dev ogdi-bin openjdk-6-jdk grass-dev grass-dev grass grass-core grass-gui libcfitsio3-dev libccfits-dev libcrunch-dev libgta-dev python-gdal apache2-prefork-dev libaprutil1-dev libapr1-dev libfcgi-dev mapnik-utils libmapnik-dev apt-build openjdk-7-jdk swig ant maven2 tomcat7
-        git clone https://github.com/makinacorpus/libecw.git
-        cd libecw
+apt_setup() {
+    apt-get update
+    add-apt-repository ppa:ubuntugis/ubuntugis-unstable && apt-get update
+    add-apt-repository ppa:marlam/gta && apt-get update
+}
+
+libecw() {
+    if [[ ! -d libecw ]];then git clone https://github.com/makinacorpus/libecw.git;fi &&\
+    cd libecw &&\
         ./configure CFLAGS="-O0" CXXFLAGS="-O0" --enable-shared --enable-static --prefix=$ROOT && make && make install
-        wget https://openjpeg.googlecode.com/files/openjpeg-2.0.0.tar.gz
-        tar xzvf openjpeg-2.0.0.tar.gz
-        cd openjpeg-2.0.0
-        cmake -DCMAKE_INSTALL_PREFIX=$ROOT . && make && make install
-        git clone https://github.com/makinacorpus/libkml.git
-        cd libkml
-        ./configure --enable-shared --enable-static --prefix=$ROOT && make clean && make && make install
-        wget http://download.osgeo.org/gdal/1.10.0/gdal-1.10.0.tar.gz
-        tar xzvf gdal-1.10.0.tar.gz
+}
+
+openjpeg() {
+    $wget https://openjpeg.googlecode.com/files/openjpeg-2.0.0.tar.gz &&\
+    tar xzvf openjpeg-2.0.0.tar.gz &&\
+    cd openjpeg-2.0.0 &&\
+    cmake -DCMAKE_INSTALL_PREFIX=$ROOT . && make && make install
+}
+
+
+libkml() {
+    if [[ ! -d libkml ]];then git clone https://github.com/makinacorpus/libkml.git;fi &&\
+    cd libkml &&\
+    ./configure --enable-shared --enable-static --prefix=$ROOT && make clean && make && make install
+}
+
+base() {
+    cook apt_setup
+    apt-get install multiwatch libgd2-xpm-dev libfcgi-dev libpoppler-dev libpodofo-dev libopenjpeg-dev libwebp-dev libmysqlclient-dev libmysqld-dev libfreexl-dev libarmadillo-dev libkml-dev liblzma-dev libarchive-dev liburiparser-dev subversion build-essential m4 libtool pkg-config autoconf gettext bzip2 groff man-db automake libsigc++-2.0-dev tcl8.5 git opencl-headers libdap-dev librasqal3-dev rasqal-utils cmake liblcms2-dev liblcms1-dev libepsilon-dev libogdi3.2-dev ogdi-bin libcfitsio3-dev libccfits-dev libcrunch-dev libgta-dev apache2-prefork-dev libaprutil1-dev libapr1-dev libfcgi-dev apt-build openjdk-7-jdk swig openjdk-6-jdk grass-dev grass grass-core grass-gui \
+        || exit -1
+    cook libecw && cook libkml && cook openjpeg && cook install_jdk
+}
+
+install_jdk() {
+    sudo add-apt-repository ppa:webupd8team/java
+    sudo apt-get update
+    sudo apt-get install oracle-java7-installer -y
 }
 
 gdal() {
-        cd gdal-1.10.0
-        sed -ire "s:^JAVA_HOME.*:JAVA_HOME = /usr/lib/jvm/java-7-openjdk-amd64:g" swig/java/java.opt
-        # cd frmts/msg && unzip PublicDecompWTMakefiles.zip && cd ../..
-        ./configure --prefix=$ROOT --with-gif=/usr--with-hdf4=/usr --with-hdf5=/usr --with-jasper=/usr --with-openjpeg=$ROOT --with-ecw=$ROOT --with-expat=/usr --with-curl=/usr --with-odbc --with-spatialite=/usr --with-sqlite3=/usr --with-webp=/usr --with-poppler=/usr --with-perl=/usr --with-geos=/usr --with-mysql=/usr/bin/mysql_config --with-armadillo=/usr --with-libkml=$ROOT --with-dods_root=/usr --with-epsilon=/usr --with-java=yes --with-mdb --with-dds=/usr --with-gta=/usr --with-liblzma=yes --with-libtiff=internal --with-geotiff=internal --with-jpeg=internal --with-jpeg12 --without-ogdi --with-python=$PREFIX/bin/python &&\
-     make && make install &&\
-     pushd swig/python/ && make && make install&&\
-     pushd swig/java/ && make &&\
-     cp -v *so $ROOT/lib && cp gdal.jar $ROOT && popd
+    $wget http://download.osgeo.org/gdal/1.10.0/gdal-1.10.0.tar.gz &&\
+    tar xzvf gdal-1.10.0.tar.gz &&\
+    cd gdal-1.10.0 &&\
+    sed -ire "s:^JAVA_HOME.*:JAVA_HOME = /usr/lib/jvm/java-7-openjdk-amd64:g" swig/java/java.opt &&\
+    # cd frmts/msg && unzip PublicDecompWTMakefiles.zip && cd ../..
+    ./configure --prefix=$ROOT --with-gif=/usr--with-hdf4=/usr --with-hdf5=/usr --with-jasper=/usr --with-openjpeg=$ROOT --with-ecw=$ROOT --with-expat=/usr --with-curl=/usr --with-odbc --with-spatialite=/usr --with-sqlite3=/usr --with-webp=/usr --with-poppler=/usr --with-perl=/usr --with-geos=/usr --with-mysql=/usr/bin/mysql_config --with-armadillo=/usr --with-libkml=$ROOT --with-dods_root=/usr --with-epsilon=/usr --with-java=yes --with-mdb --with-dds=/usr --with-gta=/usr --with-liblzma=yes --with-libtiff=internal --with-geotiff=internal --with-jpeg=internal --with-jpeg12 --without-ogdi --with-python=$PREFIX/bin/python &&\
+        make && make install &&\
+        pushd swig/python/ && make && make install&&\
+        pushd swig/java/ && make &&\
+        cp -v *so $ROOT/lib && cp gdal.jar $ROOT && popd
 
 }
 
 mapnik2() {
-        # important to note here
-        apt-build source libmapnik
-        cp -rf /var/cache/apt-build/build/mapnik-2.2.0/ $TOP
-        cd mapnik-2.2.0
-        ./configure PREFIX="$ROOT"  CUSTOM_CXXFLAGS="$CFLAGS" CUSTOM_LDFLAGS="$LDFLAGS" && make && make install
-        cd mapserver-6.2.1
-        ./configure --enable-static --enable-shared --with-fribidi-config=/usr/lib/pkgconfig/fribidi.pc --with-freetype--with-png --with-gif --with-libiconv --with-gd --with-proj --with-geos -with-postgis --with-wfs --with-wcs --with-wmsclient --with-wfsclient --with-sos --with-kml --with-xslt --with-cairo --with-libsvg-cairo --with-fastcgi --with-exslt --with-xml-mapfile --with-threads --enable-proj-fastpath --prefix="$ROOT" --with-gdal="$ROOT/bin/gdal-config" --with-ogr="$ROOT/bin/gdal-config" && make && make install
+    # important to note here
+    apt-get install -y mapnik-utils libmapnik-dev python-gdal libdap-bin
+        add-apt-repository ppa:mapnik/v2.2.0 && apt-get update
+    apt-build source libmapnik
+    cp -rf /var/cache/apt-build/build/mapnik-2.2.0/ $TOP
+    cd mapnik-2.2.0
+    ./configure PREFIX="$ROOT"  CUSTOM_CXXFLAGS="$CFLAGS" CUSTOM_LDFLAGS="$LDFLAGS" && make && make install
+    cd mapserver-6.2.1
+    ./configure --enable-static --enable-shared --with-fribidi-config=/usr/lib/pkgconfig/fribidi.pc --with-freetype--with-png --with-gif --with-libiconv --with-gd --with-proj --with-geos -with-postgis --with-wfs --with-wcs --with-wmsclient --with-wfsclient --with-sos --with-kml --with-xslt --with-cairo --with-libsvg-cairo --with-fastcgi --with-exslt --with-xml-mapfile --with-threads --enable-proj-fastpath --prefix="$ROOT" --with-gdal="$ROOT/bin/gdal-config" --with-ogr="$ROOT/bin/gdal-config" && make && make install
 }
 
 mapserver() {
-        wget http://download.osgeo.org/mapserver/mapserver-6.2.1.tar.gz
-        tar xzvf mapserver-6.2.1.tar.gz
-        vim /etc/nginx/sites-enabled/wms
-        vim $PREFIX/map.map
-        chmod +x $PREFIX/mapserv-init.sh
-        cp mapserv-init.sh $PREFIX
-        sed -ire "s:^PREFIX=.*:PREFIX=\"$PREFIX\":g" $PREFIX/mapserv-init.sh
-        ln -fs $PREFIX/mapserv-init.sh /etc/init.d/mapserv-init.sh
-        /etc/init.d/nginx stop
-        /etc/init.d/nginx start
-        /etc/init.d/mapserv-init.sh stop
-        /etc/init.d/mapserv-init.sh start
-        update-rc.d -f mapserv-init.sh defaults 99
-        # http://trac.osgeo.org/gdal/wiki/CatalogueForQIS
-        $PREFIX/compute-stats.sh
-        $PREFIX/apps/bin/gdaltindex --config  GDAL_CACHEMAX 3000000000 $ROOT/map.shp /var/makina/data/Ortho_2012_CG44/*ecw
+    apt-get install -y mapserver cgi-mapserver mapserver-bin python-mapscript daemontools-run daemontools spawn-fcgi libmapserver-dev
+    $wget http://download.osgeo.org/mapserver/mapserver-6.2.1.tar.gz
+    tar xzvf mapserver-6.2.1.tar.gz
+    vim /etc/nginx/sites-enabled/wms
+    vim $PREFIX/map.map
+    chmod +x $PREFIX/mapserv-init.sh
+    cp mapserv-init.sh $PREFIX
+    sed -ire "s:^PREFIX=.*:PREFIX=\"$PREFIX\":g" $PREFIX/mapserv-init.sh
+    ln -fs $PREFIX/mapserv-init.sh /etc/init.d/mapserv-init.sh
+    /etc/init.d/nginx stop
+    /etc/init.d/nginx start
+    /etc/init.d/mapserv-init.sh stop
+    /etc/init.d/mapserv-init.sh start
+    update-rc.d -f mapserv-init.sh defaults 99
+    # http://trac.osgeo.org/gdal/wiki/CatalogueForQIS
+    $PREFIX/compute-stats.sh
+    $PREFIX/apps/bin/gdaltindex --config  GDAL_CACHEMAX 3000000000 $ROOT/map.shp /var/makina/data/Ortho_2012_CG44/*ecw
 
 }
 
 geoserver() {
+    apt-get install -y ant maven2 tomcat7
     cd $TMP
     GEOSERVER_VER=2.3.5
     FIC=geoserver-$GEOSERVER_VER-war.zip
     FPFIC=$PWD/$FIC
     if [[ ! -f $FIC ]];then
-        wget http://downloads.sourceforge.net/project/geoserver/GeoServer/$GEOSERVER_VER/$FIC
+        $wget http://downloads.sourceforge.net/project/geoserver/GeoServer/$GEOSERVER_VER/$FIC
     fi
     GD_FIC=geoserver-$GEOSERVER_VER-gdal-plugin.zip
     GD_FPFIC=$PWD/$GD_FIC
     if [[ ! -f $GD_FIC ]];then
-        wget http://downloads.sourceforge.net/project/geoserver/GeoServer%20Extensions/$GEOSERVER_VER/$GD_FIC
+        $wget http://downloads.sourceforge.net/project/geoserver/GeoServer%20Extensions/$GEOSERVER_VER/$GD_FIC
     fi
     if [[ ! -e $WA/geoserver/WEB-INF/lib/gdal-$GEOSERVER_VER.jar ]];then
         unzip -od gdalp_tmp $GD_FPFIC && cp -vf gdalp_tmp/*.jar $GD_$WA/geoserver/WEB-INF/lib && rm -rf gdalp_tmp
@@ -121,11 +146,11 @@ geoserver() {
     GD_FIC=geoserver-$GEOSERVER_VER-pyramid-plugin.zip
     GD_FPFIC=$PWD/$GD_FIC
     if [[ ! -f $GD_FIC ]];then
-        wget http://downloads.sourceforge.net/project/geoserver/GeoServer%20Extensions/$GEOSERVER_VER/$GD_FIC
+        $wget http://downloads.sourceforge.net/project/geoserver/GeoServer%20Extensions/$GEOSERVER_VER/$GD_FIC
     fi
     if [[ ! -e $WA/geoserver/WEB-INF/lib/gt-imagepyramid-9.5.jar ]];then
         unzip -od gdalp_tmp $GD_FPFIC && cp -vf gdalp_tmp/*.jar $GD_$WA/geoserver/WEB-INF/lib && rm -rf gdalp_tmp
-    fi 
+    fi
     if [[ ! -e $WA/geoserver/WEB-INF/lib/gdal-$GEOSERVER_VER.jar ]];then
         unzip -od gdalp_tmp $GD_FPFIC && cp -vf gdalp_tmp/*.jar $GD_$WA/geoserver/WEB-INF/lib && rm -rf gdalp_tmp
     fi
@@ -154,7 +179,6 @@ cook() {
         echo "Already done $1"
     fi
 }
-
 
 assemble_map() {
     # geoserver dont want big filenames
@@ -206,17 +230,13 @@ buildlayers() {
 }
 
 current() {
-    for i in base gdal geoserver buildlayers;do
+    for i in base gdal;do
         cook $i
     done
 }
-install_jdk() {
-    sudo add-apt-repository ppa:webupd8team/java
-    sudo apt-get update
-    sudo apt-get install oracle-java7-installer -y
-}
 
-geoserver;exit -1
+
+#geoserver
 current
 
 # vim: set ft=sh:
