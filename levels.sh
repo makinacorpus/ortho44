@@ -127,7 +127,7 @@ done
 # use the pyramid plugin
 # download jai from java
 # - reset a pyramid
-# rm */{1,2,3,4,5,6}.{properties,shp,qix,shx,fix,prj,dbf} *properties
+# rm */{1,2,3,4,5,6,7,8,9,10}.{properties,shp,qix,shx,fix,prj,dbf} *properties *prj
 # - think to remove zoom layers after the last one which have only one image
 
 # FULL LAUNCH
