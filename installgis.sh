@@ -63,14 +63,17 @@ openjpeg() {
 libkml() {
     if [[ ! -d libkml ]];then git clone https://github.com/makinacorpus/libkml.git;fi &&\
     cd libkml &&\
-    ./configure --enable-shared --enable-static --prefix=$ROOT && make clean && make && make install
+    ./autogen.sh && ./configure --enable-shared --enable-static --prefix=$ROOT && make clean && make && make install
 }
 
 base() {
     cook apt_setup
     apt-get install multiwatch libgd2-xpm-dev libfcgi-dev libpoppler-dev libpodofo-dev libopenjpeg-dev libwebp-dev libmysqlclient-dev libmysqld-dev libfreexl-dev libarmadillo-dev libkml-dev liblzma-dev libarchive-dev liburiparser-dev subversion build-essential m4 libtool pkg-config autoconf gettext bzip2 groff man-db automake libsigc++-2.0-dev tcl8.5 git opencl-headers libdap-dev librasqal3-dev rasqal-utils cmake liblcms2-dev liblcms1-dev libepsilon-dev libogdi3.2-dev ogdi-bin libcfitsio3-dev libccfits-dev libcrunch-dev libgta-dev apache2-prefork-dev libaprutil1-dev libapr1-dev libfcgi-dev apt-build openjdk-7-jdk swig openjdk-6-jdk grass-dev grass grass-core grass-gui \
-        || exit -1
-    cook libecw && cook libkml && cook openjpeg && cook install_jdk
+        
+    cook libecw|| exit -1 
+    cook libkml|| exit -1 
+    cook openjpeg|| exit -1 
+    cook install_jdk|| exit -1 
 }
 
 install_jdk() {
@@ -171,7 +174,7 @@ geoserver() {
 cook() {
     cd $TMP
     if [[ ! -f "$TMP/.cook_$1" ]];then
-        $1
+        $1|| exit -1 
         if [[ $? == 0 ]];then
             echo  "Done $1"
             touch "$TMP/.cook_$1"
@@ -232,7 +235,7 @@ buildlayers() {
 
 current() {
     for i in base gdal;do
-        cook $i
+        cook $i|| exit -1 
     done
 }
 
