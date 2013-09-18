@@ -752,14 +752,14 @@ var HAS_HASHCHANGE = (function() {
     },
     showResult: function(hit) {
       var label = Ortho44._getLabel(hit, "POPUP");
-      var feature = {"type": "Feature",
+      Ortho44.current_result = {"type": "Feature",
         "properties": {
             "name": label
         },
         "geometry": hit.geometry
       };
       resultsLayer.clearLayers();
-      L.geoJson(feature, {
+      L.geoJson(Ortho44.current_result, {
         style: function (feature) {
           if(feature.geometry.type=='Polygon') return {fillColor: 'transparent'};
         },
@@ -771,7 +771,7 @@ var HAS_HASHCHANGE = (function() {
       if (bounds.isValid()) {
         if(document.querySelector(".compare-mode")) {
           map.fitBounds(bounds, {paddingTopLeft: [-Math.round($(window).width()/2), 0]});
-          L.geoJson(feature, {
+          L.geoJson(Ortho44.current_result, {
             style: function (feature) {
               if(feature.geometry.type=='Polygon') return {fillColor: 'transparent'};
             }
@@ -784,43 +784,52 @@ var HAS_HASHCHANGE = (function() {
 
     // COMPARISON MAP
     // ---------------
-    compareWith: function(map, compare_container, layer) {
+    compareWith: function(map, compare_container, layer_param) {
+      // clean compare map if exist
+      if(Ortho44.mapcompare) Ortho44.compareClean();
+
+      // set classes
       Ortho44.removeClass(document.getElementById(compare_container), "map-hidden");
       Ortho44.setClass(document.getElementById(compare_container), "map-right");
       Ortho44.setClass(document.querySelector("body"), "compare-mode");
 
-      if(!Ortho44.mapcompare) {
-        Ortho44.mapcompare = L.map(compare_container,
-          {
-            maxBounds: map.options.maxBounds,
-            zoomControl:false,
-            attribution: ''
-          }
-        );
-      } else {
-        Ortho44.compareClean(map);
-      }
+      // create map and sync it
+      Ortho44.mapcompare = L.map(compare_container,
+        {
+          maxBounds: map.options.maxBounds,
+          zoomControl:false,
+          attribution: ''
+        }
+      );
 
+      var layer = L.tileLayer(layer_param.url, layer_param.options);
       var maxZoom = layer.options.maxZoom;
       map._layersMaxZoom = maxZoom;
-      if(map.getZoom() > maxZoom) {
-        map.setZoom(maxZoom);
+
+      layer.addTo(Ortho44.mapcompare);
+      map.sync(Ortho44.mapcompare);
+      Ortho44.mapcompare.sync(map);
+
+      // re-center on the left
+      map.fitBounds(map.getBounds(), {paddingTopLeft: [-Math.round($(window).width()/2), 0]});
+
+      // display search result if any
+      if(Ortho44.current_result) {
+        L.geoJson(Ortho44.current_result, {
+          style: function (feature) {
+            if(feature.geometry.type=='Polygon') return {fillColor: 'transparent'};
+          }
+        }).addTo(Ortho44.mapcompare);
       }
 
-      var mapcompare = Ortho44.mapcompare;
-
-      layer.addTo(mapcompare);
-      map.sync(mapcompare);
-      mapcompare.sync(map);
-      mapcompare.setView(map.getCenter(), map.getZoom());
-
-      if (!Ortho44.cursorl) Ortho44.cursorl = L.circleMarker([0,0], {radius:20, fillOpacity: 0.2, color: '#b1ca00', fillColor: '#fff'}).addTo(map);
-      Ortho44.cursorr = L.circleMarker([0,0], {radius:20, fillOpacity: 0.2, color: '#b1ca00', fillColor: '#fff'}).addTo(mapcompare);
+      // display position markers
+      Ortho44.cursorl = L.circleMarker([0,0], {radius:20, fillOpacity: 0.2, color: '#b1ca00', fillColor: '#fff'}).addTo(map);
+      Ortho44.cursorr = L.circleMarker([0,0], {radius:20, fillOpacity: 0.2, color: '#b1ca00', fillColor: '#fff'}).addTo(Ortho44.mapcompare);
       map.on('mousemove', function (e) {
         Ortho44.cursorl.setLatLng(e.latlng);
         Ortho44.cursorr.setLatLng(e.latlng);
       });
-      mapcompare.on('mousemove', function (e) {
+      Ortho44.mapcompare.on('mousemove', function (e) {
         Ortho44.cursorl.setLatLng(e.latlng);
         Ortho44.cursorr.setLatLng(e.latlng);
       });
@@ -828,20 +837,34 @@ var HAS_HASHCHANGE = (function() {
 
     compareOff: function(map) {
       if(Ortho44.mapcompare) {
-        Ortho44.compareClean(map);
+        // reset classes
         Ortho44.setClass(Ortho44.mapcompare._container, "map-hidden");
         Ortho44.removeClass(Ortho44.mapcompare._container, "map-right");
         Ortho44.removeClass(document.querySelector("body"), "compare-mode");
-        map.off('move zoom');
+
+        // clean compare map
+        // Ortho44.mapcompare.removeLayer(Ortho44.cursorl);
+        // for(var l in Ortho44.mapcompare._layers) {
+        //   Ortho44.mapcompare.removeLayer(Ortho44.mapcompare._layers[l]);
+        // }
+        Ortho44.compareClean();
+
+        // reset main map
+        map.off('mousemove zoom');
+        map._layersMaxZoom = 19;
         map.removeLayer(Ortho44.cursorl);
-        Ortho44.mapcompare.removeLayer(Ortho44.cursorl);
+        map.fitBounds(map.getBounds(), {paddingTopLeft: [Math.round($(window).width()/2), 0]});
       }
     },
-    compareClean: function(map) {
-      map._layersMaxZoom = 19;
-      for(var l in Ortho44.mapcompare._layers) {
-        Ortho44.mapcompare.removeLayer(Ortho44.mapcompare._layers[l]);
-      }
+    compareClean: function() {
+      var parent = Ortho44.mapcompare._container.parentNode;
+      parent.removeChild(Ortho44.mapcompare._container);
+      var newMapContainer = document.createElement('div');
+      newMapContainer.setAttribute('id', "map-compare");
+      newMapContainer.setAttribute('class', "map-hidden");
+      parent.insertBefore(newMapContainer, map._container.nextSibling);
+      delete Ortho44.cursorr;
+      delete Ortho44.mapcompare;
     },
 
     // UTILS
@@ -1025,31 +1048,31 @@ var HAS_HASHCHANGE = (function() {
     subdomains: 'abcdefgh'
   });
   var older_layers = {
-    'ortho1850': L.tileLayer('http://{s}.tiles.cg44.makina-corpus.net/ortho-1850/{z}/{x}/{y}.jpg', {
+    'ortho1850': {url:'http://{s}.tiles.cg44.makina-corpus.net/ortho-1850/{z}/{x}/{y}.jpg', options: {
       maxZoom: 16,
       tms: true,
       subdomains: 'abcdefgh'
-    }),
-    'ortho1949': L.tileLayer('http://{s}.tiles.cg44.makina-corpus.net/ortho-1949/{z}/{x}/{y}.jpg', {
+    }},
+    'ortho1949': {url:'http://{s}.tiles.cg44.makina-corpus.net/ortho-1949/{z}/{x}/{y}.jpg', options: {
       maxZoom: 18,
       tms: true,
       subdomains: 'abcdefgh'
-    }),
-    'ortho1999': L.tileLayer('http://{s}.tiles.cg44.makina-corpus.net/ortho-1999/{z}/{x}/{y}.jpg', {
+    }},
+    'ortho1999': {url:'http://{s}.tiles.cg44.makina-corpus.net/ortho-1999/{z}/{x}/{y}.jpg', options: {
       maxZoom: 18,
       tms: true,
       subdomains: 'abcdefgh'
-    }),
-    'ortho2004': L.tileLayer('http://{s}.tiles.cg44.makina-corpus.net/ortho-2004/{z}/{x}/{y}.jpg', {
+    }},
+    'ortho2004': {url:'http://{s}.tiles.cg44.makina-corpus.net/ortho-2004/{z}/{x}/{y}.jpg', options: {
       maxZoom: 18,
       tms: true,
       subdomains: 'abcdefgh'
-    }),
-    'ortho2009': L.tileLayer('http://{s}.tiles.cg44.makina-corpus.net/ortho-2009/{z}/{x}/{y}.jpg', {
+    }},
+    'ortho2009': {url:'http://{s}.tiles.cg44.makina-corpus.net/ortho-2009/{z}/{x}/{y}.jpg', options: {
       maxZoom: 18,
       tms: true,
       subdomains: 'abcdefgh'
-    })
+    }}
   };
 
 
