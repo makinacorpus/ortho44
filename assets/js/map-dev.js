@@ -853,10 +853,10 @@ var HAS_HASHCHANGE = (function() {
         map.off('mousemove zoom');
         map._layersMaxZoom = 19;
         map.removeLayer(Ortho44.cursorl);
-        map.fitBounds(map.getBounds(), {paddingTopLeft: [Math.round($(window).width()/2), 0]});
       }
     },
     compareClean: function() {
+      map.fitBounds(map.getBounds(), {paddingTopLeft: [Math.round($(window).width()/2), 0]});
       var parent = Ortho44.mapcompare._container.parentNode;
       parent.removeChild(Ortho44.mapcompare._container);
       var newMapContainer = document.createElement('div');
