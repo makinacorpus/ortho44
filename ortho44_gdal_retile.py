@@ -929,7 +929,12 @@ def main(args = None):
         Usage()
         return 1
 
-    reset_logging('retile-%s_%s.log' % (TileWidth, TileHeight))
+    reset_logging('retile-%s-%s_%s.log' % (
+        os.path.basename(
+            os.path.dirname(TargetDir)),
+        TileWidth, 
+        TileHeight)
+    )
     log_print('job start')
     # create level 0 directory if needed
     tg_dir = getTargetDir()

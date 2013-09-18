@@ -9,7 +9,7 @@ cd $(dirname $0)
 # XXX
 # reset this to super large to include all ecws
 # when tests will be finished
-ECHANTILLON=8000000
+ECHANTILLON=${ECHANTILLON:-8000000}
 export R=/var/makina
 export PREFIX=${PREFIX:-$R/circus}
 export ROOT=${ROOT:-$PREFIX/apps}
@@ -174,44 +174,80 @@ retile() {
 }
 tif_retile() {
     j=0
+    psuf=""
+    ppref=""
+    OUTPUT_FORMAT="${OUTPUT_FORMAT:-GTIFF}"
+    OUTPUT_FORMAT_OPTS="-of $OUTPUT_FORMAT"
+    COMPRESS=""
+    FCOMPRESS=""
+    case $OUTPUT_FORMAT in
+        GTIFF)
+            ppref="tif_"
+            ;;
+        JPEG2000)
+            ppref="jp2_"
+    esac
+    case $OUTPUT_FORMAT in
+        JPEG200)
+            OUTPUT_FORMAT_OPTS="$OUTPUT_FORMAT_OPTS -co FORMAT=JP2 mode=int rate=1"
+            ;;
+        GTIFF)
+            METHOD="${METHOD:-JPEG}"
+            COMPRESS="-co COMPRESS=$METHOD"
+            FCOMPRESS="$COMPRESS"
+            case $METHOD in
+                DEFLATE)
+                    COMPRESS_OPTS='-co ZLEVEL=9'
+                    FCOMPRESS_OPTS="$COMPRESS_OPTS"
+                    psuf="_deflate"
+                    ;;
+                JPEG)
+                    COMPRESS_OPTS='-co JPEG_QUALITY=90'
+                    FCOMPRESS_OPTS='-fco JPEG_QUALITY=80'
+                    psuf=""
+                    ;;
+            esac
+            OUTPUT_FORMAT_OPTS="$OUTPUT_FORMAT_OPTS -co TILED=YES $COMPRESS $COMPRESS_OPTS"
+            ;;
+    esac
     size_x=${1:-256}
     size_y=${2:-256}
     optfile="$OUT/files-pyramid-"
-    export ECW_GEOSERVER="$OUT/pyramid_geoser_${ECHANTILLON}_${size_x}_${size_y}"
+    export ECW_GEOSERVER="$OUT/pyramid_geoser_${OUTPUT_FORMAT}_${METHOD}-${ECHANTILLON}_${size_x}_${size_y}"
     # rename images for geoserver to parse them
     # handle the 8 limit chars ...
     # for ec in $(ls $ECW_DATA/*.ecw);do
     #if [[ ! -f $ECW_GEOSERVER/$((ECHANTILLON-2)).ecw ]];then
     rm -rf $ECW_GEOSERVER;mkdir $ECW_GEOSERVER
-    for ec in $(ls $ECW_DATA/*.ecw|sort|head -n$ECHANTILLON);do
+    # in case of small echantillons, take the middle of the map
+    if [[ $ECHANTILLON -lt 7000 ]];then
+        mylist=$(ls $ECW_DATA/*.ecw|sort|tail -n 4000|head -n$ECHANTILLON)
+    else
+        mylist=$(ls $ECW_DATA/*.ecw|sort|head -n$ECHANTILLON)
+    fi
+    for ec in $mylist;do
         j=$((j+1))
         ln -sfv $ec $ECW_GEOSERVER/${j}.ecw
     done
-    #fi
     ls  $ECW_GEOSERVER/*ecw > $optfile
     nb=$(ls  $ECW_GEOSERVER/*ecw|wc -l)
-    export PYRAMID=$OUT/tif_pyramid_${nb}_${size_x}_${size_y}
-    marker=$MARKERS/tif_pyramid_${nb}_${size_x}_${size_y}
-    dmarker=$MARKERS/tif_pyramid_${nb}_${size_x}_${size_y}_dates
+    export PYRAMID=$OUT/${ppref}pyramid${psuf}_${nb}_${size_x}_${size_y}
+    marker=$MARKERS/${ppref}pyramid${psuf}_${nb}_${size_x}_${size_y}
+    dmarker=$MARKERS/${ppref}pyramid${psuf}_${nb}_${size_x}_${size_y}_dates
     if [[ ! -f $marker ]];then
         if [[ ! -d $PYRAMID ]];then mkdir $PYRAMID;fi
         echo "start $(date)">>$dmarker
         ortho44_gdal_retile.py -untilLevel 16 -v\
             $RETILE_OPTS \
+            $OUTPUT_FORMAT_OPTS\
             -r bilinear  \
             -tileIndex index \
             -targetDir $PYRAMID \
             -ps $size_x $size_y\
-            -of GTIFF \
-            -co 'TILED=YES' \
-            -co 'COMPRESS=JPEG' \
-            -co 'JPEG_QUALITY=90' \
-            -fco 'TILED=YES' \
-            -fco 'COMPRESS=JPEG' \
-            -fco 'JPEG_QUALITY=80' \
             -levels 15 \
             -s_srs EPSG:2154 \
             --optfile "$optfile"
+        exit -1
         echo "end $(date)">>$dmarker
         if [[ $? != 0 ]];then exit -1;fi
         touch $marker
