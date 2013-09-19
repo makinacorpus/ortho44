@@ -233,6 +233,16 @@ buildlayers() {
 
 }
 
+
+install_atlaslayer() {
+sudo apt-get install -y lsb-release ; 
+sudo wget http://www.geopublishing.org/sources.list.d/$(lsb_release -cs).list -O-|grep -v webupd8team>/etc/apt/sources.list.d/geopublishing.list
+
+sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 7450D04751B576FD
+sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys B725097B3ACC3965
+sudo apt-get -y update ; sudo apt-get -y install  atlasstyler geopublishing-doc
+
+}
 current() {
     for i in base gdal;do
         cook $i|| exit -1 
@@ -242,5 +252,6 @@ current() {
 
 #geoserver
 current
+install_atlaslayer
 
 # vim: set ft=sh:
