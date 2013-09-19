@@ -367,7 +367,7 @@ var HAS_HASHCHANGE = (function() {
   L.Control.ImageDownload = L.Control.extend({
     includes: L.Mixin.Events,
     options: {
-      position: 'bottomright',
+      position: 'bottomleft',
       title: "Exporter les images"
     },
 
@@ -375,8 +375,13 @@ var HAS_HASHCHANGE = (function() {
       var p = document.querySelector("#download-link");
       if(this.map.getZoom()>13) {
         var bounds = this.map.getBounds();
+        var wms = "http://services.vuduciel.loire-atlantique.fr/wms/?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&BBOX="+bounds.getSouthWest().lat+","+bounds.getSouthWest().lng+","+bounds.getNorthEast().lat+","+bounds.getNorthEast().lng+"&SRS=EPSG:4326&WIDTH=1351&HEIGHT=736&LAYERS=ortho2012&STYLES=&FORMAT=image/png&DPI=96&MAP_RESOLUTION=96&FORMAT_OPTIONS=dpi:96&TRANSPARENT=TRUE";
         var download_url = "http://services.vuduciel.loire-atlantique.fr/download?x0="+bounds.getSouthWest().lng+"&y0="+bounds.getSouthWest().lat+"&x1="+bounds.getNorthEast().lng+"&y1="+bounds.getNorthEast().lat
-        p.innerHTML = "<p>Pour télécharger l'image complète de la position actuelle, veuillez cliquer sur ce lien ci-dessous.</p><p>Note: le temps de chargement peut être assez long suivant la taille de la zone affichée.</p><a href='"+download_url+"' id= target='_new'>Télécharger l'image</a>";
+        var message = "<p>Pour télécharger l'image complète de la position actuelle, veuillez cliquer sur l'un des liens ci-dessous.</p>"
+        message += "<p>Note: le temps de chargement peut être assez long suivant la taille de la zone affichée.</p>";
+        message += "<p><a href='"+download_url+"' id= target='_new'>Télécharger l'image en dalles ECW</a></p>";
+        message += "<p><a href='"+wms+"' id= target='_new'>Télécharger l'image haute résolution JPG</a></p>";
+        p.innerHTML = message;
       } else {
         p.innerHTML = "<strong>La zone sélectionnée est trop importante, merci de la réduire.</strong>"
       }
@@ -409,7 +414,7 @@ var HAS_HASHCHANGE = (function() {
   L.Control.WMSLink = L.Control.extend({
     includes: L.Mixin.Events,
     options: {
-      position: 'bottomright',
+      position: 'bottomleft',
       title: "Accéder au serveur WMS"
     },
 
@@ -843,10 +848,6 @@ var HAS_HASHCHANGE = (function() {
         Ortho44.removeClass(document.querySelector("body"), "compare-mode");
 
         // clean compare map
-        // Ortho44.mapcompare.removeLayer(Ortho44.cursorl);
-        // for(var l in Ortho44.mapcompare._layers) {
-        //   Ortho44.mapcompare.removeLayer(Ortho44.mapcompare._layers[l]);
-        // }
         Ortho44.compareClean();
 
         // reset main map
@@ -1084,12 +1085,12 @@ var HAS_HASHCHANGE = (function() {
 
   L.control.locator().addTo(map);
   (new L.Control.ZoomFS()).addTo(map); 
-  L.control.screenshot().addTo(map);
   L.control.imageDownload().addTo(map);
   L.control.wmsLink().addTo(map);
+  L.control.screenshot().addTo(map);
   L.control.snippet().addTo(map);
   L.control.social().addTo(map);
-  L.control.scale({'imperial': false}).addTo(map);
+  L.control.scale({'imperial': false, 'position': 'bottomright'}).addTo(map);
   
   var resultsLayer = L.featureGroup().addTo(map);
 
