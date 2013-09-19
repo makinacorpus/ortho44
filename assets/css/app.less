@@ -1,5 +1,13 @@
 @green: #b1ca00;
 
+/* CUSTOM MIXINS */
+
+// Drop shadows
+.box-shadow(@shadow) {
+  -webkit-box-shadow: @shadow; // iOS <4.3 & Android <4.1
+          box-shadow: @shadow;
+}
+
 /* FIX FOUNDATION */
 .row {
   max-width: 100%;
