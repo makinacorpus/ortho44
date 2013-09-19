@@ -853,7 +853,6 @@ var HAS_HASHCHANGE = (function() {
         // reset main map
         map.off('mousemove zoom');
         map._layersMaxZoom = 19;
-        map.removeLayer(Ortho44.cursorl);
       }
     },
     compareClean: function() {
@@ -864,6 +863,7 @@ var HAS_HASHCHANGE = (function() {
       newMapContainer.setAttribute('id', "map-compare");
       newMapContainer.setAttribute('class', "map-hidden");
       parent.insertBefore(newMapContainer, map._container.nextSibling);
+      map.removeLayer(Ortho44.cursorl);
       delete Ortho44.cursorr;
       delete Ortho44.mapcompare;
     },
