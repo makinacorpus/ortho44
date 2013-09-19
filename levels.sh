@@ -25,6 +25,11 @@ export CUR=$PWD
 export OUT=$CUR/out
 export MARKERS="$OUT/done"
 export ECW_DATA=${ECW_DATA:-$R/data/Ortho_2012_CG44}
+export GDAL_CACHEMAX=10000
+export GDAL_FORCE_CACHING=YES
+export VSI_CACHE=YES
+export VSI_CACHE_SIZE=2000
+
 
 export PATH=$ROOT/bin:$CUR:$PATH
 
@@ -42,24 +47,24 @@ tif_retile() {
     COMPRESS=""
     FCOMPRESS=""
     case $OUTPUT_FORMAT in
-        JPEG200)
-            OUTPUT_FORMAT_OPTS="$OUTPUT_FORMAT_OPTS -co FORMAT=JP2 mode=int rate=1"
+        JPEG2000)
+            OUTPUT_FORMAT_OPTS="$OUTPUT_FORMAT_OPTS -co FORMAT=JP2 -co mode=int -co rate=1"
             ppref="jp2_"
             ;;
         GTIFF)
             ppref="tif_"
             METHOD="${METHOD:-JPEG}"
-            COMPRESS="-co COMPRESS=$METHOD"
-            FCOMPRESS="$COMPRESS"
+            COMPRESS_OPTS="$COMPRESS_OPTS -co COMPRESS=$METHOD"
+            COMPRESS_OPTS="$COMPRESS_OPTS -fco COMPRESS=$METHOD"
             case $METHOD in
                 DEFLATE)
-                    COMPRESS_OPTS='-co ZLEVEL=9'
-                    FCOMPRESS_OPTS="$COMPRESS_OPTS"
+                    COMPRESS_OPTS="$COMPRESS_OPTS -co ZLEVEL=9"
+                    COMPRESS_OPTS="$COMPRESS_OPTS -fco ZLEVEL=9"
                     psuf="_deflate"
                     ;;
                 JPEG)
-                    COMPRESS_OPTS='-co JPEG_QUALITY=90'
-                    FCOMPRESS_OPTS='-fco JPEG_QUALITY=80'
+                    COMPRESS_OPTS="$COMPRESS_OPTS -co JPEG_QUALITY=90"
+                    COMPRESS_OPTS="$COMPRESS_OPTS -fco JPEG_QUALITY=80"
                     psuf=""
                     ;;
             esac
@@ -68,8 +73,8 @@ tif_retile() {
     esac
     size_x=${1:-256}
     size_y=${2:-256}
-    optfile="$OUT/files-pyramid-"
     export ECW_GEOSERVER="$OUT/pyramid_geoser_${OUTPUT_FORMAT}_${METHOD}-${ECHANTILLON}_${size_x}_${size_y}"
+    optfile="$OUT/pyramid_files_${OUTPUT_FORMAT}_${METHOD}-${ECHANTILLON}_${size_x}_${size_y}"
     # rename images for geoserver to parse them
     # handle the 8 limit chars ...
     # for ec in $(ls $ECW_DATA/*.ecw);do
@@ -93,6 +98,16 @@ tif_retile() {
     if [[ ! -f $marker ]];then
         if [[ ! -d $PYRAMID ]];then mkdir $PYRAMID;fi
         echo "start $(date)">>$dmarker
+        echo Running ortho44_gdal_retile.py -untilLevel 16 -v\
+            $RETILE_OPTS \
+            $OUTPUT_FORMAT_OPTS\
+            -r bilinear  \
+            -tileIndex index \
+            -targetDir $PYRAMID \
+            -ps $size_x $size_y\
+            -levels 15 \
+            -s_srs EPSG:2154 \
+            --optfile "$optfile"
         ortho44_gdal_retile.py -untilLevel 16 -v\
             $RETILE_OPTS \
             $OUTPUT_FORMAT_OPTS\
@@ -141,4 +156,14 @@ done
 # TIFF + DEFLATE
 # > METHOD=DEFLATE ./levels.sh pixelsize (eg: 512)
 # JP2
-# > OUTPUT_FORMAT=JP2 ./levels.sh pixelsize (eg: 512)
+# > OUTPUT_FORMAT=JPEG2000 ./levels.sh pixelsize (eg: 512)
+
+
+
+
+
+
+
+# cur:
+# python /var/makina/data/test_wms/ortho44_gdal_retile.py -untilLevel 16 -v -r bilinear -tileIndex index -targetDir /var/makina/data/test_wms/out/tif_pyramid_7954_512_512 -ps 512 512 -of GTIFF -co TILED=YES -co COMPRESS=JPEG -co JPEG_QUALITY=90 -fco TILED=YES -fco COMPRESS=JPEG -fco JPEG_QUALITY=80 -levels 15 -s_srs EPSG:2154 --optfile /var/makina/data/test_wms/out/files-pyramid-
+
