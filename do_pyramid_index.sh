@@ -31,6 +31,10 @@ export OUT=$CUR/out
 export MARKERS="$OUT/done"
 export ECW_DATA=${ECW_DATA:-$R/data/Ortho_2012_CG44}
 export PATH=$ROOT/bin:$CUR:$PATH
+export GDAL_CACHEMAX=10000
+export GDAL_FORCE_CACHING=YES
+export VSI_CACHE=YES
+export VSI_CACHE_SIZE=2000
 
 WRAP_OPTS=""
 TRANSLATE_OPTS=""
@@ -65,9 +69,11 @@ EOF
 }
 
 do_shp() {
-    echo "doing shapefile"
-    find -L . -name "*.$EXT" > shapes &&\
-    gdaltindex $lvl.shp --optfile shapes &&\
+    shp=$PWD/$lvl.shp
+    echo "doing shapefile $shp"
+    # geoserver doesnt like "./"
+    find -L . -name "*.$EXT" |sed -re "s:\.\/::g"> shapes &&\
+    gdaltindex $shp --optfile shapes &&\
     rm -f shapes
 }
 
@@ -91,7 +97,14 @@ EOF
 }
 do_index() {
     echo "doing index"
-    cook atlasstyler "addFix=$shp"
+    pwd
+    if [[ -f $SHP ]];then
+        atlasstyler "addFix=$PWD/$SHP"
+    else
+        echo "$SHP does not exist"
+        exit -1
+    fi
+
 }
 
 cook() {
@@ -150,7 +163,7 @@ do_pyramid() {
     levelsDirs=""
     #
     do_proj    $CWD/${name}.prj
-    for lvl in $(seq 0 15|sort -n);do
+    for lvl in $(seq 0 15|sort -rn);do
         zoom_level="$start_zoom"
         if [[ $lvl != 0 ]];then
             for it in $(seq "$((lvl))");do
@@ -170,8 +183,8 @@ do_pyramid() {
             fi
             zoom_levels="$zoom_levels${zpref}$zoom_level,$zoom_level"
             cd $w && cook do_props && cd ..
-            cd $w && cook do_shp && cd ..
-            #pushd $w && cook do_shp && cook do_index && cook do_props && popd
+            cd $w && cook do_index && cd ..
+            #cd $w && cook do_shp && cd ..
         fi
     done
     levelsDirs="$(echo $levelsDirs|sort -n)"
@@ -182,3 +195,5 @@ do_pyramid() {
 for i in ${@:-512};do
     do_pyramid $i
 done
+# reset:
+# rm */{0,1,2,3,4,5,6,7,8,9,10}.{shp,shx,dbf}
