@@ -380,7 +380,7 @@ var HAS_HASHCHANGE = (function() {
         var message = "<p>Pour télécharger l'image complète de la position actuelle, veuillez cliquer sur l'un des liens ci-dessous.</p>"
         message += "<p>Note: le temps de chargement peut être assez long suivant la taille de la zone affichée.</p>";
         message += "<p><a href='"+download_url+"' id= target='_new'>Télécharger l'image en dalles ECW</a></p>";
-        message += "<p><a href='"+wms+"' id= target='_new'>Télécharger l'image haute résolution JPG</a></p>";
+        //message += "<p><a href='"+wms+"' id= target='_new'>Télécharger l'image haute résolution JPG</a></p>";
         p.innerHTML = message;
       } else {
         p.innerHTML = "<strong>La zone sélectionnée est trop importante, merci de la réduire.</strong>"
