@@ -42,10 +42,7 @@
     label {
       color: black;
       font-weight: bold;
-      position: absolute;
-      bottom: 0;
-      left: 3em;
-      margin: 0;
+      margin-right: 10px;
     }
     img {
       float: left;
@@ -53,6 +50,7 @@
   }
   #search-input {
     font-weight: bold;
+    border: none;
   }
   #zero-results {
     position: absolute;
@@ -68,9 +66,9 @@
   #search-button {
     background-color: black;
     border: 0;
-    i {
-      color: yellow;
-    }
+    margin-left: 5px;
+    width: 40px;
+    .box-shadow(none);
   }
 
   #search-address.search-no-result {
@@ -85,6 +83,7 @@
   #compare-with {
     font-size: 80%;
     font-weight: bold;
+    margin-top: -3px;
     input {
       position: relative;
       top: 2px;
@@ -129,8 +128,8 @@
       }
     } 
   }
-  
 }
+
 /* MAP */
 .map-body { 
     margin:0;
@@ -355,6 +354,18 @@
     }
   }
 }
+
+
+@media only screen and (max-width: 60em) {
+  #search-container {
+    min-width: 400px;
+  }
+
+  .compare-with-container {
+    width: auto;
+  }
+}
+
 
 /* PRINT */
 .screamshot {

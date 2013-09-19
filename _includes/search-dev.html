@@ -1,22 +1,22 @@
 <div id="search" class="row">
 	<div id="search-container" class="large-5 columns">
-		<form id="search-address">
-			<div id="search-label" class="large-3 columns">
+		<form id="search-address" class="row collapse">
+			<div id="search-label" class="pull-left">
 				<img src="assets/images/drapeau.png" />
-				<label for="search-input">Rechercher</label>
+				<label for="search-input" class="right inline">Rechercher</label>
 			</div>
-			<div class="large-7 columns">
+			<div class="small-7 columns">
 				<div id="zero-results" class="icon-exclamation-sign"></div>
 				<input type="text" placeholder="exemple : 3 quai Ceineray, Nantes" name="search" id="search-input"/>
 				<ul id="choice-list" class="f-dropdown medium">
 				</ul>
 			</div>
-			<div class="large-2 columns">
-				<button id="search-button" type="submit" class="small button"><i class="icon-caret-right"></i> OK</button>
+			<div class="pull-left">
+				<button id="search-button" type="submit" class="button postfix">OK</button>
 			</div>
 		</form>
 	</div>
-	<div class="large-7 columns">
+	<div class="large-7 columns compare-with-container">
 		<form id="compare-with">
 			Comparer <span class="label-white">2012</span> avec  
 			<span class="label-black">
