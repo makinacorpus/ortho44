@@ -14,6 +14,7 @@
 
 cd $(dirname $0)
 T=$PWD
+bounds=$PWD/bounds.py
 
 export R=/var/makina
 export PREFIX=${PREFIX:-$R/circus}
@@ -130,7 +131,7 @@ main_props() {
 Name=$name
 Levels=$zoom_levels
 LevelsNum=$nb_zoom_levels
-Envelope2D=275000.0,6680000.0 308000.0,6728000.0
+Envelope2D=$($bounds 0/0.shp)
 LevelsDirs=$levelsDirs
 EOF
 }
@@ -190,6 +191,7 @@ do_pyramid() {
     levelsDirs="$(echo $levelsDirs|sort -n)"
     if [[ ! -f $CWD/sample_image ]];then cp -v $T/sample_image $CWD;fi
     cook main_props $CWD/${name}.properties
+    main_props $CWD/${name}.properties
     chown -Rf tomcat7 $i
 }
 
