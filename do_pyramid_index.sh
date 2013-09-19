@@ -188,7 +188,8 @@ do_pyramid() {
             cd $w && cook do_index && cd ..
         fi
     done
-    levelsDirs="$(echo $levelsDirs|sort -n)"
+    zoom_levels="$(echo $(python -c "print \"$zoom_levels\".replace(\" \", \"\\n\")"|sort -n))"
+    levelsDirs="$(echo $(python -c "print \"$levelsDirs\".replace(\" \", \"\\n\")"|sort -n))"
     if [[ ! -f $CWD/sample_image ]];then cp -v $T/sample_image $CWD;fi
     cook main_props $CWD/${name}.properties
     main_props $CWD/${name}.properties
