@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# This script takes a gdal_retile made pyramid 
+# This script takes a gdal_retile made pyramid
 # in input in  order to constuct files needed by
 # geoserver pyramid plugin (the properties, .fix & .qix)
 #
@@ -8,7 +8,7 @@
 # is way too large
 
 
-# tif is the default, jpg2000 is autodetected (*.jp2 in 
+# tif is the default, jpg2000 is autodetected (*.jp2 in
 # pyramid layers folders
 
 
@@ -183,13 +183,14 @@ do_pyramid() {
             fi
             zoom_levels="$zoom_levels${zpref}$zoom_level,$zoom_level"
             cd $w && cook do_props && cd ..
+            cd $w && cook do_shp && cd ..
             cd $w && cook do_index && cd ..
-            #cd $w && cook do_shp && cd ..
         fi
     done
     levelsDirs="$(echo $levelsDirs|sort -n)"
     if [[ ! -f $CWD/sample_image ]];then cp -v $T/sample_image $CWD;fi
     cook main_props $CWD/${name}.properties
+    chown -Rf tomcat7 $i
 }
 
 for i in ${@:-512};do
