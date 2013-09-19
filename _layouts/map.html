@@ -33,7 +33,7 @@
   }
   </script>
 </head>
-	<body class="map-body">
+  <body class="map-body">
 
 {% include header.html %}
 {% include search.html %}
@@ -81,12 +81,19 @@ map.setView([lat, lon], zoom);
 </div>
 
 <div id="download-infos" class="reveal-modal">
-  <p>Vous pouvez télécharger les photographies aériennes de la Loire-Atlantique par dalles jusqu'à une emprise de 50 km², au format ECW, en projection Lambert93.</p>
+  <p>Vous pouvez télécharger les photographies aériennes de la Loire-Atlantique par dalles jusqu'à une emprise de 50 km² environ, au format ECW, en projection Lambert93.</p>
+  <!--<ul>
+    <li>soit par dalles jusqu'à une emprise de 50 km² environ, au format ECW, en projection Lambert93.</li>
+    <li>soit en une image unique, en haute résolution, au format JPG.</li>
+  </ul>-->
   <p id="download-link"></p>
   <a class="close-reveal-modal">&#215;</a>
 </div>
 <div id="wms-infos" class="reveal-modal">
-  <p>Conformément aux prescriptions de la directive européenne INSPIRE, vous pouvez visualiser les photographies aériennes de la Loire-Atlantique à partir d’un flux WMS.</p><p>Son principal intérêt est de vous permettre d’afficher sur votre poste de travail les images publiées dans Vuduciel et d’y superposer vos propres données.</p><p>Son utilisation nécessite de disposer d’un client WMS tel que Quantum GIS, JUMP, Gv SIG, uDig, ou GAIA pour les SIG open source; Géoconcept, ArcGIS, ou Mapinfo pour les SIG d’éditeurs.</p><p>Après avoir lancé la commande permettant d’ouvrir une couche WMS, le logiciel SIG demande de saisir une adresse WMS. Pour le site Vuduciel, elle correspond à l’URL du serveur cartographique http://services.vuduciel.loire-atlantique.fr/</p>
+  <p>TEMPORAIREMENT INDISPONIBLE</p>
+  <p>Conformément aux prescriptions de la directive européenne INSPIRE, vous pouvez visualiser les photographies aériennes de la Loire-Atlantique à partir d’un flux WMS.</p><p>Son principal intérêt est de vous permettre d’afficher sur votre poste de travail les images publiées dans Vuduciel et d’y superposer vos propres données.</p>
+  <!--<p>Son utilisation nécessite de disposer d’un client WMS tel que Quantum GIS, JUMP, Gv SIG, uDig, ou GAIA pour les SIG open source; Géoconcept, ArcGIS, ou Mapinfo pour les SIG d’éditeurs.</p><p>Après avoir lancé la commande permettant d’ouvrir une couche WMS, le logiciel SIG demande de saisir une adresse WMS.</p>
+  <p>Pour le site Vuduciel, elle correspond à l’URL du serveur cartographique http://services.vuduciel.loire-atlantique.fr/</p>-->
   <a class="close-reveal-modal">&#215;</a>
 </div>
 <div id="secondary-page-reveal" class="reveal-modal">

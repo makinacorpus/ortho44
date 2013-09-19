@@ -16,18 +16,18 @@ window.onload=function(){
       this._map = map;
       this._isFullscreen = false;
 
-      this._zoomFullScreenButton = this._createButton('<span class="icon-fullscreen"></span>','Affichage plein écran',
+      this._zoomFullScreenButton = this._createButton('<i class="sprite-fullscreen"></i>','Affichage plein écran',
               'leaflet-control-fullscreen ' +
               partName + ' ' +
               partName + '-top',
               container, this.fullscreen, this);
 
-      this._zoomInButton = this._createButton('+', 'Zoom avant',
+      this._zoomInButton = this._createButton('<i class="sprite-zoom-in"></i>', 'Zoom avant',
               zoomName + '-in ' +
               partName + ' ',
               container, this._zoomIn,  this);
 
-      this._zoomOutButton = this._createButton('-', 'Zoom arrière',
+      this._zoomOutButton = this._createButton('<i class="sprite-zoom-out"></i>', 'Zoom arrière',
               zoomName + '-out ' +
               partName + ' ' +
               partName + '-bottom',
@@ -97,6 +97,67 @@ window.onload=function(){
         this._exitFullScreen();
       }
     }
+  });
+
+  /*
+   * Extends L.Map to synchronize two maps
+   */
+
+  L.Map = L.Map.extend({
+      sync: function (map) {
+
+          this._syncMap = L.extend(map, {
+              setView: function (center, zoom, options, sync) {
+                  if (!sync) {
+                      this._syncMap.setView(center, zoom, options, true);
+                  }
+                  return L.Map.prototype.setView.call(this, center, zoom, options);
+              },
+
+              panBy: function (offset, options, sync) {
+                  if (!sync) {
+                      this._syncMap.panBy(offset, options, true);
+                  }
+                  return L.Map.prototype.panBy.call(this, offset, options);
+              },
+
+              _onResize: function (evt, sync) {
+                  if (!sync) {
+                      this._syncMap._onResize(evt, true);
+                  }
+                  return L.Map.prototype._onResize.call(this, evt);
+              }
+          });
+
+          this.on('zoomend', function() {
+              this._syncMap.setView(this.getCenter(), this.getZoom(), {reset: false}, true);
+          }, this);
+
+          this.dragging._draggable._updatePosition = function () {
+              L.Draggable.prototype._updatePosition.call(this);
+              L.DomUtil.setPosition(map.dragging._draggable._element, this._newPos);
+              map.fire('move');
+          };
+
+          return this;
+      },
+      fitBounds: function (bounds, options) {
+
+        options = options || {};
+        bounds = bounds.getBounds ? bounds.getBounds() : L.latLngBounds(bounds);
+
+        var paddingTL = L.point(options.paddingTopLeft || options.padding || [0, 0]),
+            paddingBR = L.point(options.paddingBottomRight || options.padding || [0, 0]),
+
+            zoom = this.getBoundsZoom(bounds, false, paddingTL.add(paddingBR)),
+            paddingOffset = paddingBR.subtract(paddingTL).divideBy(2),
+
+            swPoint = this.project(bounds.getSouthWest(), zoom),
+            nePoint = this.project(bounds.getNorthEast(), zoom),
+            center = this.unproject(swPoint.add(nePoint).divideBy(2).add(paddingOffset), zoom);
+
+        return this.setView(center, zoom, options);
+      }
   });
 
   // #################
@@ -287,7 +348,7 @@ var HAS_HASHCHANGE = (function() {
         var link = L.DomUtil.create('a', 'leaflet-bar-part leaflet-bar-part-single leaflet-screenshot-control', this._container);
         link.href = '#';
         link.title = this.options.title;
-        var span = L.DomUtil.create('span', 'icon-print', link);
+        var span = L.DomUtil.create('span', 'sprite-print', link);
 
         L.DomEvent
             .addListener(link, 'click', L.DomEvent.stopPropagation)
@@ -306,7 +367,7 @@ var HAS_HASHCHANGE = (function() {
   L.Control.ImageDownload = L.Control.extend({
     includes: L.Mixin.Events,
     options: {
-      position: 'bottomright',
+      position: 'bottomleft',
       title: "Exporter les images"
     },
 
@@ -314,8 +375,13 @@ var HAS_HASHCHANGE = (function() {
       var p = document.querySelector("#download-link");
       if(this.map.getZoom()>13) {
         var bounds = this.map.getBounds();
+        var wms = "http://services.vuduciel.loire-atlantique.fr/wms/?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&BBOX="+bounds.getSouthWest().lat+","+bounds.getSouthWest().lng+","+bounds.getNorthEast().lat+","+bounds.getNorthEast().lng+"&SRS=EPSG:4326&WIDTH=1351&HEIGHT=736&LAYERS=ortho2012&STYLES=&FORMAT=image/png&DPI=96&MAP_RESOLUTION=96&FORMAT_OPTIONS=dpi:96&TRANSPARENT=TRUE";
         var download_url = "http://services.vuduciel.loire-atlantique.fr/download?x0="+bounds.getSouthWest().lng+"&y0="+bounds.getSouthWest().lat+"&x1="+bounds.getNorthEast().lng+"&y1="+bounds.getNorthEast().lat
-        p.innerHTML = "<p>Pour télécharger l'image complète de la position actuelle, veuillez cliquer sur ce lien ci-dessous.</p><p>Note: le temps de chargement peut être assez long suivant la taille de la zone affichée.</p><a href='"+download_url+"' id= target='_new'>Télécharger l'image</a>";
+        var message = "<p>Pour télécharger l'image complète de la position actuelle, veuillez cliquer sur l'un des liens ci-dessous.</p>"
+        message += "<p>Note: le temps de chargement peut être assez long suivant la taille de la zone affichée.</p>";
+        message += "<p><a href='"+download_url+"' id= target='_new'>Télécharger l'image en dalles ECW</a></p>";
+        //message += "<p><a href='"+wms+"' id= target='_new'>Télécharger l'image haute résolution JPG</a></p>";
+        p.innerHTML = message;
       } else {
         p.innerHTML = "<strong>La zone sélectionnée est trop importante, merci de la réduire.</strong>"
       }
@@ -324,13 +390,13 @@ var HAS_HASHCHANGE = (function() {
 
     onAdd: function(map) {
       this.map = map;
-      this._container = L.DomUtil.create('div', 'leaflet-control-attribution leaflet-control');
+      this._container = L.DomUtil.create('div', 'leaflet-control-actionlink leaflet-control');
       var link = L.DomUtil.create('a', 'leaflet-download-control', this._container);
       link.href = '#';
       link.title = this.options.title;
       link.setAttribute("data-reveal-id", "download-infos");
       link.textContent = "Exporter l'image";
-      var help = L.DomUtil.create('span', 'icon-question-sign has-tip tip-top noradius', this._container);
+      var help = L.DomUtil.create('span', 'sprite-question has-tip tip-top noradius', this._container);
       help.setAttribute('data-tooltip', "");
       help.setAttribute('title', "Fonction permettant de télécharger les images en haute résolution, avec leurs coordonnées.");
       L.DomEvent
@@ -348,7 +414,7 @@ var HAS_HASHCHANGE = (function() {
   L.Control.WMSLink = L.Control.extend({
     includes: L.Mixin.Events,
     options: {
-      position: 'bottomright',
+      position: 'bottomleft',
       title: "Accéder au serveur WMS"
     },
 
@@ -358,13 +424,13 @@ var HAS_HASHCHANGE = (function() {
 
     onAdd: function(map) {
       this.map = map;
-      this._container = L.DomUtil.create('div', 'leaflet-control-attribution leaflet-control');
+      this._container = L.DomUtil.create('div', 'leaflet-control-actionlink leaflet-control');
       var link = L.DomUtil.create('a', 'leaflet-wms-control', this._container);
       link.href = '#';
       link.title = this.options.title;
       link.setAttribute("data-reveal-id", "wms-infos");
       link.textContent = 'Accéder au serveur WMS';
-      var help = L.DomUtil.create('span', 'icon-question-sign has-tip tip-top noradius', this._container);
+      var help = L.DomUtil.create('span', 'sprite-question has-tip tip-top noradius', this._container);
       help.setAttribute('data-tooltip', "");
       help.setAttribute('title', "Fonction permettant d'accéder au serveur WMS du site.");
       L.DomEvent
@@ -408,7 +474,7 @@ var HAS_HASHCHANGE = (function() {
           var link = L.DomUtil.create('a', 'leaflet-bar-part leaflet-bar-part-single leaflet-social-control-'+infos[0], div);
           link.href = infos[2];
           link.title = infos[1];
-          var span = L.DomUtil.create('span', 'icon-'+infos[0], link);
+          var span = L.DomUtil.create('i', 'sprite-'+infos[0], link);
 
           L.DomEvent
               .addListener(link, 'click', L.DomEvent.stopPropagation)
@@ -451,7 +517,7 @@ var HAS_HASHCHANGE = (function() {
         link.href = '#';
         link.title = this.options.title;
         link.setAttribute("data-reveal-id", "snippet");
-        var span = L.DomUtil.create('span', 'icon-code', link);
+        var span = L.DomUtil.create('i', 'sprite-code', link);
 
         L.DomEvent
         //     .addListener(link, 'click', L.DomEvent.stopPropagation)
@@ -485,7 +551,7 @@ var HAS_HASHCHANGE = (function() {
         var link = L.DomUtil.create('a', 'leaflet-bar-part leaflet-bar-part-single leaflet-locate-control', div);
         link.href = '#';
         link.title = this.options.title;
-        var span = L.DomUtil.create('span', 'icon-screenshot', link);
+        var span = L.DomUtil.create('i', 'sprite-zposition', link);
 
         L.DomEvent
              .addListener(link, 'click', L.DomEvent.stopPropagation)
@@ -617,6 +683,8 @@ var HAS_HASHCHANGE = (function() {
   var Ortho44 = {
     _callbackIndex: 0,
 
+    // GEOCODING
+    // -----------
     bindGeocode: function(form, input, map, callback) {
       L.DomEvent.addListener(form, 'submit', this._geocode, this);
       var clearRandom = function() {
@@ -689,14 +757,14 @@ var HAS_HASHCHANGE = (function() {
     },
     showResult: function(hit) {
       var label = Ortho44._getLabel(hit, "POPUP");
-      var feature = {"type": "Feature",
+      Ortho44.current_result = {"type": "Feature",
         "properties": {
             "name": label
         },
         "geometry": hit.geometry
       };
       resultsLayer.clearLayers();
-      L.geoJson(feature, {
+      L.geoJson(Ortho44.current_result, {
         style: function (feature) {
           if(feature.geometry.type=='Polygon') return {fillColor: 'transparent'};
         },
@@ -705,9 +773,103 @@ var HAS_HASHCHANGE = (function() {
         }
       }).addTo(resultsLayer);
       var bounds = resultsLayer.getBounds();
-      if (bounds.isValid()) map.fitBounds(bounds);
+      if (bounds.isValid()) {
+        if(document.querySelector(".compare-mode")) {
+          map.fitBounds(bounds, {paddingTopLeft: [-Math.round($(window).width()/2), 0]});
+          L.geoJson(Ortho44.current_result, {
+            style: function (feature) {
+              if(feature.geometry.type=='Polygon') return {fillColor: 'transparent'};
+            }
+          }).addTo(Ortho44.mapcompare);
+        } else {
+          map.fitBounds(bounds);
+        }
+      }
     },
 
+    // COMPARISON MAP
+    // ---------------
+    compareWith: function(map, compare_container, layer_param) {
+      // clean compare map if exist
+      if(Ortho44.mapcompare) Ortho44.compareClean();
+
+      // set classes
+      Ortho44.removeClass(document.getElementById(compare_container), "map-hidden");
+      Ortho44.setClass(document.getElementById(compare_container), "map-right");
+      Ortho44.setClass(document.querySelector("body"), "compare-mode");
+
+      // create map and sync it
+      Ortho44.mapcompare = L.map(compare_container,
+        {
+          maxBounds: map.options.maxBounds,
+          zoomControl:false,
+          attribution: ''
+        }
+      );
+
+      var layer = L.tileLayer(layer_param.url, layer_param.options);
+      var maxZoom = layer.options.maxZoom;
+      map._layersMaxZoom = maxZoom;
+
+      layer.addTo(Ortho44.mapcompare);
+      map.sync(Ortho44.mapcompare);
+      Ortho44.mapcompare.sync(map);
+
+      // re-center on the left
+      map.fitBounds(map.getBounds(), {paddingTopLeft: [-Math.round($(window).width()/2), 0]});
+
+      // display search result if any
+      if(Ortho44.current_result) {
+        L.geoJson(Ortho44.current_result, {
+          style: function (feature) {
+            if(feature.geometry.type=='Polygon') return {fillColor: 'transparent'};
+          }
+        }).addTo(Ortho44.mapcompare);
+      }
+
+      // display position markers
+      Ortho44.cursorl = L.circleMarker([0,0], {radius:20, fillOpacity: 0.2, color: '#b1ca00', fillColor: '#fff'}).addTo(map);
+      Ortho44.cursorr = L.circleMarker([0,0], {radius:20, fillOpacity: 0.2, color: '#b1ca00', fillColor: '#fff'}).addTo(Ortho44.mapcompare);
+      map.on('mousemove', function (e) {
+        Ortho44.cursorl.setLatLng(e.latlng);
+        Ortho44.cursorr.setLatLng(e.latlng);
+      });
+      Ortho44.mapcompare.on('mousemove', function (e) {
+        Ortho44.cursorl.setLatLng(e.latlng);
+        Ortho44.cursorr.setLatLng(e.latlng);
+      });
+    },
+
+    compareOff: function(map) {
+      if(Ortho44.mapcompare) {
+        // reset classes
+        Ortho44.setClass(Ortho44.mapcompare._container, "map-hidden");
+        Ortho44.removeClass(Ortho44.mapcompare._container, "map-right");
+        Ortho44.removeClass(document.querySelector("body"), "compare-mode");
+
+        // clean compare map
+        Ortho44.compareClean();
+
+        // reset main map
+        map.off('mousemove zoom');
+        map._layersMaxZoom = 19;
+      }
+    },
+    compareClean: function() {
+      map.fitBounds(map.getBounds(), {paddingTopLeft: [Math.round($(window).width()/2), 0]});
+      var parent = Ortho44.mapcompare._container.parentNode;
+      parent.removeChild(Ortho44.mapcompare._container);
+      var newMapContainer = document.createElement('div');
+      newMapContainer.setAttribute('id', "map-compare");
+      newMapContainer.setAttribute('class', "map-hidden");
+      parent.insertBefore(newMapContainer, map._container.nextSibling);
+      map.removeLayer(Ortho44.cursorl);
+      delete Ortho44.cursorr;
+      delete Ortho44.mapcompare;
+    },
+
+    // UTILS
+    // -----------
     setClass: function (element, cl) {
       var classes = element.className,
           pattern = new RegExp( cl );
@@ -886,20 +1048,49 @@ var HAS_HASHCHANGE = (function() {
     attribution: "Makina Corpus / OpenStreetMap",
     subdomains: 'abcdefgh'
   });
+  var older_layers = {
+    'ortho1850': {url:'http://{s}.tiles.cg44.makina-corpus.net/ortho-1850/{z}/{x}/{y}.jpg', options: {
+      maxZoom: 16,
+      tms: true,
+      subdomains: 'abcdefgh'
+    }},
+    'ortho1949': {url:'http://{s}.tiles.cg44.makina-corpus.net/ortho-1949/{z}/{x}/{y}.jpg', options: {
+      maxZoom: 18,
+      tms: true,
+      subdomains: 'abcdefgh'
+    }},
+    'ortho1999': {url:'http://{s}.tiles.cg44.makina-corpus.net/ortho-1999/{z}/{x}/{y}.jpg', options: {
+      maxZoom: 18,
+      tms: true,
+      subdomains: 'abcdefgh'
+    }},
+    'ortho2004': {url:'http://{s}.tiles.cg44.makina-corpus.net/ortho-2004/{z}/{x}/{y}.jpg', options: {
+      maxZoom: 18,
+      tms: true,
+      subdomains: 'abcdefgh'
+    }},
+    'ortho2009': {url:'http://{s}.tiles.cg44.makina-corpus.net/ortho-2009/{z}/{x}/{y}.jpg', options: {
+      maxZoom: 18,
+      tms: true,
+      subdomains: 'abcdefgh'
+    }}
+  };
+
+  L.control.locator().addTo(map);
+  (new L.Control.ZoomFS()).addTo(map);
   var overlayMaps = {
     "Afficher les rues": streets_custom_osm,
     "Afficher les limites départementales": border
   };
-  L.control.layers(null, overlayMaps).addTo(map);
-
-  L.control.locator().addTo(map);
-  (new L.Control.ZoomFS()).addTo(map); 
-  L.control.screenshot().addTo(map);
+  L.control.layers(null, overlayMaps,
+    {position: "topleft"}
+  ).addTo(map);
   L.control.imageDownload().addTo(map);
   L.control.wmsLink().addTo(map);
+  L.control.screenshot().addTo(map);
   L.control.snippet().addTo(map);
   L.control.social().addTo(map);
-  L.control.scale({'imperial': false}).addTo(map);
+  L.control.scale({'imperial': false, 'position': 'bottomright'}).addTo(map);
   
   var resultsLayer = L.featureGroup().addTo(map);
 
@@ -964,7 +1155,25 @@ var HAS_HASHCHANGE = (function() {
         Ortho44.setClass(choices_box, "show-choices");
       }
     });
-
+  
+  // SECONDARY MAP
+  L.DomEvent.addListener(document.querySelector("form#compare-with"), 'change', function(e) {
+    if(e.target.checked) {
+      Ortho44.compareWith(map, "map-compare", older_layers["ortho"+e.target.value]);
+      var inputs = document.querySelectorAll("form#compare-with input");
+      for(var i=0; i<inputs.length; i++) {
+        if(inputs[i].id != e.target.id) inputs[i].checked = false;
+      }
+    } else {
+      Ortho44.compareOff(map);
+      var inputs = document.querySelectorAll("form#compare-with input");
+      for(var i=0; i<inputs.length; i++) {
+        inputs[i].checked = false;
+      }
+    }
+  });
+  
+  // FOUNDATION INIT
   $(document).foundation(null, null, null, null, true);
   $(document).foundation('dropdown', 'off');
   $("nav li a").each(function(i, el) {

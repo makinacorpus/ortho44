@@ -16,18 +16,18 @@ window.onload=function(){
       this._map = map;
       this._isFullscreen = false;
 
-      this._zoomFullScreenButton = this._createButton('<span class="icon-fullscreen"></span>','Affichage plein écran',
+      this._zoomFullScreenButton = this._createButton('<i class="sprite-fullscreen"></i>','Affichage plein écran',
               'leaflet-control-fullscreen ' +
               partName + ' ' +
               partName + '-top',
               container, this.fullscreen, this);
 
-      this._zoomInButton = this._createButton('+', 'Zoom avant',
+      this._zoomInButton = this._createButton('<i class="sprite-zoom-in"></i>', 'Zoom avant',
               zoomName + '-in ' +
               partName + ' ',
               container, this._zoomIn,  this);
 
-      this._zoomOutButton = this._createButton('-', 'Zoom arrière',
+      this._zoomOutButton = this._createButton('<i class="sprite-zoom-out"></i>', 'Zoom arrière',
               zoomName + '-out ' +
               partName + ' ' +
               partName + '-bottom',
@@ -551,7 +551,7 @@ var HAS_HASHCHANGE = (function() {
         var link = L.DomUtil.create('a', 'leaflet-bar-part leaflet-bar-part-single leaflet-locate-control', div);
         link.href = '#';
         link.title = this.options.title;
-        var span = L.DomUtil.create('span', 'icon-screenshot', link);
+        var span = L.DomUtil.create('i', 'sprite-zposition', link);
 
         L.DomEvent
              .addListener(link, 'click', L.DomEvent.stopPropagation)
@@ -1076,15 +1076,15 @@ var HAS_HASHCHANGE = (function() {
     }}
   };
 
-
+  L.control.locator().addTo(map);
+  (new L.Control.ZoomFS()).addTo(map);
   var overlayMaps = {
     "Afficher les rues": streets_custom_osm,
     "Afficher les limites départementales": border
   };
-  L.control.layers(null, overlayMaps).addTo(map);
-
-  L.control.locator().addTo(map);
-  (new L.Control.ZoomFS()).addTo(map); 
+  L.control.layers(null, overlayMaps,
+    {position: "topleft"}
+  ).addTo(map);
   L.control.imageDownload().addTo(map);
   L.control.wmsLink().addTo(map);
   L.control.screenshot().addTo(map);
