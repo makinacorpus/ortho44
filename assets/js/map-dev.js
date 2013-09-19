@@ -348,7 +348,7 @@ var HAS_HASHCHANGE = (function() {
         var link = L.DomUtil.create('a', 'leaflet-bar-part leaflet-bar-part-single leaflet-screenshot-control', this._container);
         link.href = '#';
         link.title = this.options.title;
-        var span = L.DomUtil.create('span', 'icon-print', link);
+        var span = L.DomUtil.create('span', 'sprite-print', link);
 
         L.DomEvent
             .addListener(link, 'click', L.DomEvent.stopPropagation)
@@ -390,13 +390,13 @@ var HAS_HASHCHANGE = (function() {
 
     onAdd: function(map) {
       this.map = map;
-      this._container = L.DomUtil.create('div', 'leaflet-control-attribution leaflet-control');
+      this._container = L.DomUtil.create('div', 'leaflet-control-actionlink leaflet-control');
       var link = L.DomUtil.create('a', 'leaflet-download-control', this._container);
       link.href = '#';
       link.title = this.options.title;
       link.setAttribute("data-reveal-id", "download-infos");
       link.textContent = "Exporter l'image";
-      var help = L.DomUtil.create('span', 'icon-question-sign has-tip tip-top noradius', this._container);
+      var help = L.DomUtil.create('span', 'sprite-question has-tip tip-top noradius', this._container);
       help.setAttribute('data-tooltip', "");
       help.setAttribute('title', "Fonction permettant de télécharger les images en haute résolution, avec leurs coordonnées.");
       L.DomEvent
@@ -424,13 +424,13 @@ var HAS_HASHCHANGE = (function() {
 
     onAdd: function(map) {
       this.map = map;
-      this._container = L.DomUtil.create('div', 'leaflet-control-attribution leaflet-control');
+      this._container = L.DomUtil.create('div', 'leaflet-control-actionlink leaflet-control');
       var link = L.DomUtil.create('a', 'leaflet-wms-control', this._container);
       link.href = '#';
       link.title = this.options.title;
       link.setAttribute("data-reveal-id", "wms-infos");
       link.textContent = 'Accéder au serveur WMS';
-      var help = L.DomUtil.create('span', 'icon-question-sign has-tip tip-top noradius', this._container);
+      var help = L.DomUtil.create('span', 'sprite-question has-tip tip-top noradius', this._container);
       help.setAttribute('data-tooltip', "");
       help.setAttribute('title', "Fonction permettant d'accéder au serveur WMS du site.");
       L.DomEvent
@@ -474,7 +474,7 @@ var HAS_HASHCHANGE = (function() {
           var link = L.DomUtil.create('a', 'leaflet-bar-part leaflet-bar-part-single leaflet-social-control-'+infos[0], div);
           link.href = infos[2];
           link.title = infos[1];
-          var span = L.DomUtil.create('span', 'icon-'+infos[0], link);
+          var span = L.DomUtil.create('i', 'sprite-'+infos[0], link);
 
           L.DomEvent
               .addListener(link, 'click', L.DomEvent.stopPropagation)
@@ -517,7 +517,7 @@ var HAS_HASHCHANGE = (function() {
         link.href = '#';
         link.title = this.options.title;
         link.setAttribute("data-reveal-id", "snippet");
-        var span = L.DomUtil.create('span', 'icon-code', link);
+        var span = L.DomUtil.create('i', 'sprite-code', link);
 
         L.DomEvent
         //     .addListener(link, 'click', L.DomEvent.stopPropagation)

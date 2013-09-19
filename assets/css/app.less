@@ -2,14 +2,19 @@
 
 /* SPRITE */
 // Generated with http://fr.spritegen.website-performance.org/
+*[class^='sprite-'] {
+  background-image: url('../images/sprite.png');
+  display: inline-block;
+  vertical-align: bottom;
+}
 .sprite-carte{ background-position: 0 0; width: 32px; height: 23px; } 
-.sprite-code{ background-position: 0 -73px; width: 26px; height: 25px; } 
+.sprite-code{ background-position: 0 -73px; width: 26px; height: 26px; } 
 .sprite-facebook{ background-position: 0 -148px; width: 26px; height: 26px; } 
 .sprite-fullscreen{ background-position: 0 -224px; width: 29px; height: 20px; } 
-.sprite-g{ background-position: 0 -294px; width: 26px; height: 25px; } 
+.sprite-google-plus{ background-position: 0 -294px; width: 26px; height: 26px; } 
 .sprite-menu{ background-position: 0 -369px; width: 31px; height: 29px; } 
 .sprite-print{ background-position: 0 -448px; width: 24px; height: 20px; } 
-.sprite-question{ background-position: 0 -518px; width: 19px; height: 18px; } 
+.sprite-question{ background-position: 0 -518px; width: 19px; height: 18px; vertical-align: middle;} 
 .sprite-twitter{ background-position: 0 -586px; width: 26px; height: 26px; } 
 .sprite-zoom-in{ background-position: 0 -662px; width: 26px; height: 26px; } 
 .sprite-zoom-out{ background-position: 0 -738px; width: 26px; height: 27px; } 
@@ -171,6 +176,50 @@
     .leaflet-control-attribution {
       display: none;
     }
+  }
+
+  .leaflet-bottom.leaflet-left {
+    max-width: 100%;
+    width: 100%;
+    background: black;
+
+    .leaflet-bar-part {
+      background: transparent;
+      border: 0;
+    }
+    .leaflet-control {
+      line-height: 2.2em;
+    }
+    .leaflet-control-embed a, .leaflet-social-control a, .leaflet-print-control a {
+      margin: 0;
+    }
+    .leaflet-social-control a.leaflet-social-control-facebook {
+      padding: 0 .2em
+    }
+    .leaflet-control-embed, .leaflet-print-control {
+      margin: 0;
+    }
+    .leaflet-screenshot-control {
+      vertical-align: middle;
+    }
+  }
+  .leaflet-bottom.leaflet-right {
+    max-width: 100%;
+    width: 100%;
+    bottom: 3.6em;
+    .leaflet-control-scale {
+      float: left;
+    }
+  }
+  .leaflet-control-actionlink {
+    background: white;
+    position: relative;
+    top: 0.3em;
+    padding: 0 1em;
+    a {
+      color: black;
+    }
+    
   }
 }
 
