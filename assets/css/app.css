@@ -18,7 +18,8 @@
 .tooltip{z-index:10000;color:#000;background-color:#fff}
 #header{padding-top:.5em}#header #logo{margin-top:.2em}
 #header .tagline{font-size:1.2em;margin-bottom:.2em}
-#search{background-color:#b1ca00;position:relative}#search form{margin-top:.3em}
+#search{background-color:#b1ca00;position:relative}#search #search-container{border-right:1px dotted #000}#search #search-container #search-address{height:39px}
+#search form{margin-top:.3em}
 #search input[type="text"]{margin:0}
 #search #search-label label{color:#222;font-weight:bold;margin:0 .5em}
 #search #search-label img{float:left}
@@ -31,7 +32,7 @@
 #search #compare-with{font-size:.875em;font-weight:bold;margin-top:0;padding-top:15px}#search #compare-with input{position:relative;top:2px}
 #search #compare-with label{font-size:90%;color:#fff;cursor:pointer;display:inline;font-weight:bold;margin-bottom:0}
 #search #compare-with .label-white{background-color:#fff;border:1px solid #000;padding:.2em .5em}#search #compare-with .label-white:after{width:0;display:inline-block;height:8px;border:1px solid #000;position:relative;top:15px;left:-1em;content:""}
-#search #compare-with .label-black{background-color:#000;color:#fff;border:1px solid #000;padding:.2em;margin-right:2em}#search #compare-with .label-black:after{width:0;display:inline-block;height:9px;border:1px solid #000;position:relative;top:15px;left:-1.6em;content:""}
+#search #compare-with .label-black{background-color:#000;color:#fff;border:1px solid #000;padding:.2em;margin-right:1.5em}#search #compare-with .label-black:after{width:0;display:inline-block;height:9px;border:1px solid #000;position:relative;top:15px;left:-1.6em;content:""}
 #search #compare-with .label-black:last-child label{padding-right:.5em}
 .map-body{margin:0;padding:0;position:static}
 .map-full{position:absolute;top:10.3em;bottom:5em;width:100%}
@@ -76,7 +77,7 @@
 .secondary-page #wrapper{font-size:80%}
 #secondary-page-zone{font-size:75%}#secondary-page-zone h1{font-size:1.5em}
 #secondary-page-zone h2{font-size:1.3em}
-@media only screen and (max-width:54em){.leaflet-control-minimap{display:none} #footer #slogan img{max-width:33%} #footer #footer-navigation{top:0}}@media only screen and (max-width:62em){#search-container,.compare-with-container{width:100%} .map-full,.map-right{top:13.3em}}@media only screen and (max-width:40em){#search #compare-with .label-black{margin-right:.2em}}.screamshot .tagline{display:none}
+@media only screen and (max-width:54em){.leaflet-control-minimap{display:none} #footer #slogan img{max-width:33%} #footer #footer-navigation{top:0}}@media only screen and (max-width:64em){#search #search-container,#search .compare-with-container{width:100%;border-right:0} #search #compare-with{padding-top:10px} .map-full,.map-right{top:13.3em}}@media only screen and (max-width:40em){#search{font-size:95%}#search #compare-with .label-black{margin-right:0} #search #compare-with .label-white{padding:.2em} .leaflet-bottom.leaflet-left .leaflet-control{font-size:80%}}.screamshot .tagline{display:none}
 .screamshot #search{display:none}
 .screamshot #footer-navigation{display:none}
 .screamshot .map-full{top:5em}
