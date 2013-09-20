@@ -207,11 +207,16 @@
   }
 }
 .compare-mode {
-  .leaflet-control-minimap, .leaflet-control-fullscreen {
+  .leaflet-control-minimap {
     display: none;
   }
   overflow: hidden;
 } 
+.map-full.leaflet-fullscreen {
+  .leaflet-bottom, .leaflet-right {
+    display: none;
+  }
+}
 
 .leaflet-bottom.leaflet-left {
   max-width: 100%;

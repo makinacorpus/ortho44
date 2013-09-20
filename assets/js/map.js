@@ -809,6 +809,20 @@ var HAS_HASHCHANGE = (function() {
       Ortho44.setClass(document.getElementById(compare_container), "map-right");
       Ortho44.setClass(document.querySelector("body"), "compare-mode");
 
+      // bind fullscreen
+      map.on("enterFullscreen", function() {
+        if(Ortho44.mapcompare) {
+          var container = document.getElementById(compare_container);
+          container.style.position = 'fixed';
+          container.style.top = 0;
+          container.style.height = '100%';  
+          Ortho44.mapcompare.invalidateSize();
+        }
+      });
+      map.on("exitFullscreen", function() {
+        if(Ortho44.mapcompare) document.getElementById(compare_container).removeAttribute("style");
+      });
+
       // create map and sync it
       Ortho44.mapcompare = L.map(compare_container,
         {
@@ -862,7 +876,7 @@ var HAS_HASHCHANGE = (function() {
         Ortho44.compareClean();
 
         // reset main map
-        map.off('mousemove zoom');
+        map.off('mousemove zoom enterFullscreen exitFullscreen');
         map._layersMaxZoom = 19;
       }
     },

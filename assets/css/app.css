@@ -38,7 +38,8 @@
 .map-full{position:absolute;top:10.3em;bottom:5em;width:100%}
 .map-hidden{display:none}
 .map-right{z-index:1;position:absolute;top:10.3em;bottom:5em;right:-50%;width:100%;border-left:1px solid #fff}.map-right .leaflet-control-attribution{display:none}
-.compare-mode{overflow:hidden}.compare-mode .leaflet-control-minimap,.compare-mode .leaflet-control-fullscreen{display:none}
+.compare-mode{overflow:hidden}.compare-mode .leaflet-control-minimap{display:none}
+.map-full.leaflet-fullscreen .leaflet-bottom,.map-full.leaflet-fullscreen .leaflet-right{display:none}
 .leaflet-bottom.leaflet-left{max-width:100%;width:100%;background:#000}.leaflet-bottom.leaflet-left .leaflet-control{line-height:2.2em}.leaflet-bottom.leaflet-left .leaflet-control i{border-right:1px dotted #fff}
 .leaflet-bottom.leaflet-left .leaflet-control,.leaflet-bottom.leaflet-left .leaflet-social-control{float:left;clear:none;margin-bottom:.2em}
 .leaflet-bottom.leaflet-left .leaflet-bar-part{background:transparent;border:0}
