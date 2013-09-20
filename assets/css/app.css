@@ -11,8 +11,8 @@
 .sprite-zoom-in{background-position:0 -662px;width:26px;height:26px}
 .sprite-zoom-out{background-position:0 -738px;width:26px;height:27px}
 .sprite-zposition{background-position:0 -815px;width:25px;height:24px}
-.sprite-zrss{background-position:0 -889px;width:20px;height:19px}
-.sprite-download{background-position:0 -958px;width:35px;height:27px}
+.sprite-zrss{background-position:0 -882px;background-repeat:no-repeat;padding-left:22px}
+.sprite-download{background-position:-5px -958px;background-repeat:no-repeat;padding-left:27px}
 .row{max-width:100%}
 .reveal-modal{z-index:1000}
 .tooltip{z-index:10000;color:#000;background-color:#fff}
@@ -78,7 +78,7 @@
 .secondary-page #wrapper{font-size:80%}
 #secondary-page-zone{font-size:75%}#secondary-page-zone h1{font-size:1.5em}
 #secondary-page-zone h2{font-size:1.3em}
-@media only screen and (max-width:54em){.leaflet-control-minimap{display:none} #footer #slogan img{max-width:33%} #footer #footer-navigation{top:0}}@media only screen and (max-width:64em){#search #search-container,#search .compare-with-container{width:100%;border-right:0} #search #compare-with{padding-top:10px} .map-full,.map-right{top:13.3em}}@media only screen and (max-width:40em){#search{font-size:95%}#search #compare-with .label-black{margin-right:0} #search #compare-with .label-white{padding:.2em} .leaflet-bottom.leaflet-left .leaflet-control{font-size:80%}}.screamshot .tagline{display:none}
+@media only screen and (max-width:54em){.leaflet-control-minimap{display:none} #footer #slogan img{max-width:33%} #footer #footer-navigation{top:0}}@media only screen and (max-width:64em){#search #search-container,#search .compare-with-container{width:100%;border-right:0} #search #compare-with{padding-top:10px} .map-full,.map-right{top:13.3em}}@media only screen and (max-width:40em){#search{font-size:95%}#search #compare-with .label-black{margin-right:0} #search #compare-with .label-white{padding:.2em} .leaflet-bottom.leaflet-left{padding-top:3px}.leaflet-bottom.leaflet-left .leaflet-wms-control{display:none} .leaflet-bottom.leaflet-left .leaflet-control{font-size:80%}.leaflet-bottom.leaflet-left .leaflet-control .sprite-download{background-position:-5px -964px}}.screamshot .tagline{display:none}
 .screamshot #search{display:none}
 .screamshot #footer-navigation{display:none}
 .screamshot .map-full{top:5em}

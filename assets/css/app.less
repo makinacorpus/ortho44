@@ -20,8 +20,16 @@
 .sprite-zoom-in{ background-position: 0 -662px; width: 26px; height: 26px; } 
 .sprite-zoom-out{ background-position: 0 -738px; width: 26px; height: 27px; } 
 .sprite-zposition{ background-position: 0 -815px; width: 25px; height: 24px; } 
-.sprite-zrss{ background-position: 0 -889px; width: 20px; height: 19px; } 
-.sprite-download{ background-position: 0 -958px; width: 35px; height: 27px; } 
+.sprite-zrss {
+  background-position: 0px -882px;
+  background-repeat: no-repeat;
+  padding-left: 22px;
+} 
+.sprite-download{
+  background-position: -5px -958px;
+  background-repeat: no-repeat;
+  padding-left: 27px;
+} 
 
 
 /* CUSTOM MIXINS */
@@ -502,8 +510,17 @@
       padding: 0.2em;
     }
   }
-  .leaflet-bottom.leaflet-left .leaflet-control {
-    font-size: 80%;
+  .leaflet-bottom.leaflet-left {
+    padding-top: 3px;
+    .leaflet-wms-control {
+      display: none;
+    }
+    .leaflet-control {
+      font-size: 80%;
+      .sprite-download{
+        background-position: -5px -964px;
+      } 
+    }
   }
 }
 

@@ -391,7 +391,7 @@ var HAS_HASHCHANGE = (function() {
     onAdd: function(map) {
       this.map = map;
       this._container = L.DomUtil.create('div', 'leaflet-control-actionlink leaflet-control');
-      var link = L.DomUtil.create('a', 'leaflet-download-control', this._container);
+      var link = L.DomUtil.create('a', 'sprite-download leaflet-download-control', this._container);
       link.href = '#';
       link.title = this.options.title;
       link.setAttribute("data-reveal-id", "download-infos");
@@ -424,8 +424,8 @@ var HAS_HASHCHANGE = (function() {
 
     onAdd: function(map) {
       this.map = map;
-      this._container = L.DomUtil.create('div', 'leaflet-control-actionlink leaflet-control');
-      var link = L.DomUtil.create('a', 'leaflet-wms-control', this._container);
+      this._container = L.DomUtil.create('div', 'leaflet-control-actionlink leaflet-control leaflet-wms-control');
+      var link = L.DomUtil.create('a', 'sprite-zrss', this._container);
       link.href = '#';
       link.title = this.options.title;
       link.setAttribute("data-reveal-id", "wms-infos");
