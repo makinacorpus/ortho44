@@ -186,7 +186,14 @@ var HAS_HASHCHANGE = (function() {
       if(hash.indexOf('#') === 0) {
         hash = hash.substr(1);
       }
-      var args = hash.split("/");
+      var compare;
+      var args = hash.split("!");
+      if(args.length == 2) {
+        compare = args[1];
+        document.querySelector("form#compare-with input[value='"+compare+"']").checked=true
+        Ortho44.compareWith(map, "map-compare", older_layers["ortho"+compare]);
+      }
+      args = args[0].split("/");
       if (args.length == 3) {
         var zoom = parseInt(args[0], 10),
         lat = parseFloat(args[1]),
@@ -209,10 +216,14 @@ var HAS_HASHCHANGE = (function() {
           zoom = map.getZoom(),
           precision = Math.max(0, Math.ceil(Math.log(zoom) / Math.LN2));
 
-      return "#" + [zoom,
+      var newhash = "#" + [zoom,
         center.lat.toFixed(precision),
         center.lng.toFixed(precision)
       ].join("/");
+      if(document.querySelector("form#compare-with input:checked")) {
+        newhash += "!" + document.querySelector("form#compare-with input:checked").value;
+      }
+      return newhash
     },
 
     init: function(map, callback) {
@@ -1159,11 +1170,11 @@ var HAS_HASHCHANGE = (function() {
   // SECONDARY MAP
   L.DomEvent.addListener(document.querySelector("form#compare-with"), 'change', function(e) {
     if(e.target.checked) {
-      Ortho44.compareWith(map, "map-compare", older_layers["ortho"+e.target.value]);
       var inputs = document.querySelectorAll("form#compare-with input");
       for(var i=0; i<inputs.length; i++) {
         if(inputs[i].id != e.target.id) inputs[i].checked = false;
       }
+      Ortho44.compareWith(map, "map-compare", older_layers["ortho"+e.target.value]);
     } else {
       Ortho44.compareOff(map);
       var inputs = document.querySelectorAll("form#compare-with input");
