@@ -49,9 +49,10 @@
 .leaflet-control-actionlink{background:#fff;position:relative;top:.3em;padding:0 1em}.leaflet-control-actionlink a{color:#000}
 .leaflet-control-actionlink span{vertical-align:middle;margin-left:4px}
 .leaflet-top.leaflet-left .leaflet-bar-part,.leaflet-top.leaflet-left .leaflet-control-layers{background-color:#000;border-bottom:0}
+.leaflet-top.leaflet-left .leaflet-control-zoom{padding:5px;background-color:#000}
 .leaflet-top.leaflet-left .leaflet-control-zoom.leaflet-bar,.leaflet-top.leaflet-left .leaflet-control-layers{margin-top:0}
-.leaflet-top.leaflet-left .leaflet-locate-control,.leaflet-top.leaflet-left .leaflet-control-fullscreen,.leaflet-top.leaflet-left .leaflet-control-zoom-in,.leaflet-top.leaflet-left .leaflet-control-zoom-out{padding:5px;width:38px;height:34px;border-bottom:1px #fff dotted}
-.leaflet-top.leaflet-left .leaflet-control-layers{padding:3px}.leaflet-top.leaflet-left .leaflet-control-layers a{width:32px;height:26px}
+.leaflet-top.leaflet-left .leaflet-locate-control,.leaflet-top.leaflet-left .leaflet-control-fullscreen,.leaflet-top.leaflet-left .leaflet-control-zoom-in,.leaflet-top.leaflet-left .leaflet-control-zoom-out{padding:5px;width:37px;height:36px;border-bottom:1px #fff dotted}
+.leaflet-top.leaflet-left .leaflet-control-layers{padding:8px}.leaflet-top.leaflet-left .leaflet-control-layers a{width:31px;height:26px}
 .leaflet-top.leaflet-left .leaflet-control-layers .leaflet-control-layers-overlays label{color:#fff}
 .leaflet-top.leaflet-left .leaflet-fullscreen{z-index:1}
 .leaflet-top.leaflet-left .leaflet-control-layers-toggle{background-image:url('../images/sprite.png');background-position:0 0;width:32px;height:23px}
