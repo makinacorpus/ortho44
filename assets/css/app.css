@@ -82,7 +82,8 @@
 @media only screen and (max-width:54em){.leaflet-control-minimap{display:none} #footer #slogan img{max-width:33%} #footer #footer-navigation{top:0}}@media only screen and (max-width:64em){#search #search-container,#search .compare-with-container{width:100%;border-right:0} #search #compare-with{padding-top:10px} .map-full,.map-right{top:13.3em}}@media only screen and (max-width:40em){#header .tagline{display:none} #search{font-size:80%}#search #search-container #search-address,#search #compare-with{margin:.3em 0 0 0;height:25px;padding:0} #search #compare-with .label-black{margin-right:0}#search #compare-with .label-black:after{display:none} #search #compare-with .label-white{padding:.2em}#search #compare-with .label-white:after{display:none} .leaflet-top.leaflet-left .leaflet-control-zoom{padding:0} .leaflet-top.leaflet-left .leaflet-control-layers{padding:3px} .leaflet-bottom.leaflet-left{padding-top:3px}.leaflet-bottom.leaflet-left .leaflet-control-actionlink,.leaflet-bottom.leaflet-left .leaflet-print-control{display:none} .leaflet-bottom.leaflet-left .leaflet-control-embed i{border:0;width:35px} .leaflet-right{display:none} #footer{display:none} .map-full,.map-right{bottom:0;top:8.9em}}.screamshot .tagline{display:none}
 .screamshot #search{display:none}
 .screamshot #footer-navigation{display:none}
-.screamshot .map-full{top:5em}
+.screamshot .map-full,.screamshot .map-right{top:5em}
 .screamshot .leaflet-control{display:none}
 .screamshot .leaflet-control-scale{display:block}
+.screamshot .leaflet-bottom.leaflet-right{bottom:0}
 @-moz-document url-prefix(){#search #compare-with .label-white:after{height:7px}}
