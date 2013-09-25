@@ -693,19 +693,27 @@ var HAS_HASHCHANGE = (function() {
 
   var Ortho44 = {
     _callbackIndex: 0,
+    cachePlaceholder: document.querySelector("#search-input").getAttribute("placeholder"),
 
     // GEOCODING
     // -----------
     bindGeocode: function(form, input, map, callback) {
       L.DomEvent.addListener(form, 'submit', this._geocode, this);
-      var clearRandom = function() {
+      var clearInput = function() {
+        console.log(Ortho44.cachePlaceholder);
+        this.setAttribute("placeholder", "");
         if(this.className == "random-display") {
           this.value = "";
           Ortho44.removeClass(this, "random-display");
         }
       };
-      L.DomEvent.addListener(input, 'click', clearRandom, input);
-      L.DomEvent.addListener(input, 'focus', clearRandom, input);
+      var resetInput = function() {
+        console.log(Ortho44.cachePlaceholder);
+        this.setAttribute("placeholder", Ortho44.cachePlaceholder);
+      };
+      L.DomEvent.addListener(input, 'click', clearInput, input);
+      L.DomEvent.addListener(input, 'focus', clearInput, input);
+      L.DomEvent.addListener(input, 'focusout', resetInput, input);
       this._map = map;
       this._input = input;
       this._callback = callback;
