@@ -7,11 +7,15 @@ title: Utiliser les photos
 # Réutiliser les photographies aériennes
 
 ## Licence
-Dans le cadre de sa démarche d’ouverture des données publiques, le Département de Loire-Atlantique, a fait le choix d’une licence « libre » : la licence Open Data Base License (ODbL), afin de permettre l'échange et le développement de services qu'une diffusion libre et gratuite est en mesure d’offrir.
+Dans le cadre de sa démarche d’ouverture des données publiques, le Département de Loire-Atlantique, a fait le choix de mettre à disposition les photographies aériennes de 2012 sous la [licence Creative Commons paternité – partage à l’identique 2.0 (CC-BY-SA)](http://creativecommons.org/licenses/by-sa/2.0/fr/).
 
-Cette licence d’usage des données complète le cadre juridique européen et français en la matière, notamment la loi n° 78-753 du 17 juillet 1978.
+Vous êtes libres de partager — reproduire, distribuer et communiquer l’œuvre
+remixer — adapter l’œuvre
+d’utiliser cette œuvre à des fins commerciales 
 
-Conformément aux objectifs d’une politique d’accès libre aux données publiques, cette licence définit les droits et les devoirs des réutilisateurs des données du portail  data.loire-atlantique.fr et du site vuduciel.loire-atlantique.fr
+**Selon les conditions suivantes :**
+**Attribution** — Vous devez attribuer l’œuvre de la manière indiquée par l’auteur de l’œuvre ou le titulaire des droits (mais pas d’une manière qui suggérerait qu’ils vous approuvent, vous ou votre utilisation de l’œuvre). Le crédit comportera la mention « © Département de Loire-Atlantique ».
 
-Les photographies aériennes ici présentes sont réutilisables dans la cadre de cette licence.
-[En savoir plus sur la licence](http://data.loire-atlantique.fr/licence/ "Licence open data")
+**Partage dans les Mêmes Conditions** — Si vous modifiez, transformez ou adaptez cette œuvre, vous n’avez le droit de distribuer votre création que sous une licence identique ou similaire à celle-ci. 
+
+A chaque réutilisation ou distribution d'une ou plusieurs photographies, vous devez faire apparaître clairement au public la licence selon laquelle elle est mise à disposition. 
