@@ -1221,14 +1221,19 @@ var HAS_HASHCHANGE = (function() {
 
   // CONCOURS
   $(document).ready(function() {
-    var now = new Date();
-    var start_day = new Date(2013, 8, 30, 10, 30);
-    if(now > start_day) {
-      $("#concours").show();
-      $("#link-concours").show();
-      $("body").click(function() {
+    if ( $( "body:not(.screamshot)" ).length ) {
+      var now = new Date();
+      var start_day = new Date(2013, 8, 30, 10, 30);
+      if(now > start_day) {
+        $("#concours").show();
+        $("#link-concours").show();
+        $("body").click(function() {
+          $("#concours").remove();
+        })
+      } else {
         $("#concours").remove();
-      })
+        $("#link-concours").remove();
+      }
     } else {
       $("#concours").remove();
       $("#link-concours").remove();

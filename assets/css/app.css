@@ -86,5 +86,5 @@
 .screamshot .leaflet-control{display:none}
 .screamshot .leaflet-control-scale{display:block}
 .screamshot .leaflet-bottom.leaflet-right{bottom:0}
-@-moz-document url-prefix(){#search #compare-with .label-white:after{height:7px}}:not(.screamshot) #concours{display:none;position:absolute;text-align:center;width:100%;height:75%;vertical-align:middle}:not(.screamshot) #concours img{max-width:50%;max-height:50%}
-:not(.screamshot) #link-concours{display:none}
+@-moz-document url-prefix(){#search #compare-with .label-white:after{height:7px}}#concours{display:none;position:absolute;text-align:center;width:100%;height:75%;vertical-align:middle}#concours img{max-width:50%;max-height:50%}
+#link-concours{display:none}
