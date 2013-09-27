@@ -74,7 +74,7 @@
 .map-body #footer{position:absolute;bottom:0}
 #footer{z-index:-1;height:3.5em}#footer #cg-logo{padding-right:0;text-align:right}
 #footer #slogan{text-align:right;border-top:.2em solid #b1ca00;padding-right:0}#footer #slogan span{background-color:#b1ca00;padding:0;margin-right:-0.05em}
-#footer #footer-navigation{position:relative;top:-0.5em}#footer #footer-navigation nav ul{margin-bottom:0;font-size:80%;font-family:Verdana,Geneva,sans-serif}#footer #footer-navigation nav ul li{display:inline;padding:0 1em;border-right:1px solid #808080}#footer #footer-navigation nav ul li a{color:#000;font-weight:bold;font-size:.9em}
+#footer #footer-navigation{position:relative;top:-0.5em}#footer #footer-navigation nav ul{margin-bottom:0;font-size:80%;font-family:Verdana,Geneva,sans-serif}#footer #footer-navigation nav ul li{display:inline-block;padding:0 1em;border-right:1px solid #808080}#footer #footer-navigation nav ul li a{color:#000;font-weight:bold;font-size:.9em}
 #footer #footer-navigation nav ul li:last-child{border-right:0}
 .secondary-page #wrapper{font-size:80%}
 #secondary-page-zone{font-size:75%}#secondary-page-zone h1{font-size:1.5em}
@@ -86,4 +86,5 @@
 .screamshot .leaflet-control{display:none}
 .screamshot .leaflet-control-scale{display:block}
 .screamshot .leaflet-bottom.leaflet-right{bottom:0}
-@-moz-document url-prefix(){#search #compare-with .label-white:after{height:7px}}
+@-moz-document url-prefix(){#search #compare-with .label-white:after{height:7px}}:not(.screamshot) #concours{display:none;position:absolute;text-align:center;width:100%;height:75%;vertical-align:middle}:not(.screamshot) #concours img{max-width:50%;max-height:50%}
+:not(.screamshot) #link-concours{display:none}

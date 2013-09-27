@@ -439,7 +439,7 @@
       font-size: 80%;
       font-family: Verdana, Geneva, sans-serif;
       li {
-        display: inline;
+        display: inline-block;
         padding: 0 1em;
         border-right: 1px solid grey;
 
@@ -611,5 +611,25 @@
 @-moz-document url-prefix() {
   #search #compare-with .label-white:after {
     height: 7px;
+  }
+}
+
+// CONCOURS
+:not(.screamshot) {
+  #concours {
+    display: none;
+    position: absolute;
+    text-align: center;
+    width: 100%;
+    height: 75%;
+    vertical-align: middle;
+
+    img {
+      max-width: 50%;
+      max-height: 50%;
+    }
+  }
+  #link-concours {
+    display: none;
   }
 }

@@ -1209,7 +1209,7 @@ var HAS_HASHCHANGE = (function() {
   // FOUNDATION INIT
   $(document).foundation(null, null, null, null, true);
   $(document).foundation('dropdown', 'off');
-  $("nav li a").each(function(i, el) {
+  $("nav li.overlay a").each(function(i, el) {
     $(el).click(function(event) {
       $('#secondary-page-zone').html="Chargement";
       $('#secondary-page-reveal').foundation('reveal', 'open');
@@ -1217,6 +1217,22 @@ var HAS_HASHCHANGE = (function() {
       event.preventDefault ? event.preventDefault() : event.returnValue = false;
       return false;
     })
+  });
+
+  // CONCOURS
+  $(document).ready(function() {
+    var now = new Date();
+    var start_day = new Date(2013, 8, 30, 10, 30);
+    if(now > start_day) {
+      $("#concours").show();
+      $("#link-concours").show();
+      $("body").click(function() {
+        $("#concours").remove();
+      })
+    } else {
+      $("#concours").remove();
+      $("#link-concours").remove();
+    }
   });
 
 }
