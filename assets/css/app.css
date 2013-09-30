@@ -225,7 +225,7 @@
   position: absolute;
   top: 10.3em;
   bottom: 5em;
-  right: 0;
+  right: -50%;
   width: 100%;
   border-left: 1px solid white;
 }
@@ -237,9 +237,6 @@
 }
 .compare-mode .leaflet-control-minimap {
   display: none;
-}
-.compare-mode .map-right {
-  width: 50%;
 }
 .map-full.leaflet-fullscreen .leaflet-bottom,
 .map-full.leaflet-fullscreen .leaflet-right {
