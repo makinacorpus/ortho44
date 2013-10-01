@@ -29,6 +29,8 @@ export GDAL_CACHEMAX=10000
 export GDAL_FORCE_CACHING=YES
 export VSI_CACHE=YES
 export VSI_CACHE_SIZE=2000
+export JPEG_QUALITY=${JPEG_QUALITY:-90}
+export O_JPEG_QUALITY=${O_JPEG_QUALITY:-${JPEG_QUALITY}}
 
 
 export PATH=$ROOT/bin:$CUR:$PATH
@@ -63,9 +65,14 @@ tif_retile() {
                     psuf="_deflate"
                     ;;
                 JPEG)
-                    COMPRESS_OPTS="$COMPRESS_OPTS -co JPEG_QUALITY=90"
-                    COMPRESS_OPTS="$COMPRESS_OPTS -fco JPEG_QUALITY=80"
+                    COMPRESS_OPTS="$COMPRESS_OPTS -co JPEG_QUALITY=${JPEG_QUALITY}"
+                    COMPRESS_OPTS="$COMPRESS_OPTS -fco JPEG_QUALITY=${O_JPEG_QUALITY}"
+                    psuf="_${JPEG_QUALITY}-${O_JPEG_QUALITY}"
+                    # old default
+                    if [[ $JPEG_QUALITY == "90" ]] && [[ $O_JPEG_QUALITY == "80" ]];then
                     psuf=""
+                    qpsuf=""
+                fi
                     ;;
             esac
             OUTPUT_FORMAT_OPTS="$OUTPUT_FORMAT_OPTS -co TILED=YES $COMPRESS $COMPRESS_OPTS"
@@ -73,8 +80,8 @@ tif_retile() {
     esac
     size_x=${1:-256}
     size_y=${2:-256}
-    export ECW_GEOSERVER="$OUT/pyramid_geoser_${OUTPUT_FORMAT}_${METHOD}-${ECHANTILLON}_${size_x}_${size_y}"
-    optfile="$OUT/pyramid_files_${OUTPUT_FORMAT}_${METHOD}-${ECHANTILLON}_${size_x}_${size_y}"
+    export ECW_GEOSERVER="$OUT/pyramid_geoser_${OUTPUT_FORMAT}_${METHOD}-${ECHANTILLON}_${size_x}_${size_y}${psuf}"
+    optfile="$OUT/pyramid_files_${OUTPUT_FORMAT}_${METHOD}-${ECHANTILLON}_${size_x}_${size_y}${psuf}"
     # rename images for geoserver to parse them
     # handle the 8 limit chars ...
     # for ec in $(ls $ECW_DATA/*.ecw);do
