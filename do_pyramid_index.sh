@@ -12,6 +12,7 @@
 # pyramid layers folders
 
 
+OPWD=$PWD
 cd $(dirname $0)
 T=$PWD
 bounds=$PWD/bounds.py
@@ -87,8 +88,8 @@ cat > $lvl.properties<<EOF
 Levels=$zoom_level,$zoom_level
 Heterogeneous=false
 AbsolutePath=false
-Name=1
-TypeName=1
+Name=$lvl
+TypeName=$lvl
 Caching=false
 ExpandToRGB=false
 LocationAttribute=location
@@ -137,6 +138,7 @@ EOF
 }
 
 do_pyramid() {
+    pushd $OPWD
     pushd $1
     CWD="$PWD"
     name="$(basename $CWD)"
@@ -183,7 +185,7 @@ do_pyramid() {
                 zpref=""
             fi
             zoom_levels="$zoom_levels${zpref}$zoom_level,$zoom_level"
-            cd $w && cook do_props && cd ..
+            cd $w && do_props && cd ..
             cd $w && cook do_shp && cd ..
             cd $w && cook do_index && cd ..
         fi
