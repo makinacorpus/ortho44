@@ -97,7 +97,7 @@ tif_retile() {
         j=$((j+1))
         ln -sfv $ec $ECW_GEOSERVER/${j}.ecw
     done
-    ls  $ECW_GEOSERVER/*ecw > $optfile
+    ls  $ECW_GEOSERVER/*ecw |sort --version-sort -f> $optfile
     nb=$(ls  $ECW_GEOSERVER/*ecw|wc -l)
     export PYRAMID=$OUT/${ppref}pyramid${psuf}_${nb}_${size_x}_${size_y}
     marker=$MARKERS/${ppref}pyramid${psuf}_${nb}_${size_x}_${size_y}

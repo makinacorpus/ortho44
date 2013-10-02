@@ -2,6 +2,9 @@
 
 """
 
+
+MULTITREADED VERSION
+PLEASE APPLY http://hg.python.org/cpython/rev/1f5d2642929a to your python (edit /usr/lib at any mean)
 Modified version of gdal_retile.py to facilitate integration
 with geoserver pyramid raster image plugin
 - add some more logging
@@ -60,10 +63,48 @@ except:
 
 import sys
 import os
+import traceback
 import math
 import logging
 
+from Queue import Queue
+
+class DummyPool(object):
+    def __init__(self, *args, **kwargs):
+        pass
+    def close(self):
+        pass
+    def join(self):
+        pass
+    def apply_async(self, f, args=None, kwargs=None):
+        if not args:
+            args = []
+        if not kwargs:
+            kwargs = {}
+        f(*args, **kwargs)
+
+class DummyLock(object):
+    def __enter__(self):
+        pass
+    def __exit__(self, typ, value, traceback):
+        pass
+
+try:
+    from multiprocessing.dummy import Pool as _Pool
+    from multiprocessing.dummy import Lock as _Lock
+except:
+    # drop-in replacements for systems without Multithreading.dummy support
+    _Pool = DummyPool
+    _Lock = DummyLock
+
 FORMAT = '%(asctime)-15s - %(levelname)s - %(name)s - %(message)s'
+CACHESIZE = 512
+WORKERS = 49
+os.environ['GDAL_CACHEMAX']      ='10000'
+os.environ['GDAL_FORCE_CACHING'] ='YES'
+os.environ['VSI_CACHE']          ='YES'
+os.environ['VSI_CACHE_SIZE']     ='2000'
+module_mutexes = {}
 
 def log_print(msg):
     print(msg)
@@ -109,30 +150,33 @@ class AffineTransformDecorator:
 
 class DataSetCache:
     """ A class for caching source tiles """
-    def __init__(self ):
-        self.cacheSize=8
-        self.queue=[]
-        self.dict={}
-    def get(self,name ):
+    def __init__(self, cacheSize=CACHESIZE):
+        self.cacheSize = cacheSize
+        self.queue = Queue()
+        self.dict = {}
 
+    def get(self, name):
+        if not name in module_mutexes:
+            module_mutexes[name] = Lock()
+        #return gdal.Open(name)
         if name in self.dict:
             return self.dict[name]
+        ttries = 2*60*5
+        tries = ttries
         result = gdal.Open(name)
         if result is None:
-            log_print("Error openenig:%s" % NameError)
-            sys.exit(1)
-        if len(self.queue)==self.cacheSize:
-            toRemove = self.queue.pop(0)
-            del self.dict[toRemove]
-        self.queue.append(name)
+            log_print("Error opening -> %s" % name)
+            raise Exception('Gdalopen failed')
+        if self.queue.qsize() >= self.cacheSize:
+            toRemove = self.queue.get_nowait()
+            with module_mutexes[toRemove]:
+                del self.dict[toRemove]
+        self.queue.put_nowait(name)
         self.dict[name]=result
         return result
-    def __del__(self):
-        for name, dataset in self.dict.items():
-            del dataset
-        del self.queue
-        del self.dict
 
+
+GLOBALCACHE = DataSetCache(CACHESIZE)
 
 
 class tile_info:
@@ -155,8 +199,6 @@ class tile_info:
         else:
             self.lastTileHeight=tileHeight
 
-
-
     def report( self ):
         log_print('tileWidth       %d' % self.tileWidth)
         log_print('tileHeight      %d' % self.tileHeight)
@@ -164,7 +206,6 @@ class tile_info:
         log_print('countTilesY:    %d' % self.countTilesY)
         log_print('lastTileWidth:  %d' % self.lastTileWidth)
         log_print('lastTileHeight: %d' % self.lastTileHeight)
-
 
 
 class mosaic_info:
@@ -179,45 +220,41 @@ class mosaic_info:
         """
         self.TempDriver=gdal.GetDriverByName("MEM")
         self.filename = filename
-        self.cache = DataSetCache()
         self.ogrTileIndexDS = inputDS
+        #self.cache = GLOBALCACHE
 
         self.ogrTileIndexDS.GetLayer().ResetReading()
         feature = self.ogrTileIndexDS.GetLayer().GetNextFeature()
         imgLocation = feature.GetField(0)
 
-        fhInputTile = self.cache.get(imgLocation)
-
-        self.bands = fhInputTile.RasterCount
-        self.band_type = fhInputTile.GetRasterBand(1).DataType
-        self.projection = fhInputTile.GetProjection()
-
-
-        dec = AffineTransformDecorator(fhInputTile.GetGeoTransform())
-        self.scaleX=dec.scaleX
-        self.scaleY=dec.scaleY
-        ct = fhInputTile.GetRasterBand(1).GetRasterColorTable()
-        if ct is not None:
-           self.ct = ct.Clone()
-        else:
-           self.ct = None
-        self.ci = [0] * self.bands
-        for iband in range(self.bands):
-            self.ci[iband] = fhInputTile.GetRasterBand(iband + 1).GetRasterColorInterpretation()
-
-        extent = self.ogrTileIndexDS.GetLayer().GetExtent()
-        self.ulx = extent[0];
-        self.uly = extent[3]
-        self.lrx = extent[1]
-        self.lry = extent[2]
-
-        self.xsize = int(round((self.lrx-self.ulx) / self.scaleX))
-        self.ysize = abs(int(round((self.uly-self.lry) / self.scaleY)))
+        fhInputTile = GLOBALCACHE.get(imgLocation)
+        with module_mutexes[imgLocation]:
+            self.bands = fhInputTile.RasterCount
+            self.band_type = fhInputTile.GetRasterBand(1).DataType
+            self.projection = fhInputTile.GetProjection()
 
 
-    def __del__(self):
-        del self.cache
-        del self.ogrTileIndexDS
+            dec = AffineTransformDecorator(fhInputTile.GetGeoTransform())
+            self.scaleX=dec.scaleX
+            self.scaleY=dec.scaleY
+            ct = fhInputTile.GetRasterBand(1).GetRasterColorTable()
+            if ct is not None:
+               self.ct = ct.Clone()
+            else:
+               self.ct = None
+            self.ci = [0] * self.bands
+            for iband in range(self.bands):
+                self.ci[iband] = fhInputTile.GetRasterBand(iband + 1).GetRasterColorInterpretation()
+
+            extent = self.ogrTileIndexDS.GetLayer().GetExtent()
+            self.ulx = extent[0];
+            self.uly = extent[3]
+            self.lrx = extent[1]
+            self.lry = extent[2]
+
+            self.xsize = int(round((self.lrx-self.ulx) / self.scaleX))
+            self.ysize = abs(int(round((self.uly-self.lry) / self.scaleY)))
+            #self.cache.cacheSize = int(self.xsize / float(TileWidth) * 6) + 8
 
     def getDataSet(self,minx,miny,maxx,maxy):
 
@@ -229,6 +266,7 @@ class mosaic_info:
             feature = self.ogrTileIndexDS.GetLayer().GetNextFeature();
             if feature is None:
                 break
+            featureName =  feature.GetField(0)
             features.append(feature)
             if envelope is None:
                 envelope=feature.GetGeometryRef().GetEnvelope()
@@ -259,42 +297,43 @@ class mosaic_info:
 
         for feature in features:
             featureName =  feature.GetField(0)
-            sourceDS=self.cache.get(featureName)
-            dec = AffineTransformDecorator(sourceDS.GetGeoTransform())
-            #calculate read and write offsets
-            readOffsetX =int(round((minx-dec.ulx) / self.scaleX))
-            readOffsetY =int(round((maxy-dec.uly) / self.scaleY))
-            writeOffsetX=0
-            if readOffsetX<0:
-                writeOffsetX=readOffsetX*-1;
-                readOffsetX=0
-            writeOffsetY=0
-            if readOffsetY<0:
-                writeOffsetY=readOffsetY*-1;
-                readOffsetY=0
-            #calculate read and write dimensions
-            readX=min(resultSizeX,sourceDS.RasterXSize-readOffsetX,resultSizeX-writeOffsetX)
-            if readX<=0:
-                continue
-            readY=min(resultSizeY,sourceDS.RasterYSize-readOffsetY,resultSizeY-writeOffsetY)
-            if readY<=0:
-                continue
+            sourceDS=GLOBALCACHE.get(featureName)
+            with module_mutexes[featureName]:
+                dec = AffineTransformDecorator(sourceDS.GetGeoTransform())
+                #calculate read and write offsets
+                readOffsetX =int(round((minx-dec.ulx) / self.scaleX))
+                readOffsetY =int(round((maxy-dec.uly) / self.scaleY))
+                writeOffsetX=0
+                if readOffsetX<0:
+                    writeOffsetX=readOffsetX*-1;
+                    readOffsetX=0
+                writeOffsetY=0
+                if readOffsetY<0:
+                    writeOffsetY=readOffsetY*-1;
+                    readOffsetY=0
+                #calculate read and write dimensions
+                readX=min(resultSizeX,sourceDS.RasterXSize-readOffsetX,resultSizeX-writeOffsetX)
+                if readX<=0:
+                    continue
+                readY=min(resultSizeY,sourceDS.RasterYSize-readOffsetY,resultSizeY-writeOffsetY)
+                if readY<=0:
+                    continue
 
-#            print "READ",readOffsetX,readOffsetY,readX,readY
+    #            print "READ",readOffsetX,readOffsetY,readX,readY
 
-            for bandNr in range(1,self.bands+1):
-                s_band = sourceDS.GetRasterBand( bandNr )
-                t_band = resultDS.GetRasterBand( bandNr )
-                if self.ct is not None:
-                    t_band.SetRasterColorTable(self.ct)
-                t_band.SetRasterColorInterpretation(self.ci[bandNr-1])
-                data = s_band.ReadRaster( readOffsetX,readOffsetY,readX,readY, readX,readY, self.band_type )
-                t_band.WriteRaster(writeOffsetX,writeOffsetY,readX,readY,data )
+                for bandNr in range(1,self.bands+1):
+                    s_band = sourceDS.GetRasterBand( bandNr )
+                    t_band = resultDS.GetRasterBand( bandNr )
+                    if self.ct is not None:
+                        t_band.SetRasterColorTable(self.ct)
+                    t_band.SetRasterColorInterpretation(self.ci[bandNr-1])
+                    data = s_band.ReadRaster( readOffsetX,readOffsetY,readX,readY, readX,readY, self.band_type )
+                    t_band.WriteRaster(writeOffsetX,writeOffsetY,readX,readY,data )
 
         return resultDS
 
     def closeDataSet(self, memDS):
-        del memDS
+        pass
         #self.TempDriver.Delete("TEMP")
 
 
@@ -320,15 +359,14 @@ def getTileIndexFromFiles( inputTiles, driverTyp):
     ogrTileIndexDS = createTileIndex("TileIndex",TileIndexFieldName,None,driverTyp);
     for inputTile in inputTiles:
 
-        fhInputTile = gdal.Open(inputTile)
+        fhInputTile = GLOBALCACHE.get(inputTile)
         if fhInputTile is None:
              return None
+        with module_mutexes[inputTile]:
+            dec = AffineTransformDecorator(fhInputTile.GetGeoTransform())
+            points = dec.pointsFor(fhInputTile.RasterXSize, fhInputTile.RasterYSize)
 
-        dec = AffineTransformDecorator(fhInputTile.GetGeoTransform())
-        points = dec.pointsFor(fhInputTile.RasterXSize, fhInputTile.RasterYSize)
-
-        addFeature(ogrTileIndexDS,inputTile,points[0],points[1])
-        del fhInputTile
+            addFeature(ogrTileIndexDS,inputTile,points[0],points[1])
 
     if Verbose:
         log_print("finished")
@@ -336,12 +374,31 @@ def getTileIndexFromFiles( inputTiles, driverTyp):
     return ogrTileIndexDS
 
 
-
-
 def getTargetDir (level = -1):
     if level==-1:
         level = '0'
     return TargetDir+str(level)+os.sep
+
+
+def tileImage2(minfo, ti, xIndex, yIndex, OGRDS, mutex=None, fullres=False, files=None):
+    offsetY=(yIndex-1)* ti.tileHeight
+    offsetX=(xIndex-1)* ti.tileWidth
+    if yIndex==ti.countTilesY:
+        height=ti.lastTileHeight
+    else:
+        height=ti.tileHeight
+    if xIndex==ti.countTilesX:
+        width=ti.lastTileWidth
+    else:
+        width=ti.tileWidth
+    if UseDirForEachRow :
+        tilename=getTileName(minfo,ti, xIndex, yIndex,0)
+    else:
+        tilename=getTileName(minfo,ti, xIndex, yIndex)
+    createTile(minfo, offsetX, offsetY, width, height, tilename, OGRDS, fullres=fullres, mutex=mutex)
+    with mutex:
+        if os.path.exists(tilename):
+            files.append(tilename)
 
 
 def tileImage(minfo, ti, fullres=False ):
@@ -352,36 +409,27 @@ def tileImage(minfo, ti, fullres=False ):
     returns list of created tiles
 
     """
-
     global LastRowIndx
     LastRowIndx=-1
     OGRDS=createTileIndex("TileResult_0", TileIndexFieldName, Source_SRS,TileIndexDriverTyp)
-    files =[]
-
 
     yRange = list(range(1,ti.countTilesY+1))
     xRange = list(range(1,ti.countTilesX+1))
 
+    files =[]
+    pool = Pool()
+    mutex = Lock()
     for yIndex in yRange:
         for xIndex in xRange:
-            offsetY=(yIndex-1)* ti.tileHeight
-            offsetX=(xIndex-1)* ti.tileWidth
-            if yIndex==ti.countTilesY:
-                height=ti.lastTileHeight
-            else:
-                height=ti.tileHeight
-
-            if xIndex==ti.countTilesX:
-                width=ti.lastTileWidth
-            else:
-                width=ti.tileWidth
-            if UseDirForEachRow :
-                tilename=getTileName(minfo,ti, xIndex, yIndex,0)
-            else:
-                tilename=getTileName(minfo,ti, xIndex, yIndex)
-            createTile(minfo, offsetX, offsetY, width, height,tilename,OGRDS, fullres=fullres)
-            if os.path.exists(tilename):
-                files.append(tilename)
+            kwargs = {
+                'fullres': fullres,
+                'mutex': mutex,
+                'files': files,
+            }
+            args = [minfo, ti, xIndex, yIndex,OGRDS]
+            pool.apply_async(tileImage2, args, kwargs)
+    pool.close()
+    pool.join()
 
 
     if TileIndexName is not None:
@@ -515,10 +563,11 @@ def createPyramidTile(levelMosaicInfo, offsetX, offsetY, width, height,tileName,
 
     if OGRDS is not None and os.path.exists(tileName):
         points = dec.pointsFor(width, height)
-        addFeature(OGRDS, tileName, points[0], points[1])
+        with mutex:
+            addFeature(OGRDS, tileName, points[0], points[1])
 
 
-def createTile( minfo, offsetX,offsetY,width,height, tilename,OGRDS, fullres=False):
+def createTile( minfo, offsetX,offsetY,width,height, tilename,OGRDS, fullres=False, mutex=None):
     """
 
     Create tile
@@ -593,7 +642,8 @@ def createTile( minfo, offsetX,offsetY,width,height, tilename,OGRDS, fullres=Fal
     if (OGRDS is not None) and os.path.exists(tilename):
         dec2 = AffineTransformDecorator(geotransform)
         points = dec2.pointsFor(width, height)
-        addFeature(OGRDS, tilename, points[0], points[1])
+        with mutex:
+            addFeature(OGRDS, tilename, points[0], points[1])
 
 
 def createTileIndex(dsName,fieldName,srs,driverName):
@@ -677,27 +727,41 @@ def buildPyramid(minfo,createdTileIndexDS,tileWidth, tileHeight):
             grandInputDs = inputDS
 
 
+def buildPyramidLevel2(levelMosaicInfo,levelOutputTileInfo, xIndex, yIndex, level, mutex, OGRDS):
+    offsetY=(yIndex-1)* levelOutputTileInfo.tileHeight
+    offsetX=(xIndex-1)* levelOutputTileInfo.tileWidth
+    if yIndex==levelOutputTileInfo.countTilesY:
+        height=levelOutputTileInfo.lastTileHeight
+    else:
+        height=levelOutputTileInfo.tileHeight
+
+    if xIndex==levelOutputTileInfo.countTilesX:
+        width=levelOutputTileInfo.lastTileWidth
+    else:
+        width=levelOutputTileInfo.tileWidth
+    tilename=getTileName(levelMosaicInfo,levelOutputTileInfo, xIndex, yIndex,level)
+    createPyramidTile(levelMosaicInfo, offsetX, offsetY, width, height,tilename,mutex,OGRDS)
+
+
 def buildPyramidLevel(levelMosaicInfo,levelOutputTileInfo, level):
     yRange = list(range(1,levelOutputTileInfo.countTilesY+1))
     xRange = list(range(1,levelOutputTileInfo.countTilesX+1))
 
     OGRDS=createTileIndex("TileResult_"+str(level), TileIndexFieldName, Source_SRS,TileIndexDriverTyp)
 
+    pool = Pool()
+    mutex = Lock()
     for yIndex in yRange:
         for xIndex in xRange:
-            offsetY=(yIndex-1)* levelOutputTileInfo.tileHeight
-            offsetX=(xIndex-1)* levelOutputTileInfo.tileWidth
-            if yIndex==levelOutputTileInfo.countTilesY:
-                height=levelOutputTileInfo.lastTileHeight
-            else:
-                height=levelOutputTileInfo.tileHeight
-
-            if xIndex==levelOutputTileInfo.countTilesX:
-                width=levelOutputTileInfo.lastTileWidth
-            else:
-                width=levelOutputTileInfo.tileWidth
-            tilename=getTileName(levelMosaicInfo,levelOutputTileInfo, xIndex, yIndex,level)
-            createPyramidTile(levelMosaicInfo, offsetX, offsetY, width, height,tilename,OGRDS)
+            args = [levelMosaicInfo,
+                    levelOutputTileInfo,
+                    xIndex, yIndex,
+                    level,
+                    mutex,
+                    OGRDS]
+            pool.apply_async(buildPyramidLevel2, args)
+    pool.close()
+    pool.join()
 
 
     if TileIndexName is not None:
@@ -767,6 +831,7 @@ def Usage():
      log_print('        [-r {near/bilinear/cubic/cubicspline/lanczos}]')
      log_print('        [-useDirForEachRow]')
      log_print('        [-untilLevel levelToStop]')
+     log_print('        [-multi]')
      log_print('        -targetDir TileDirectory input_files')
 
 # =============================================================================
@@ -794,6 +859,7 @@ def main(args = None):
     global TileIndexFieldName
     global TileIndexName
     global CsvDelimiter
+    global Multithreading
     global CsvFileName
 
     global TileIndexDriverTyp
@@ -827,6 +893,8 @@ def main(args = None):
             if BandType == gdal.GDT_Unknown:
                 log_print('Unknown GDAL data type: %s' % argv[i])
                 return 1
+        elif arg == '-multi':
+            Multithreading=True
         elif arg == '-co':
             i+=1
             CreateOptions.append( argv[i] )
@@ -932,10 +1000,22 @@ def main(args = None):
     reset_logging('retile-%s-%s_%s.log' % (
         os.path.basename(
             os.path.dirname(TargetDir)),
-        TileWidth, 
+        TileWidth,
         TileHeight)
     )
     log_print('job start')
+    global Pool
+    global Lock
+
+    if Multithreading is True:
+        def Pool_():
+            return _Pool(WORKERS)
+        Pool = Pool_
+        Lock = _Lock
+    else:
+        Pool = DummyPool
+        Lock = DummyLock
+
     # create level 0 directory if needed
     tg_dir = getTargetDir()
     if not os.path.exists(tg_dir):
@@ -1019,6 +1099,7 @@ def initGlobals():
     global CreateOptions
     global FullResCreateOptions
     global Names
+    global Multithreading
     global TileWidth
     global TileHeight
     global Format
@@ -1045,6 +1126,7 @@ def initGlobals():
     CreateOptions = []
     FullResCreateOptions = []
     Names=[]
+    Multithreading=False
     TileWidth=256
     TileHeight=256
     Format='GTiff'
@@ -1086,6 +1168,7 @@ TileIndexName=None
 TileIndexDriverTyp="Memory"
 CsvDelimiter=";"
 CsvFileName=None
+Multithreading=True
 Source_SRS=None
 TargetDir=None
 ResamplingMethod=GRA_NearestNeighbour

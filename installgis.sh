@@ -254,4 +254,18 @@ current() {
 current
 install_atlaslayer
 
+
+
+
+
+
+# FOR PYTHON MULTITREADED VERSION
+# PLEASE APPLY http://hg.python.org/cpython/rev/1f5d2642929a to your python (edit /usr/lib at any mean)
+
+
+
+
+
+
+
 # vim: set ft=sh:
