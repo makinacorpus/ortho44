@@ -1014,7 +1014,7 @@ var HAS_HASHCHANGE = (function() {
     }
   );
 
-  var ortho2012 = new L.FallbackTileLayer('http://{s}.tiles.cg44.makina-corpus.net/ortho-2012/{z}/{x}/{y}.jpg', {
+  var ortho2012 = new L.FallbackTileLayer('http://{s}.tiles.vuduciel.loire-atlantique.fr/ortho-2012/{z}/{x}/{y}.jpg', {
     continuousWorld: true,  // very important
     tms: true,
     maxZoom: 19,
@@ -1075,34 +1075,34 @@ var HAS_HASHCHANGE = (function() {
   map.on('locationerror', function() {
     console.log("Too far away, keep default location");
   });
-  var streets_custom_osm = L.tileLayer('http://{s}.tiles.cg44.makina-corpus.net/osm/{z}/{x}/{y}.png', {
+  var streets_custom_osm = L.tileLayer('http://{s}.tiles.vuduciel.loire-atlantique.fr/osm/{z}/{x}/{y}.png', {
     opacity: 0.8,
     maxZoom: 19,
     attribution: "Makina Corpus / OpenStreetMap",
     subdomains: 'abcdefgh'
   });
   var older_layers = {
-    'ortho1850': {url:'http://{s}.tiles.cg44.makina-corpus.net/ortho-1850/{z}/{x}/{y}.jpg', options: {
+    'ortho1850': {url:'http://{s}.tiles.vuduciel.loire-atlantique.fr/ortho-1850/{z}/{x}/{y}.jpg', options: {
       maxZoom: 16,
       tms: true,
       subdomains: 'abcdefgh'
     }},
-    'ortho1949': {url:'http://{s}.tiles.cg44.makina-corpus.net/ortho-1949/{z}/{x}/{y}.jpg', options: {
+    'ortho1949': {url:'http://{s}.tiles.vuduciel.loire-atlantique.fr/ortho-1949/{z}/{x}/{y}.jpg', options: {
       maxZoom: 18,
       tms: true,
       subdomains: 'abcdefgh'
     }},
-    'ortho1999': {url:'http://{s}.tiles.cg44.makina-corpus.net/ortho-1999/{z}/{x}/{y}.jpg', options: {
+    'ortho1999': {url:'http://{s}.tiles.vuduciel.loire-atlantique.fr/ortho-1999/{z}/{x}/{y}.jpg', options: {
       maxZoom: 18,
       tms: true,
       subdomains: 'abcdefgh'
     }},
-    'ortho2004': {url:'http://{s}.tiles.cg44.makina-corpus.net/ortho-2004/{z}/{x}/{y}.jpg', options: {
+    'ortho2004': {url:'http://{s}.tiles.vuduciel.loire-atlantique.fr/ortho-2004/{z}/{x}/{y}.jpg', options: {
       maxZoom: 18,
       tms: true,
       subdomains: 'abcdefgh'
     }},
-    'ortho2009': {url:'http://{s}.tiles.cg44.makina-corpus.net/ortho-2009/{z}/{x}/{y}.jpg', options: {
+    'ortho2009': {url:'http://{s}.tiles.vuduciel.loire-atlantique.fr/ortho-2009/{z}/{x}/{y}.jpg', options: {
       maxZoom: 18,
       tms: true,
       subdomains: 'abcdefgh'
