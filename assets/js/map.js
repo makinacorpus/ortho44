@@ -386,9 +386,9 @@ var HAS_HASHCHANGE = (function() {
       var p = document.querySelector("#download-link");
       if(this.map.getZoom()>13) {
         var bounds = this.map.getBounds();
-        var wms = "http://services.vuduciel.loire-atlantique.fr/wms/?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&BBOX="+bounds.getSouthWest().lat+","+bounds.getSouthWest().lng+","+bounds.getNorthEast().lat+","+bounds.getNorthEast().lng+"&SRS=EPSG:4326&WIDTH=1351&HEIGHT=736&LAYERS=ortho2012&STYLES=&FORMAT=image/png&DPI=96&MAP_RESOLUTION=96&FORMAT_OPTIONS=dpi:96&TRANSPARENT=TRUE";
+        var wms = "http://services.vuduciel.loire-atlantique.fr/geoserver/wms/?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&BBOX="+bounds.getSouthWest().lat+","+bounds.getSouthWest().lng+","+bounds.getNorthEast().lat+","+bounds.getNorthEast().lng+"&SRS=EPSG:4326&WIDTH=1351&HEIGHT=736&LAYERS=tif80&STYLES=&FORMAT=image/png&DPI=96&MAP_RESOLUTION=96&FORMAT_OPTIONS=dpi:96&TRANSPARENT=TRUE";
         var download_url = "http://services.vuduciel.loire-atlantique.fr/download?x0="+bounds.getSouthWest().lng+"&y0="+bounds.getSouthWest().lat+"&x1="+bounds.getNorthEast().lng+"&y1="+bounds.getNorthEast().lat
-        var message = "<p>Pour télécharger l'image complète de la position actuelle, veuillez cliquer sur l'un des liens ci-dessous.</p>"
+        var message = "<p>Pour télécharger l'image complète de la position actuelle, veuillez cliquer sur le lien ci-dessous.</p>"
         message += "<p>Note: le temps de chargement peut être assez long suivant la taille de la zone affichée.</p>";
         message += "<p><a href='"+download_url+"' id= target='_new'>Télécharger l'image en dalles ECW</a></p>";
         //message += "<p><a href='"+wms+"' id= target='_new'>Télécharger l'image haute résolution JPG</a></p>";
