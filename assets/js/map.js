@@ -840,7 +840,7 @@ var HAS_HASHCHANGE = (function() {
         }
       );
 
-      var layer = L.tileLayer(layer_param.url, layer_param.options);
+      var layer = new L.FallbackTileLayer(layer_param.url, layer_param.options);
       var maxZoom = layer.options.maxZoom;
       map._layersMaxZoom = maxZoom;
 
