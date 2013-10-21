@@ -99,7 +99,7 @@ except:
 
 FORMAT = '%(asctime)-15s - %(levelname)s - %(name)s - %(message)s'
 CACHESIZE = 512
-WORKERS = 49
+WORKERS = 80
 os.environ['GDAL_CACHEMAX']      ='10000'
 os.environ['GDAL_FORCE_CACHING'] ='YES'
 os.environ['VSI_CACHE']          ='YES'
@@ -225,7 +225,13 @@ class mosaic_info:
 
         self.ogrTileIndexDS.GetLayer().ResetReading()
         feature = self.ogrTileIndexDS.GetLayer().GetNextFeature()
-        imgLocation = feature.GetField(0)
+        try:
+            imgLocation = feature.GetField(0)
+        except Exception, e:
+            trace = traceback.format_exc()
+            import pdb;pdb.set_trace()  ## Breakpoint ##
+            raise
+
 
         fhInputTile = GLOBALCACHE.get(imgLocation)
         with module_mutexes[imgLocation]:

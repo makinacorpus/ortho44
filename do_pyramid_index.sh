@@ -139,7 +139,8 @@ EOF
 
 do_pyramid() {
     pushd $OPWD
-    pushd $1
+    #pushd $1
+    #exit -1
     CWD="$PWD"
     name="$(basename $CWD)"
     format=${FORMAT:-GTIFF}

@@ -80,6 +80,16 @@ install_jdk() {
     sudo add-apt-repository ppa:webupd8team/java
     sudo apt-get update
     sudo apt-get install oracle-java7-installer -y
+    sudo apt-get install oracle-java6-installer -y
+
+# USE SUN JDK 1.6
+
+# PUT IN THE JVM
+# wget http://download.java.net/media/jai/builds/release/1_1_3/jai-1_1_3-lib-linux-amd64-jdk.bin
+# wget http://download.java.net/media/jai-imageio/builds/release/1.1/jai_imageio-1_1-lib-linux-amd64-jdk.bin
+
+
+
 }
 
 gdal() {
@@ -253,9 +263,6 @@ current() {
 #geoserver
 current
 install_atlaslayer
-
-
-
 
 
 
