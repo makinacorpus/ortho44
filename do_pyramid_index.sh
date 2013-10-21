@@ -111,6 +111,7 @@ do_index() {
 
 cook() {
     func=$1
+    if [[ ! -d $MARKERS ]];then mkdir $MARKERS;fi
     mk="$MARKERS/.cook_pyr_${PWD//\//_}_${@//\//_}"
     if [[ ! -f $mk ]];then
         "$@"
@@ -204,3 +205,14 @@ for i in ${@:-512};do
 done
 # reset:
 # rm */{0,1,2,3,4,5,6,7,8,9,10}.{shp,shx,dbf}
+
+# EG: 
+#  cd /var/lib/tomcat7/webapps/geoserver/data/jp2/
+#  /var/makina/data/test_wms/do_pyramid_index.sh 
+
+
+
+
+
+
+
