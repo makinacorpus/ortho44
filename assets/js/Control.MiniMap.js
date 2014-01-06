@@ -1,15 +1,15 @@
 L.Control.MiniMap = L.Control.extend({
 	options: {
-		position: 'bottomright',
+		position: 'topright',
 		toggleDisplay: false,
+		fixedPosition: false,
+		center: null,
 		zoomLevelOffset: -5,
 		zoomLevelFixed: false,
 		zoomAnimation: false,
 		autoToggleDisplay: false,
 		width: 150,
-		height: 150,
-		aimingRectOptions: {color: "#ff7800", weight: 1, clickable: false},
-		shadowRectOptions: {color: "#000000", weight: 1, clickable: false, opacity:0, fillOpacity:0}
+		height: 150
 	},
 	
 	hideText: 'Hide MiniMap',
@@ -19,10 +19,10 @@ L.Control.MiniMap = L.Control.extend({
 	//layer is the map layer to be shown in the minimap
 	initialize: function (layer, options) {
 		L.Util.setOptions(this, options);
-		//Make sure the aiming rects are non-clickable even if the user tries to set them clickable (most likely by forgetting to specify them false)
-		this.options.aimingRectOptions.clickable = false;
-		this.options.shadowRectOptions.clickable = false;
 		this._layer = layer;
+		if(this.options.center) {
+			this._center = new L.LatLng(this.options.center[1], this.options.center[0]);
+		}
 	},
 	
 	onAdd: function (map) {
@@ -46,11 +46,10 @@ L.Control.MiniMap = L.Control.extend({
 			touchZoom: !this.options.zoomLevelFixed,
 			scrollWheelZoom: !this.options.zoomLevelFixed,
 			doubleClickZoom: !this.options.zoomLevelFixed,
-			boxZoom: !this.options.zoomLevelFixed,
-			crs: map.options.crs
+			boxZoom: !this.options.zoomLevelFixed
 		});
-
-		this._miniMap.addLayer(this._layer);
+		//We make a copy so that the original layer object is untouched, this way we can add/remove multiple times
+		this._miniMap.addLayer(L.Util.clone (this._layer));
 
 		//These bools are used to prevent infinite loops of the two maps notifying each other that they've moved.
 		this._mainMapMoving = false;
@@ -64,9 +63,14 @@ L.Control.MiniMap = L.Control.extend({
 			this._addToggleButton();
 		}
 
+		// No dragging if fixed position
+		if(this.options.fixedPosition) {
+			this._miniMap.dragging.disable();
+		}
+		
 		this._miniMap.whenReady(L.Util.bind(function () {
-			this._aimingRect = L.rectangle(this._mainMap.getBounds(), this.options.aimingRectOptions).addTo(this._miniMap);
-			this._shadowRect = L.rectangle(this._mainMap.getBounds(), this.options.shadowRectOptions).addTo(this._miniMap);
+			this._aimingRect = L.rectangle(this._mainMap.getBounds(), {color: "blue", weight: 15, clickable: false}).addTo(this._miniMap);
+			this._shadowRect = L.rectangle(this._mainMap.getBounds(), {color: "grey", weight: 15, clickable: false,opacity:0,fillOpacity:0}).addTo(this._miniMap);
 			this._mainMap.on('moveend', this._onMainMapMoved, this);
 			this._mainMap.on('move', this._onMainMapMoving, this);
 			this._miniMap.on('movestart', this._onMiniMapMoveStarted, this);
@@ -79,7 +83,11 @@ L.Control.MiniMap = L.Control.extend({
 
 	addTo: function (map) {
 		L.Control.prototype.addTo.call(this, map);
-		this._miniMap.setView(this._mainMap.getCenter(), this._decideZoom(true));
+		if(this.options.center) {
+			this._miniMap.setView(this._center, this._decideZoom(true));
+		} else {
+			this._miniMap.setView(this._mainMap.getCenter(), this._decideZoom(true));
+		}
 		this._setDisplay(this._decideMinimized());
 		return this;
 	},
@@ -89,7 +97,6 @@ L.Control.MiniMap = L.Control.extend({
 		this._mainMap.off('move', this._onMainMapMoving, this);
 		this._miniMap.off('moveend', this._onMiniMapMoved, this);
 
-		this._miniMap.removeLayer(this._layer);
 	},
 
 	_addToggleButton: function () {
@@ -167,7 +174,9 @@ L.Control.MiniMap = L.Control.extend({
 	_onMainMapMoved: function (e) {
 		if (!this._miniMapMoving) {
 			this._mainMapMoving = true;
-			this._miniMap.setView(this._mainMap.getCenter(), this._decideZoom(true));
+			if(!this.options.fixedPosition) {
+				this._miniMap.setView(this._mainMap.getCenter(), this._decideZoom(true));
+			}
 			this._setDisplay(this._decideMinimized());
 		} else {
 			this._miniMapMoving = false;
@@ -207,30 +216,8 @@ L.Control.MiniMap = L.Control.extend({
 		if (!this.options.zoomLevelFixed) {
 			if (fromMaintoMini)
 				return this._mainMap.getZoom() + this.options.zoomLevelOffset;
-			else {
-				var currentDiff = this._miniMap.getZoom() - this._mainMap.getZoom();
-				var proposedZoom = this._miniMap.getZoom() - this.options.zoomLevelOffset;
-				var toRet;
-				
-				if (currentDiff > this.options.zoomLevelOffset && this._mainMap.getZoom() < this._miniMap.getMinZoom() - this.options.zoomLevelOffset) {
-					//This means the miniMap is zoomed out to the minimum zoom level and can't zoom any more.
-					if (this._miniMap.getZoom() > this._lastMiniMapZoom) {
-						//This means the user is trying to zoom in by using the minimap, zoom the main map.
-						toRet = this._mainMap.getZoom() + 1;
-						//Also we cheat and zoom the minimap out again to keep it visually consistent.
-						this._miniMap.setZoom(this._miniMap.getZoom() -1);
-					} else {
-						//Either the user is trying to zoom out past the mini map's min zoom or has just panned using it, we can't tell the difference.
-						//Therefore, we ignore it!
-						toRet = this._mainMap.getZoom();
-					}
-				} else {
-					//This is what happens in the majority of cases, and always if you configure the min levels + offset in a sane fashion.
-					toRet = proposedZoom;
-				}
-				this._lastMiniMapZoom = this._miniMap.getZoom();
-				return toRet;
-			}
+			else
+				return this._miniMap.getZoom() - this.options.zoomLevelOffset;
 		} else {
 			if (fromMaintoMini)
 				return this.options.zoomLevelFixed;
@@ -267,4 +254,17 @@ L.Map.addInitHook(function () {
 
 L.control.minimap = function (options) {
 	return new L.Control.MiniMap(options);
+};
+
+//Simple helper function for cloning
+L.Util.clone = function (o){
+	if(o == null || typeof(o) != 'object')
+		return o;
+
+	var c = new o.constructor();
+	//Deep clone recursively
+	for(var k in o)
+		c[k] = L.Util.clone(o[k]);
+
+	return c;
 };

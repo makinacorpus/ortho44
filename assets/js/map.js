@@ -950,11 +950,11 @@ var HAS_HASHCHANGE = (function() {
         ["Lac de Vioreau, Joué-sur-Erdre", 15, 47.5232, -1.4230],
       ];
       var random = niceLocations[Math.floor(Math.random()*niceLocations.length)];
+      map.setView([random[2], random[3]], random[1]);
       if(!location.hash) {
         document.getElementById("search-input").value = random[0];
         Ortho44.setClass(document.getElementById('search-input'), "random-display");
       }
-      map.setView([random[2], random[3]], random[1]);
     }
 
   };
@@ -1066,12 +1066,10 @@ var HAS_HASHCHANGE = (function() {
   // CONTROLS
   var osm = new L.TileLayer("http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {maxZoom: 11, attribution: "Map data &copy; OpenStreetMap contributors"});
   var miniMap = new L.Control.MiniMap(osm, {
-    position: 'topright',
     zoomLevelFixed: 7,
     fixedPosition: true,
     center: [-1.8237, 47.35],
-    width: 160,
-    aimingRectOptions: {color: "blue", weight: 5, clickable: false}
+    width: 160
   }).addTo(map);
 
   map.on('locationerror', function() {
