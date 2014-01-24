@@ -5,7 +5,7 @@
 <!--[if IE 8]>    <html class="no-js lt-ie9" lang="en"> <![endif]-->
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
 <head>
-  <meta http-equiv="Content-Type" content="text/html;charset=utf-8" >
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 
   <!-- Set the viewport width to device width for mobile -->
   <meta name="viewport" content="width=device-width" />
@@ -13,14 +13,14 @@
   <title>{{ page.title }}</title>
   <meta name="description" content="{{ page.description }}" />
   <link rel="icon" href="favicon.ico"/>
-  <meta property="og:image" content="http://vuduciel.loire-atlantique.fr/assets/images/logo.png" />
+  <meta property="og:image" content="http://vuduciel.loire-atlantique.fr/assets/images/vignettevuduciel.jpg" />
   <meta property="og:title" content="{{ page.description }}" />
 
   <!-- CSS Files -->
   <link rel="stylesheet" href="assets/css/foundation.min.css" />
   <link rel="stylesheet" type="text/css" href="http://cdn.leafletjs.com/leaflet-0.5.1/leaflet.css" />
   <link href="//netdna.bootstrapcdn.com/font-awesome/3.1.1/css/font-awesome.css" rel="stylesheet" />
-  <link rel="stylesheet" href="assets/css/app.css" />
+  <link rel="stylesheet" href="assets/css/app-dev.css" />
 
 
   <!-- Fix leaflet issue with PhantomJS 
@@ -33,21 +33,26 @@
   }
   </script>
 </head>
-	<body class="map-body map-dev">
+  <body class="map-body map-dev">
 
-{% include header.html %}
+{% include header-dev.html %}
 {% include search-dev.html %}
 
 {{ content }}
 
-{% include footer.html %}
+{% include footer-dev.html %}
 
 <!-- JS Files -->
-  <!-- IE Fix for HTML5 Tags -->
+  <!-- IE Fixes -->
   <!--[if lt IE 9]>
+    <script>
+      location.href = "./old-ie.html";
+    </script>
     <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/respond.js/1.3.0/respond.min.js"></script>
   <![endif]-->
-<script src="http://cg44.makina-corpus.net/geojson/44.js"></script>
+
+<script src="assets/js/44.js"></script>
 <script src="assets/js/foundation.js"></script>
 <script src="assets/js/map-dev.js"></script>
 
@@ -90,16 +95,18 @@ map.setView([lat, lon], zoom);
   <a class="close-reveal-modal">&#215;</a>
 </div>
 <div id="wms-infos" class="reveal-modal">
-  <p>TEMPORAIREMENT INDISPONIBLE</p>
   <p>Conformément aux prescriptions de la directive européenne INSPIRE, vous pouvez visualiser les photographies aériennes de la Loire-Atlantique à partir d’un flux WMS.</p><p>Son principal intérêt est de vous permettre d’afficher sur votre poste de travail les images publiées dans Vuduciel et d’y superposer vos propres données.</p>
-  <!--<p>Son utilisation nécessite de disposer d’un client WMS tel que Quantum GIS, JUMP, Gv SIG, uDig, ou GAIA pour les SIG open source; Géoconcept, ArcGIS, ou Mapinfo pour les SIG d’éditeurs.</p><p>Après avoir lancé la commande permettant d’ouvrir une couche WMS, le logiciel SIG demande de saisir une adresse WMS.</p>
-  <p>Pour le site Vuduciel, elle correspond à l’URL du serveur cartographique http://services.vuduciel.loire-atlantique.fr/</p>-->
+  <p>Son utilisation nécessite de disposer d’un client WMS tel que Quantum GIS, JUMP, Gv SIG, uDig, ou GAIA pour les SIG open source; Géoconcept, ArcGIS, ou Mapinfo pour les SIG d’éditeurs.</p><p>Après avoir lancé la commande permettant d’ouvrir une couche WMS, le logiciel SIG demande de saisir une adresse WMS.</p>
+  <p>Pour le site Vuduciel, elle correspond à l’URL du serveur cartographique http://services.vuduciel.loire-atlantique.fr/geoserver/ows</p>
   <a class="close-reveal-modal">&#215;</a>
 </div>
 <div id="secondary-page-reveal" class="reveal-modal">
   <div id="secondary-page-zone"></div>
   <a class="close-reveal-modal">&#215;</a>
 </div>
+<!-- <div id="concours">
+  <a href="http://www.facebook.com/Loireatlantique"><img src="assets/images/jeufb-montgolfiere300x250-02.jpg" /></a>
+</div> -->
 </body>
 </html>
 

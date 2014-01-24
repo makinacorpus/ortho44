@@ -88,15 +88,14 @@
   background-color: white;
 }
 /* HEADER */
-#header {
-  padding-top: 0.5em;
+#header #header-bar {
+  background-color: #eaeaea;
+  height: 1.2em;
+  border-bottom: 0.2em solid #d1d1d1;
 }
-#header #logo {
-  margin-top: 0.2em;
-}
-#header .tagline {
-  font-size: 1.2em;
-  margin-bottom: 0.2em;
+#header #header-logo {
+  margin-top: 1em;
+  margin-bottom: 1em;
 }
 #search {
   background-color: #b1ca00;
@@ -213,8 +212,8 @@
 }
 .map-full {
   position: absolute;
-  top: 10.3em;
-  bottom: 5em;
+  top: 11.7em;
+  bottom: 8em;
   width: 100%;
 }
 .map-hidden {
@@ -436,7 +435,10 @@
 }
 #footer {
   z-index: -1;
-  height: 3.5em;
+  height: 4.5em;
+  background-color: #eaeaea;
+  padding-top: 0.5em;
+  padding-bottom: 0.5em;
 }
 #footer #cg-logo {
   padding-right: 0;
@@ -444,17 +446,13 @@
 }
 #footer #slogan {
   text-align: right;
-  border-top: 0.2em solid #b1ca00;
-  padding-right: 0;
-}
-#footer #slogan span {
-  background-color: #b1ca00;
   padding: 0;
-  margin-right: -0.05em;
 }
 #footer #footer-navigation {
   position: relative;
-  top: -0.5em;
+  border-bottom: 0.3em solid #d1d1d1;
+  margin-top: 1em;
+  padding-bottom: 0.5em;
 }
 #footer #footer-navigation nav ul {
   margin-bottom: 0;
@@ -512,6 +510,9 @@
   .map-right {
     top: 13.3em;
   }
+  #header #header-bar {
+    display: none;
+  }
 }
 @media only screen and (max-width: 40em) {
   .columns {
@@ -521,8 +522,15 @@
   #logo {
     width: 320px;
   }
-  #header .tagline {
+  #header {
+    padding-top: 0.5em;
+    padding-bottom: 0em;
+  }
+  #header #header-bar {
     display: none;
+  }
+  #header #header-logo {
+    margin: 0;
   }
   #search {
     font-size: 80%;
