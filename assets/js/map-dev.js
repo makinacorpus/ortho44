@@ -187,20 +187,37 @@ var HAS_HASHCHANGE = (function() {
         hash = hash.substr(1);
       }
       var args = hash.split("/");
-      if (args.length == 3) {
-        var zoom = parseInt(args[0], 10),
-        lat = parseFloat(args[1]),
-        lon = parseFloat(args[2]);
-        if (isNaN(zoom) || isNaN(lat) || isNaN(lon)) {
-          return false;
-        } else {
-          return {
-            center: new L.LatLng(lat, lon),
-            zoom: zoom
+      switch (args.length) {
+        case 1:
+          var locality = args[0].split("=");
+          if (locality[0] == "commune") {
+            Ortho44._loadElasticSearchJSONP({
+              source: JSON.stringify({
+                query: {
+                      query_string: {
+                          fields: ["code_insee", "type"],
+                          query: locality[1] + " AND COMMUNE",
+                          default_operator: "AND"
+                      }
+                  }
+              }),
+              callback : "_l_ortho44geocoder_localitysearch"
+            });
           };
-        }
-      } else {
-        return false;
+        case 3:
+          var zoom = parseInt(args[0], 10),
+          lat = parseFloat(args[1]),
+          lon = parseFloat(args[2]);
+          if (isNaN(zoom) || isNaN(lat) || isNaN(lon)) {
+            return false;
+          } else {
+            return {
+              center: new L.LatLng(lat, lon),
+              zoom: zoom
+            };
+          }
+        default:
+          return false;
       }
     },
 
@@ -1155,6 +1172,11 @@ var HAS_HASHCHANGE = (function() {
         Ortho44.setClass(choices_box, "show-choices");
       }
     });
+
+  // LOCALITY SEARCH
+  window._l_ortho44geocoder_localitysearch = function(results) {
+    Ortho44.showResult(results.hits.hits[0]._source);
+  };
   
   // SECONDARY MAP
   L.DomEvent.addListener(document.querySelector("form#compare-with"), 'change', function(e) {
