@@ -190,13 +190,13 @@ var HAS_HASHCHANGE = (function() {
       switch (args.length) {
         case 1:
           var locality = args[0].split("=");
-          if (locality[0] == "commune") {
+          if (locality[0] == "commune" || locality[0] == "canton") {
             Ortho44._loadElasticSearchJSONP({
               source: JSON.stringify({
                 query: {
                       query_string: {
                           fields: ["code_insee", "type"],
-                          query: locality[1] + " AND COMMUNE",
+                          query: locality[1] + " AND COMMUNE OR CANTON",
                           default_operator: "AND"
                       }
                   }
