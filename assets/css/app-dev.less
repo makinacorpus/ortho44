@@ -421,7 +421,6 @@
 }
 #footer {
   z-index: -1;
-  height: 4.5em;
   background-color: @grey;
   padding-top: 0.5em;
   padding-bottom: 0.5em;
@@ -440,8 +439,7 @@
   }
   #footer-navigation {
     position: relative;
-    border-bottom: 0.3em solid darken(@grey,10%);
-    margin-top: 1em;
+    margin-top: 0.9em;
     padding-bottom: 0.5em;
     nav ul {
       margin-bottom: 0;
@@ -489,13 +487,28 @@
   }
   #footer {
     #slogan {
-      img {
-        max-width: 33%;
-      }
+      display: none;
     }
     #footer-navigation {
       top: 0;
     }
+    #followus {
+      #followus-text {
+        display: none;
+      }
+    }
+  }
+}
+
+@media only screen and (max-width: 767px) {
+  .inline-list>li {
+    margin-left: 0.3em;
+  }
+}
+
+@media only screen and (max-width: 67em) {
+  #footer {
+    font-size: 90%;
   }
 }
 
@@ -515,6 +528,19 @@
   #header {
     #header-bar {
       display: none;
+    }
+  }
+  #footer {
+    font-size: 70%;
+  }
+}
+
+@media only screen and (max-width: 74em) {
+  #footer {
+    #followus {
+      #followus-text {
+        display: none;
+      }
     }
   }
 }
