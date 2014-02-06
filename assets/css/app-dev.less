@@ -63,7 +63,7 @@
   #header-bar {
     background-color: @grey;
     height: 1.2em;
-    border-bottom: 0.2em solid darken(@grey,10%);
+    box-shadow: 0 3px 2px darken(@grey,10%);
   }
   #header-logo {
     margin-top: 1em;
@@ -440,7 +440,8 @@
   #footer-navigation {
     position: relative;
     margin-top: 0.9em;
-    padding-bottom: 0.5em;
+    padding-bottom: 0.2em;
+    border-bottom: 0.2em solid darken(@grey,10%);
     nav ul {
       margin-bottom: 0;
       font-size: 80%;
