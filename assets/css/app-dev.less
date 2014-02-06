@@ -64,6 +64,14 @@
     background-color: @grey;
     height: 1.2em;
     box-shadow: 0 3px 2px darken(@grey,10%);
+    #header-bar-text {
+      color: white;
+      padding: 0.5em;
+      background-color: black;
+      display: inline-block;
+      font-size: 1em;
+      font-weight: bold;
+    }
   }
   #header-logo {
     margin-top: 1em;
@@ -441,7 +449,10 @@
     position: relative;
     margin-top: 0.9em;
     padding-bottom: 0.2em;
-    border-bottom: 0.2em solid darken(@grey,10%);
+    border-bottom: 0.4em solid darken(@grey,10%);
+    ul.inline-list {
+      margin-bottom: 0.2em;
+    }
     nav ul {
       margin-bottom: 0;
       font-size: 80%;

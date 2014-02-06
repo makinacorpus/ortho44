@@ -118,6 +118,14 @@
   height: 1.2em;
   box-shadow: 0 3px 2px #d1d1d1;
 }
+#header #header-bar #header-bar-text {
+  color: white;
+  padding: 0.5em;
+  background-color: black;
+  display: inline-block;
+  font-size: 1em;
+  font-weight: bold;
+}
 #header #header-logo {
   margin-top: 1em;
   margin-bottom: 1em;
@@ -481,7 +489,10 @@
   position: relative;
   margin-top: 0.9em;
   padding-bottom: 0.2em;
-  border-bottom: 0.2em solid #d1d1d1;
+  border-bottom: 0.4em solid #d1d1d1;
+}
+#footer #footer-navigation ul.inline-list {
+  margin-bottom: 0.2em;
 }
 #footer #footer-navigation nav ul {
   margin-bottom: 0;
