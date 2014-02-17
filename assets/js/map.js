@@ -186,28 +186,38 @@ var HAS_HASHCHANGE = (function() {
       if(hash.indexOf('#') === 0) {
         hash = hash.substr(1);
       }
-      var compare;
-      var args = hash.split("!");
-      if(args.length == 2) {
-        compare = args[1];
-        document.querySelector("form#compare-with input[value='"+compare+"']").checked=true
-        Ortho44.compareWith(map, "map-compare", older_layers["ortho"+compare]);
-      }
-      args = args[0].split("/");
-      if (args.length == 3) {
-        var zoom = parseInt(args[0], 10),
-        lat = parseFloat(args[1]),
-        lon = parseFloat(args[2]);
-        if (isNaN(zoom) || isNaN(lat) || isNaN(lon)) {
-          return false;
-        } else {
-          return {
-            center: new L.LatLng(lat, lon),
-            zoom: zoom
+      var args = hash.split("/");
+      switch (args.length) {
+        case 1:
+          var locality = args[0].split("=");
+          if (locality[0] == "commune" || locality[0] == "canton") {
+            Ortho44._loadElasticSearchJSONP({
+              source: JSON.stringify({
+                query: {
+                      query_string: {
+                          fields: ["code_insee", "type"],
+                          query: locality[1] + " AND COMMUNE OR CANTON",
+                          default_operator: "AND"
+                      }
+                  }
+              }),
+              callback : "_l_ortho44geocoder_localitysearch"
+            });
           };
-        }
-      } else {
-        return false;
+        case 3:
+          var zoom = parseInt(args[0], 10),
+          lat = parseFloat(args[1]),
+          lon = parseFloat(args[2]);
+          if (isNaN(zoom) || isNaN(lat) || isNaN(lon)) {
+            return false;
+          } else {
+            return {
+              center: new L.LatLng(lat, lon),
+              zoom: zoom
+            };
+          }
+        default:
+          return false;
       }
     },
 
@@ -216,14 +226,10 @@ var HAS_HASHCHANGE = (function() {
           zoom = map.getZoom(),
           precision = Math.max(0, Math.ceil(Math.log(zoom) / Math.LN2));
 
-      var newhash = "#" + [zoom,
+      return "#" + [zoom,
         center.lat.toFixed(precision),
         center.lng.toFixed(precision)
       ].join("/");
-      if(document.querySelector("form#compare-with input:checked")) {
-        newhash += "!" + document.querySelector("form#compare-with input:checked").value;
-      }
-      return newhash
     },
 
     init: function(map, callback) {
@@ -386,12 +392,12 @@ var HAS_HASHCHANGE = (function() {
       var p = document.querySelector("#download-link");
       if(this.map.getZoom()>13) {
         var bounds = this.map.getBounds();
-        var wms = "http://services.vuduciel.loire-atlantique.fr/geoserver/ows/?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&BBOX="+bounds.getSouthWest().lat+","+bounds.getSouthWest().lng+","+bounds.getNorthEast().lat+","+bounds.getNorthEast().lng+"&SRS=EPSG:4326&WIDTH=1351&HEIGHT=736&LAYERS=tif80&STYLES=&FORMAT=image/jpeg&DPI=96&MAP_RESOLUTION=96&FORMAT_OPTIONS=dpi:96&TRANSPARENT=TRUE";
+        var wms = "http://services.vuduciel.loire-atlantique.fr/wms/?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&BBOX="+bounds.getSouthWest().lat+","+bounds.getSouthWest().lng+","+bounds.getNorthEast().lat+","+bounds.getNorthEast().lng+"&SRS=EPSG:4326&WIDTH=1351&HEIGHT=736&LAYERS=ortho2012&STYLES=&FORMAT=image/png&DPI=96&MAP_RESOLUTION=96&FORMAT_OPTIONS=dpi:96&TRANSPARENT=TRUE";
         var download_url = "http://services.vuduciel.loire-atlantique.fr/download?x0="+bounds.getSouthWest().lng+"&y0="+bounds.getSouthWest().lat+"&x1="+bounds.getNorthEast().lng+"&y1="+bounds.getNorthEast().lat
-        var message = "<p>Pour télécharger l'image complète de la position actuelle, veuillez cliquer sur le lien ci-dessous.</p>"
+        var message = "<p>Pour télécharger l'image complète de la position actuelle, veuillez cliquer sur l'un des liens ci-dessous.</p>"
         message += "<p>Note: le temps de chargement peut être assez long suivant la taille de la zone affichée.</p>";
-        message += "<p><a href='"+download_url+"' target='_new'>Télécharger l'image en dalles ECW</a></p>";
-        message += "<p><a href='"+wms+"' target='_new'>Télécharger l'image haute résolution JPG</a></p>";
+        message += "<p><a href='"+download_url+"' id= target='_new'>Télécharger l'image en dalles ECW</a></p>";
+        //message += "<p><a href='"+wms+"' id= target='_new'>Télécharger l'image haute résolution JPG</a></p>";
         p.innerHTML = message;
       } else {
         p.innerHTML = "<strong>La zone sélectionnée est trop importante, merci de la réduire.</strong>"
@@ -402,7 +408,7 @@ var HAS_HASHCHANGE = (function() {
     onAdd: function(map) {
       this.map = map;
       this._container = L.DomUtil.create('div', 'leaflet-control-actionlink leaflet-control');
-      var link = L.DomUtil.create('a', 'sprite-download leaflet-download-control', this._container);
+      var link = L.DomUtil.create('a', 'leaflet-download-control', this._container);
       link.href = '#';
       link.title = this.options.title;
       link.setAttribute("data-reveal-id", "download-infos");
@@ -435,8 +441,8 @@ var HAS_HASHCHANGE = (function() {
 
     onAdd: function(map) {
       this.map = map;
-      this._container = L.DomUtil.create('div', 'leaflet-control-actionlink leaflet-control leaflet-wms-control');
-      var link = L.DomUtil.create('a', 'sprite-zrss', this._container);
+      this._container = L.DomUtil.create('div', 'leaflet-control-actionlink leaflet-control');
+      var link = L.DomUtil.create('a', 'leaflet-wms-control', this._container);
       link.href = '#';
       link.title = this.options.title;
       link.setAttribute("data-reveal-id", "wms-infos");
@@ -693,27 +699,19 @@ var HAS_HASHCHANGE = (function() {
 
   var Ortho44 = {
     _callbackIndex: 0,
-    cachePlaceholder: document.querySelector("#search-input").getAttribute("placeholder"),
 
     // GEOCODING
     // -----------
     bindGeocode: function(form, input, map, callback) {
       L.DomEvent.addListener(form, 'submit', this._geocode, this);
-      var clearInput = function() {
-        console.log(Ortho44.cachePlaceholder);
-        this.setAttribute("placeholder", "");
+      var clearRandom = function() {
         if(this.className == "random-display") {
           this.value = "";
           Ortho44.removeClass(this, "random-display");
         }
       };
-      var resetInput = function() {
-        console.log(Ortho44.cachePlaceholder);
-        this.setAttribute("placeholder", Ortho44.cachePlaceholder);
-      };
-      L.DomEvent.addListener(input, 'click', clearInput, input);
-      L.DomEvent.addListener(input, 'focus', clearInput, input);
-      L.DomEvent.addListener(input, 'focusout', resetInput, input);
+      L.DomEvent.addListener(input, 'click', clearRandom, input);
+      L.DomEvent.addListener(input, 'focus', clearRandom, input);
       this._map = map;
       this._input = input;
       this._callback = callback;
@@ -817,20 +815,6 @@ var HAS_HASHCHANGE = (function() {
       Ortho44.setClass(document.getElementById(compare_container), "map-right");
       Ortho44.setClass(document.querySelector("body"), "compare-mode");
 
-      // bind fullscreen
-      map.on("enterFullscreen", function() {
-        if(Ortho44.mapcompare) {
-          var container = document.getElementById(compare_container);
-          container.style.position = 'fixed';
-          container.style.top = 0;
-          container.style.height = '100%';  
-          Ortho44.mapcompare.invalidateSize();
-        }
-      });
-      map.on("exitFullscreen", function() {
-        if(Ortho44.mapcompare) document.getElementById(compare_container).removeAttribute("style");
-      });
-
       // create map and sync it
       Ortho44.mapcompare = L.map(compare_container,
         {
@@ -840,7 +824,7 @@ var HAS_HASHCHANGE = (function() {
         }
       );
 
-      var layer = new L.FallbackTileLayer(layer_param.url, layer_param.options);
+      var layer = L.tileLayer(layer_param.url, layer_param.options);
       var maxZoom = layer.options.maxZoom;
       map._layersMaxZoom = maxZoom;
 
@@ -884,7 +868,7 @@ var HAS_HASHCHANGE = (function() {
         Ortho44.compareClean();
 
         // reset main map
-        map.off('mousemove zoom enterFullscreen exitFullscreen');
+        map.off('mousemove zoom');
         map._layersMaxZoom = 19;
       }
     },
@@ -1014,7 +998,7 @@ var HAS_HASHCHANGE = (function() {
     }
   );
 
-  var ortho2012 = new L.FallbackTileLayer('http://{s}.tiles.vuduciel.loire-atlantique.fr/ortho-2012/{z}/{x}/{y}.jpg', {
+  var ortho2012 = new L.FallbackTileLayer('http://{s}.tiles.cg44.makina-corpus.net/ortho-2012/{z}/{x}/{y}.jpg', {
     continuousWorld: true,  // very important
     tms: true,
     maxZoom: 19,
@@ -1075,34 +1059,34 @@ var HAS_HASHCHANGE = (function() {
   map.on('locationerror', function() {
     console.log("Too far away, keep default location");
   });
-  var streets_custom_osm = L.tileLayer('http://{s}.tiles.vuduciel.loire-atlantique.fr/osm/{z}/{x}/{y}.png', {
+  var streets_custom_osm = L.tileLayer('http://{s}.tiles.cg44.makina-corpus.net/osm/{z}/{x}/{y}.png', {
     opacity: 0.8,
     maxZoom: 19,
     attribution: "Makina Corpus / OpenStreetMap",
     subdomains: 'abcdefgh'
   });
   var older_layers = {
-    'ortho1850': {url:'http://{s}.tiles.vuduciel.loire-atlantique.fr/ortho-1850/{z}/{x}/{y}.jpg', options: {
+    'ortho1850': {url:'http://{s}.tiles.cg44.makina-corpus.net/ortho-1850/{z}/{x}/{y}.jpg', options: {
       maxZoom: 16,
       tms: true,
       subdomains: 'abcdefgh'
     }},
-    'ortho1949': {url:'http://{s}.tiles.vuduciel.loire-atlantique.fr/ortho-1949/{z}/{x}/{y}.jpg', options: {
+    'ortho1949': {url:'http://{s}.tiles.cg44.makina-corpus.net/ortho-1949/{z}/{x}/{y}.jpg', options: {
       maxZoom: 18,
       tms: true,
       subdomains: 'abcdefgh'
     }},
-    'ortho1999': {url:'http://{s}.tiles.vuduciel.loire-atlantique.fr/ortho-1999/{z}/{x}/{y}.jpg', options: {
+    'ortho1999': {url:'http://{s}.tiles.cg44.makina-corpus.net/ortho-1999/{z}/{x}/{y}.jpg', options: {
       maxZoom: 18,
       tms: true,
       subdomains: 'abcdefgh'
     }},
-    'ortho2004': {url:'http://{s}.tiles.vuduciel.loire-atlantique.fr/ortho-2004/{z}/{x}/{y}.jpg', options: {
+    'ortho2004': {url:'http://{s}.tiles.cg44.makina-corpus.net/ortho-2004/{z}/{x}/{y}.jpg', options: {
       maxZoom: 18,
       tms: true,
       subdomains: 'abcdefgh'
     }},
-    'ortho2009': {url:'http://{s}.tiles.vuduciel.loire-atlantique.fr/ortho-2009/{z}/{x}/{y}.jpg', options: {
+    'ortho2009': {url:'http://{s}.tiles.cg44.makina-corpus.net/ortho-2009/{z}/{x}/{y}.jpg', options: {
       maxZoom: 18,
       tms: true,
       subdomains: 'abcdefgh'
@@ -1188,15 +1172,20 @@ var HAS_HASHCHANGE = (function() {
         Ortho44.setClass(choices_box, "show-choices");
       }
     });
+
+  // LOCALITY SEARCH
+  window._l_ortho44geocoder_localitysearch = function(results) {
+    Ortho44.showResult(results.hits.hits[0]._source);
+  };
   
   // SECONDARY MAP
   L.DomEvent.addListener(document.querySelector("form#compare-with"), 'change', function(e) {
     if(e.target.checked) {
+      Ortho44.compareWith(map, "map-compare", older_layers["ortho"+e.target.value]);
       var inputs = document.querySelectorAll("form#compare-with input");
       for(var i=0; i<inputs.length; i++) {
         if(inputs[i].id != e.target.id) inputs[i].checked = false;
       }
-      Ortho44.compareWith(map, "map-compare", older_layers["ortho"+e.target.value]);
     } else {
       Ortho44.compareOff(map);
       var inputs = document.querySelectorAll("form#compare-with input");
@@ -1209,7 +1198,7 @@ var HAS_HASHCHANGE = (function() {
   // FOUNDATION INIT
   $(document).foundation(null, null, null, null, true);
   $(document).foundation('dropdown', 'off');
-  $("nav li.overlay a").each(function(i, el) {
+  $("nav li a").each(function(i, el) {
     $(el).click(function(event) {
       $('#secondary-page-zone').html="Chargement";
       $('#secondary-page-reveal').foundation('reveal', 'open');
@@ -1218,26 +1207,5 @@ var HAS_HASHCHANGE = (function() {
       return false;
     })
   });
-
-  // CONCOURS
-  // $(document).ready(function() {
-  //   if ( $( "body:not(.screamshot)" ).length ) {
-  //     var now = new Date();
-  //     var start_day = new Date(2013, 8, 30, 10, 30);
-  //     if(now > start_day) {
-  //       $("#concours").show();
-  //       $("#link-concours").show();
-  //       $("body").click(function() {
-  //         $("#concours").remove();
-  //       })
-  //     } else {
-  //       $("#concours").remove();
-  //       $("#link-concours").remove();
-  //     }
-  //   } else {
-  //     $("#concours").remove();
-  //     $("#link-concours").remove();
-  //   }
-  // });
 
 }
