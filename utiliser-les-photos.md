@@ -14,8 +14,8 @@ remixer — adapter l’œuvre
 d’utiliser cette œuvre à des fins commerciales 
 
 **Selon les conditions suivantes :**
-**Attribution** — Vous devez attribuer l’œuvre de la manière indiquée par l’auteur de l’œuvre ou le titulaire des droits (mais pas d’une manière qui suggérerait qu’ils vous approuvent, vous ou votre utilisation de l’œuvre). Le crédit comportera la mention « © Département de Loire-Atlantique ».
+**Attribution** — Vous devez attribuer l’œuvre de la manière indiquée par l’auteur de l’œuvre ou le titulaire des droits (mais pas d’une manière qui suggérerait qu’ils vous approuvent, vous ou votre utilisation de l’œuvre). Le crédit comportera la mention « © Loire-Atlantique ouverture des données publiques ».
 
 **Partage dans les Mêmes Conditions** — Si vous modifiez, transformez ou adaptez cette œuvre, vous n’avez le droit de distribuer votre création que sous une licence identique ou similaire à celle-ci. 
 
-A chaque réutilisation ou distribution d'une ou plusieurs photographies, vous devez faire apparaître clairement au public la licence selon laquelle elle est mise à disposition. 
+A chaque réutilisation ou distribution d'une ou plusieurs photographies, vous devez faire apparaître clairement au public la licence selon laquelle elle est mise à disposition.
