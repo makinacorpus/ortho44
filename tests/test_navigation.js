@@ -17,10 +17,12 @@ casper.waitForSelector(x("//a[normalize-space(text())='Contact']"),
     function fail() {
         this.test.assertExists(x("//a[normalize-space(text())='Contact']"), "Footer navigation is invisible");
 });
-casper.waitForSelector("#secondary-page-zone h1#nous_contacter", function() {
-    this.test.assertExists("#secondary-page-zone h1#nous_contacter", "Footer links displayed in reveal mode");
+casper.waitForSelector("#secondary-page-zone h1#nous-contacter", function() {
+    this.test.assertExists("#secondary-page-zone h1#nous-contacter", "Footer links displayed in reveal mode");
+}, function() {
+    this.capture("bli.png");
 });
 
 casper.run(function() {
-	this.test.done(2);
+	this.test.done();
 });

@@ -22,7 +22,6 @@ casper.waitForSelector(".search-ready",
 
 casper.waitForSelector(".search-success", function success() {
     this.test.assertUrlMatch(/^http:.+#12\/47\.27\d+\/-2\.24\d+$/, "Search is working");
-    this.test.assertExists("img[src$='ortho-2012/12/2022/2659.png']");
 });
 
 casper.run(function() {
