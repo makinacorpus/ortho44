@@ -186,7 +186,16 @@ var HAS_HASHCHANGE = (function() {
       if(hash.indexOf('#') === 0) {
         hash = hash.substr(1);
       }
-      var args = hash.split("/");
+
+      var compare;
+      var args = hash.split("!");
+      if(args.length == 2) {
+        compare = args[1];
+        document.querySelector("form#compare-with input[value='"+compare+"']").checked=true;
+        Ortho44.compareWith(map, "map-compare", older_layers["ortho"+compare]);
+      }
+
+      args = hash.split("/");
       switch (args.length) {
         case 1:
           var locality = args[0].split("=");
@@ -226,10 +235,14 @@ var HAS_HASHCHANGE = (function() {
           zoom = map.getZoom(),
           precision = Math.max(0, Math.ceil(Math.log(zoom) / Math.LN2));
 
-      return "#" + [zoom,
-        center.lat.toFixed(precision),
-        center.lng.toFixed(precision)
+      var newhash = "#" + [zoom,
+         center.lat.toFixed(precision),
+         center.lng.toFixed(precision)
       ].join("/");
+      if(document.querySelector("form#compare-with input:checked")) {
+        newhash += "!" + document.querySelector("form#compare-with input:checked").value;
+      }
+      return newhash;
     },
 
     init: function(map, callback) {
