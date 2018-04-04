@@ -1011,7 +1011,7 @@ var HAS_HASHCHANGE = (function() {
     }
   );
 
-  var ortho2016 = new L.FallbackTileLayer('/assets/tiles/2016/{z}/{x}/{y}.jpg', {
+  var ortho2016 = new L.FallbackTileLayer('http://makinacorpus.github.io/ortho44-2016/assets/tiles/2016/{z}/{x}/{y}.jpg', {
     continuousWorld: true,  // very important
     maxZoom: 20,
     subdomains: "abcdefgh",
