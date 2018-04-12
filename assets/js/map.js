@@ -1010,8 +1010,8 @@ var HAS_HASHCHANGE = (function() {
       attribution: "&copy; IGN"
     }
   );
-
-  var ortho2016 = new L.FallbackTileLayer('http://makinacorpus.github.io/ortho44-2016/assets/tiles/2016/{z}/{x}/{y}.jpg', {
+ 
+  var ortho2016 = new L.FallbackTileLayer('http://{s}.tiles.cg44new.makina-corpus.net/{z}/{x}/{y}.png', {
     continuousWorld: true,  // very important
     maxZoom: 20,
     subdomains: "abcdefgh",
