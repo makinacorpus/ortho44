@@ -995,7 +995,7 @@ var HAS_HASHCHANGE = (function() {
   var ign_keys = {
     'localhost': 'ymg58ktvpimfa7zyxjxyr1a5',
     'makinacorpus.github.io' : '9z9o6i52lxwch6mxt9wmwro5',
-    'vuduciel.loire-atlantique.fr' :'287bdvzzjnxqhh4s0mqfto41'
+    'vuduciel.loire-atlantique.fr' :'yyo09x3nnux7wfy7pibnjnsl'
   };
   var ign_key = ign_keys[location.hostname];
   var ign = new L.TileLayer.WMTS("http://wxs.ign.fr/"+ign_key+"/geoportail/wmts",
