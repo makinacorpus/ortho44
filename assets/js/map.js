@@ -1016,7 +1016,7 @@ var HAS_HASHCHANGE = (function() {
     maxZoom: 20,
     subdomains: "abcdefgh",
     attribution: "",
-    errorTileUrl: "/assets/images/empty.png"
+    errorTileUrl: "assets/images/empty.png"
   }).addTo(map);
 
   ortho2016.on('load', function() {
