@@ -1013,7 +1013,6 @@ var HAS_HASHCHANGE = (function() {
 
   var ortho2016 = new L.FallbackTileLayer('/assets/tiles/2016/{z}/{x}/{y}.jpg', {
     continuousWorld: true,  // very important
-    tms: true,
     maxZoom: 20,
     subdomains: "abcdefgh",
     attribution: "",
