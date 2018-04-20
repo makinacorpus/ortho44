@@ -1011,21 +1011,21 @@ var HAS_HASHCHANGE = (function() {
     }
   );
 
-  var ortho2012 = new L.FallbackTileLayer('http://{s}.tiles.cg44.makina-corpus.net/ortho-2012/{z}/{x}/{y}.jpg', {
+  var ortho2016 = new L.FallbackTileLayer('/assets/tiles/2016/{z}/{x}/{y}.jpg', {
     continuousWorld: true,  // very important
     tms: true,
-    maxZoom: 19,
+    maxZoom: 20,
     subdomains: "abcdefgh",
     attribution: "",
     errorTileUrl: "/assets/images/empty.png"
   }).addTo(map);
 
-  ortho2012.on('load', function() {
+  ortho2016.on('load', function() {
     // do not display external layers if not near limit
-    if(ortho2012.reachLimit()) {
+    if(ortho2016.reachLimit()) {
       map.addLayer(ign);
       map.addLayer(streets_mapquest);
-      ortho2012._container.style.zIndex=1;
+      ortho2016._container.style.zIndex=1;
     } else {
       map.removeLayer(ign);
       map.removeLayer(streets_mapquest);
@@ -1036,8 +1036,8 @@ var HAS_HASHCHANGE = (function() {
       Ortho44.setClass(document.querySelector('body'), "map-initialized");
     }, 500);
   });
-  ortho2012.on('loading', function() {
-    ortho2012._limit = false;
+  ortho2016.on('loading', function() {
+    ortho2016._limit = false;
   });
 
   var border = L.geoJson(loire_atlantique_json, {
@@ -1101,6 +1101,11 @@ var HAS_HASHCHANGE = (function() {
     }},
     'ortho2009': {url:'http://{s}.tiles.cg44.makina-corpus.net/ortho-2009/{z}/{x}/{y}.jpg', options: {
       maxZoom: 18,
+      tms: true,
+      subdomains: 'abcdefgh'
+    }},
+    'ortho2012': {url:'http://{s}.tiles.cg44.makina-corpus.net/ortho-2012/{z}/{x}/{y}.jpg', options: {
+      maxZoom: 19,
       tms: true,
       subdomains: 'abcdefgh'
     }}
