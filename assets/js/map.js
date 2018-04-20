@@ -1014,7 +1014,7 @@ var HAS_HASHCHANGE = (function() {
   var ortho2016 = new L.FallbackTileLayer('http://{s}.tiles.cg44new.makina-corpus.net/{z}/{x}/{y}.png', {
     continuousWorld: true,  // very important
     maxZoom: 20,
-    subdomains: "abcdefgh",
+    subdomains: "bcd",
     attribution: "",
     errorTileUrl: "assets/images/empty.png"
   }).addTo(map);
