@@ -732,7 +732,7 @@ var HAS_HASHCHANGE = (function() {
     },
 
     _loadElasticSearchJSONP: function (params) {
-      var url = "http://es.makina-corpus.net/cg44/address/_search" + L.Util.getParamString(params);
+      var url = "https://es.makina-corpus.net/cg44/address/_search" + L.Util.getParamString(params);
       var script = document.createElement("script");
       script.type = "text/javascript";
       script.src = url;
