@@ -1071,6 +1071,17 @@ var HAS_HASHCHANGE = (function() {
   map.on('locationerror', function() {
     console.log("Too far away, keep default location");
   });
+
+  var cadastre = L.tileLayer.wms('https://arcgis.loire-atlantique.fr/arcgis/services/z_referentiel_externe/cadastre/MapServer/WMSServer?', {
+    layers: '0,1,2,3',
+    format: 'image/png32',
+    opacity: 0.75,
+    tileSize: 512,
+    width: 512,
+    height: 512,
+    maxZoom: 19
+  });
+
   var streets_custom_osm = L.tileLayer('http://{s}.tiles.cg44.makina-corpus.net/osm/{z}/{x}/{y}.png', {
     opacity: 0.8,
     maxZoom: 19,
@@ -1113,6 +1124,7 @@ var HAS_HASHCHANGE = (function() {
   L.control.locator().addTo(map);
   (new L.Control.ZoomFS()).addTo(map);
   var overlayMaps = {
+    "Afficher le cadastre": cadastre,
     "Afficher les rues": streets_custom_osm,
     "Afficher les limites départementales": border
   };
