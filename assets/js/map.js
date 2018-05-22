@@ -994,7 +994,7 @@ var HAS_HASHCHANGE = (function() {
   
   var ign_keys = {
     'localhost': 'ymg58ktvpimfa7zyxjxyr1a5',
-    'makinacorpus.github.io' : '9z9o6i52lxwch6mxt9wmwro5',
+    'makinacorpus.github.io' : 'grqevikr9rotxktsaf1dmpef',
     'vuduciel.loire-atlantique.fr' :'yyo09x3nnux7wfy7pibnjnsl'
   };
   var ign_key = ign_keys[location.hostname];
