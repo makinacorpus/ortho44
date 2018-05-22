@@ -1003,13 +1003,13 @@ var HAS_HASHCHANGE = (function() {
       layer: 'ORTHOIMAGERY.ORTHOPHOTOS',
       style: 'normal',
       maxZoom: 19,
-      minZoom: 13,
+      // minZoom: 13,
       tilematrixSet: "PM",
       matrixIds: matrixIds3857,
       format: 'image/jpeg',
       attribution: "&copy; IGN"
     }
-  );
+  ).addTo(map);
  
   var ortho2016 = new L.FallbackTileLayer('http://{s}.tiles.cg44new.makina-corpus.net/{z}/{x}/{y}.png', {
     continuousWorld: true,  // very important
@@ -1021,6 +1021,7 @@ var HAS_HASHCHANGE = (function() {
 
   ortho2016.on('load', function() {
     // do not display external layers if not near limit
+    /*
     if(ortho2016.reachLimit()) {
       map.addLayer(ign);
       map.addLayer(streets_mapquest);
@@ -1029,6 +1030,7 @@ var HAS_HASHCHANGE = (function() {
       map.removeLayer(ign);
       map.removeLayer(streets_mapquest);
     }
+    */
 
     // wait for progressive jpeg to render
     window.setTimeout(function() {
