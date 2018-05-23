@@ -1081,47 +1081,48 @@ var HAS_HASHCHANGE = (function() {
     maxZoom: 19
   });
 
-  var streets_custom_osm = L.tileLayer('http://{s}.tiles.cg44.makina-corpus.net/osm/{z}/{x}/{y}.png', {
+  var streets_custom_osm = L.tileLayer('http://' + mainTileServer + '/osm/{z}/{x}/{y}.png', {
     opacity: 0.8,
     maxZoom: 19,
     attribution: "Makina Corpus / OpenStreetMap",
     subdomains: 'abcdefgh'
   });
+
   var older_layers = {
-    'ortho1850': {url:'http://{s}.tiles.cg44.makina-corpus.net/ortho-1850/{z}/{x}/{y}.jpg', options: {
+    'ortho1850': {url:'http://' + mainTileServer + '/ortho-1850/{z}/{x}/{y}.jpg', options: {
       maxZoom: 16,
       tms: true,
       subdomains: 'abcdefgh'
     }},
-    'ortho1949': {url:'http://{s}.tiles.cg44.makina-corpus.net/ortho-1949/{z}/{x}/{y}.jpg',
+    'ortho1949': {url:'http://' + mainTileServer + '/ortho-1949/{z}/{x}/{y}.jpg',
     pngFallback: true,
     options: {
       maxZoom: 18,
       tms: true,
       subdomains: 'abcdefgh'
     }},
-    'ortho1999': {url:'http://{s}.tiles.cg44.makina-corpus.net/ortho-1999/{z}/{x}/{y}.jpg',
+    'ortho1999': {url:'http://' + mainTileServer + '/ortho-1999/{z}/{x}/{y}.jpg',
     pngFallback: false,
     options: {
       maxZoom: 18,
       tms: true,
       subdomains: 'abcdefgh'
     }},
-    'ortho2004': {url:'http://{s}.tiles.cg44.makina-corpus.net/ortho-2004/{z}/{x}/{y}.jpg',
+    'ortho2004': {url:'http://' + mainTileServer + '/ortho-2004/{z}/{x}/{y}.jpg',
     pngFallback: false,
     options: {
       maxZoom: 18,
       tms: true,
       subdomains: 'abcdefgh'
     }},
-    'ortho2009': {url:'http://{s}.tiles.cg44.makina-corpus.net/ortho-2009/{z}/{x}/{y}.jpg',
+    'ortho2009': {url:'http://' + mainTileServer + '/ortho-2009/{z}/{x}/{y}.jpg',
     pngFallback: false,
     options: {
       maxZoom: 18,
       tms: true,
       subdomains: 'abcdefgh'
     }},
-    'ortho2012': {url:'http://{s}.tiles.cg44.makina-corpus.net/ortho-2012/{z}/{x}/{y}.jpg',
+    'ortho2012': {url:'http://' + mainTileServer + '/ortho-2012/{z}/{x}/{y}.jpg',
     pngFallback: true,
     options: {
       maxZoom: 19,
