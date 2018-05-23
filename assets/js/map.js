@@ -969,8 +969,8 @@ var HAS_HASHCHANGE = (function() {
   }
 
   // LAYERS
-  var legacyTileServer = '{s}.tiles.cg44.makina-corpus.net';
-  var newTileServer    = '{s}-tiles-vuduciel2.makina-corpus.net';
+  var legacyTileServer = 'https://{s}.tiles.cg44.makina-corpus.net';
+  var newTileServer    = 'https://{s}-tiles-vuduciel2.makina-corpus.net';
   var mainTileServer   = newTileServer;
 
 
@@ -1009,7 +1009,7 @@ var HAS_HASHCHANGE = (function() {
     }
   ).addTo(map);
  
-  var ortho2016 = new L.TileLayer('http://' + newTileServer + '/ortho-2016/{z}/{x}/{y}.png', {
+  var ortho2016 = new L.TileLayer(newTileServer + '/ortho-2016/{z}/{x}/{y}.png', {
     continuousWorld: true,  // very important
     maxZoom: 20,
     subdomains: "bcd",
@@ -1081,7 +1081,7 @@ var HAS_HASHCHANGE = (function() {
     maxZoom: 19
   });
 
-  var streets_custom_osm = L.tileLayer('http://' + mainTileServer + '/osm/{z}/{x}/{y}.png', {
+  var streets_custom_osm = L.tileLayer(mainTileServer + '/osm/{z}/{x}/{y}.png', {
     opacity: 0.8,
     maxZoom: 19,
     attribution: "Makina Corpus / OpenStreetMap",
@@ -1089,40 +1089,40 @@ var HAS_HASHCHANGE = (function() {
   });
 
   var older_layers = {
-    'ortho1850': {url:'http://' + mainTileServer + '/ortho-1850/{z}/{x}/{y}.jpg', options: {
+    'ortho1850': {url: mainTileServer + '/ortho-1850/{z}/{x}/{y}.jpg', options: {
       maxZoom: 16,
       tms: true,
       subdomains: 'abcdefgh'
     }},
-    'ortho1949': {url:'http://' + mainTileServer + '/ortho-1949/{z}/{x}/{y}.jpg',
+    'ortho1949': {url: mainTileServer + '/ortho-1949/{z}/{x}/{y}.jpg',
     pngFallback: true,
     options: {
       maxZoom: 18,
       tms: true,
       subdomains: 'abcdefgh'
     }},
-    'ortho1999': {url:'http://' + mainTileServer + '/ortho-1999/{z}/{x}/{y}.jpg',
+    'ortho1999': {url: mainTileServer + '/ortho-1999/{z}/{x}/{y}.jpg',
     pngFallback: false,
     options: {
       maxZoom: 18,
       tms: true,
       subdomains: 'abcdefgh'
     }},
-    'ortho2004': {url:'http://' + mainTileServer + '/ortho-2004/{z}/{x}/{y}.jpg',
+    'ortho2004': {url: mainTileServer + '/ortho-2004/{z}/{x}/{y}.jpg',
     pngFallback: false,
     options: {
       maxZoom: 18,
       tms: true,
       subdomains: 'abcdefgh'
     }},
-    'ortho2009': {url:'http://' + mainTileServer + '/ortho-2009/{z}/{x}/{y}.jpg',
+    'ortho2009': {url: mainTileServer + '/ortho-2009/{z}/{x}/{y}.jpg',
     pngFallback: false,
     options: {
       maxZoom: 18,
       tms: true,
       subdomains: 'abcdefgh'
     }},
-    'ortho2012': {url:'http://' + mainTileServer + '/ortho-2012/{z}/{x}/{y}.jpg',
+    'ortho2012': {url: mainTileServer + '/ortho-2012/{z}/{x}/{y}.jpg',
     pngFallback: true,
     options: {
       maxZoom: 19,
