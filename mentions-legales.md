@@ -6,29 +6,36 @@ title: Mentions légales
 
 # Mentions légales #
 
-## Edition
-**Département de Loire-Atlantique**
-BP 94109
+## Crédits
+
+**Département de Loire-Atlantique**  
+3 quai Ceineray  
+CS 94109  
 44041 Nantes Cedex 1
-Tél : 02 40 99 10 00
-Fax : 02 40 99 11 48
+
+Tél : 02 40 99 10 00 
+Fax : 02 40 99 11 48  
 [contact(at)loire-atlantique.fr](mailto:contact@loire-atlantique.fr)
 
 **Directeur de la publication :**
-Philippe Grosvalet, Président du Conseil général
+Philippe Grosvalet, Président du Conseil départemental
 
 **Co-directeurs de la publication :**
-Patrick Gaudin, Eric Ardouin
+Arnaud Bourdin, Dominique Robin
 
-**Responsable de la publication :**
-Agnès Broquet
+**Crédits Photos** (sauf mentions particulières) :
+Paul Pascal, Coralie Monnet, Simon Bénéteau.
+
+**Crédits Vidéos** (sauf mentions particulières) :
+Simon Bénéteau, Paul Pascal.
 
 ## Gestion et création du site
+
 **Réalisation :**
 Le site vuduciel.loire-atlantique.fr a été conçu et développé par [Makina Corpus](http://www.makina-corpus.com/).
 
 **Gestion :**
-Direction de l'observation et de la prospective, pôle innovation et multimédia, direction des solutions numériques.
+Direction prospective, pôle innovation et multimédia, direction des solutions numériques.
 
 **Hébergement :**
 [Makina Corpus](http://www.makina-corpus.com/).
