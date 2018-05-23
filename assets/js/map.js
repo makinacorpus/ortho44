@@ -1017,12 +1017,11 @@ var HAS_HASHCHANGE = (function() {
     }
   ).addTo(map);
  
-  var ortho2016 = new L.FallbackTileLayer('http://{s}.tiles.cg44new.makina-corpus.net/{z}/{x}/{y}.png', {
+  var ortho2016 = new L.TileLayer('http://{s}.tiles.cg44new.makina-corpus.net/{z}/{x}/{y}.png', {
     continuousWorld: true,  // very important
     maxZoom: 20,
     subdomains: "bcd",
     attribution: "",
-    errorTileUrl: "assets/images/empty.png"
   }).addTo(map);
 
   ortho2016.on('load', function() {
