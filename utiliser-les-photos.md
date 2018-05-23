@@ -7,7 +7,7 @@ title: Utiliser les photos
 # Réutiliser les photographies aériennes
 
 ## Licence
-Dans le cadre de sa démarche d’ouverture des données publiques, le Département de Loire-Atlantique, a fait le choix de mettre à disposition les photographies aériennes de 2012 sous la [licence Creative Commons paternité – partage à l’identique 2.0 (CC-BY-SA)](http://creativecommons.org/licenses/by-sa/2.0/fr/).
+Dans le cadre de sa démarche d’ouverture des données publiques, le Département de Loire-Atlantique, a fait le choix de mettre à disposition les photographies aériennes de 2016 sous la [licence Creative Commons paternité – partage à l’identique 2.0 (CC-BY-SA)](http://creativecommons.org/licenses/by-sa/2.0/fr/).
 
 Vous êtes libres de partager — reproduire, distribuer et communiquer l’œuvre
 remixer — adapter l’œuvre
