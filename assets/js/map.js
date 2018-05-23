@@ -677,30 +677,16 @@ var HAS_HASHCHANGE = (function() {
   // Fallback to PNG if JPG is not available to allow transparency on borders
   // ###################################
   L.FallbackTileLayer = L.TileLayer.extend({
-
-    _tileOnError: function () {
-      var layer = this._layer;
-
-      layer.fire('tileerror', {
+    _tileOnError: function (error) {
+      this._layer.fire('tileerror', {
         tile: this,
         url: this.src
       });
 
-      var newUrl;
-      if(this.src.indexOf(".jpg")>0) {
-        layer._limit = true;
-        newUrl = this.src.replace("jpg", "png");
-      } else {
-        newUrl = layer.options.errorTileUrl;
-      }
-      if (newUrl) {
-        this.src = newUrl;
-      }
+      this.src = this.src.replace('.jpg', '.png');
 
-      layer._tileLoaded();
-      
+      this._layer._tileLoaded();
     },
-
     reachLimit: function() {
       return this._limit;
     }
@@ -837,7 +823,8 @@ var HAS_HASHCHANGE = (function() {
         }
       );
 
-      var layer = L.tileLayer(layer_param.url, layer_param.options);
+      var TileLayerClass = layer_param.pngFallback ? L.FallbackTileLayer : L.TileLayer;
+      var layer = new TileLayerClass(layer_param.url, layer_param.options);
       var maxZoom = layer.options.maxZoom;
       map._layersMaxZoom = maxZoom;
 
@@ -1101,27 +1088,37 @@ var HAS_HASHCHANGE = (function() {
       tms: true,
       subdomains: 'abcdefgh'
     }},
-    'ortho1949': {url:'http://{s}.tiles.cg44.makina-corpus.net/ortho-1949/{z}/{x}/{y}.jpg', options: {
+    'ortho1949': {url:'http://{s}.tiles.cg44.makina-corpus.net/ortho-1949/{z}/{x}/{y}.jpg',
+    pngFallback: true,
+    options: {
       maxZoom: 18,
       tms: true,
       subdomains: 'abcdefgh'
     }},
-    'ortho1999': {url:'http://{s}.tiles.cg44.makina-corpus.net/ortho-1999/{z}/{x}/{y}.jpg', options: {
+    'ortho1999': {url:'http://{s}.tiles.cg44.makina-corpus.net/ortho-1999/{z}/{x}/{y}.jpg',
+    pngFallback: false,
+    options: {
       maxZoom: 18,
       tms: true,
       subdomains: 'abcdefgh'
     }},
-    'ortho2004': {url:'http://{s}.tiles.cg44.makina-corpus.net/ortho-2004/{z}/{x}/{y}.jpg', options: {
+    'ortho2004': {url:'http://{s}.tiles.cg44.makina-corpus.net/ortho-2004/{z}/{x}/{y}.jpg',
+    pngFallback: false,
+    options: {
       maxZoom: 18,
       tms: true,
       subdomains: 'abcdefgh'
     }},
-    'ortho2009': {url:'http://{s}.tiles.cg44.makina-corpus.net/ortho-2009/{z}/{x}/{y}.jpg', options: {
+    'ortho2009': {url:'http://{s}.tiles.cg44.makina-corpus.net/ortho-2009/{z}/{x}/{y}.jpg',
+    pngFallback: false,
+    options: {
       maxZoom: 18,
       tms: true,
       subdomains: 'abcdefgh'
     }},
-    'ortho2012': {url:'http://{s}.tiles.cg44.makina-corpus.net/ortho-2012/{z}/{x}/{y}.jpg', options: {
+    'ortho2012': {url:'http://{s}.tiles.cg44.makina-corpus.net/ortho-2012/{z}/{x}/{y}.jpg',
+    pngFallback: true,
+    options: {
       maxZoom: 19,
       tms: true,
       subdomains: 'abcdefgh'
