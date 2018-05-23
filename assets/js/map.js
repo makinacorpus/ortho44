@@ -973,15 +973,6 @@ var HAS_HASHCHANGE = (function() {
   var newTileServer    = 'https://{s}-tiles-vuduciel2.makina-corpus.net';
   var mainTileServer   = newTileServer;
 
-
-  var streets_mapquest = L.tileLayer('http://otile{s}.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.jpeg', {
-    opacity: 0.5,
-    minZoom: 9,
-    maxZoom: 12,
-    attribution: "MapQuest / OpenStreetMap",
-    subdomains: '1234'
-  });
-
   var matrixIds3857= new Array(22);
   for (var i= 0; i<22; i++) {
       matrixIds3857[i]= {
@@ -1021,11 +1012,9 @@ var HAS_HASHCHANGE = (function() {
     /*
     if(ortho2016.reachLimit()) {
       map.addLayer(ign);
-      map.addLayer(streets_mapquest);
       ortho2016._container.style.zIndex=1;
     } else {
       map.removeLayer(ign);
-      map.removeLayer(streets_mapquest);
     }
     */
 
