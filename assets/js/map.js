@@ -998,7 +998,7 @@ var HAS_HASHCHANGE = (function() {
     'vuduciel.loire-atlantique.fr' :'yyo09x3nnux7wfy7pibnjnsl'
   };
   var ign_key = ign_keys[location.hostname];
-  var ign = new L.TileLayer.WMTS("http://wxs.ign.fr/"+ign_key+"/geoportail/wmts",
+  var ign = new L.TileLayer.WMTS("https://wxs.ign.fr/"+ign_key+"/geoportail/wmts",
     {
       layer: 'ORTHOIMAGERY.ORTHOPHOTOS',
       style: 'normal',
