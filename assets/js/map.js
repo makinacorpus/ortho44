@@ -975,6 +975,12 @@ var HAS_HASHCHANGE = (function() {
   });
   Ortho44.randomDisplay();
 
+  try {
+    L.Icon.Default.imagePath = location.pathname + 'assets/images';
+  } catch (e) {
+    console.error(e);
+  }
+
   // LAYERS
   var streets_mapquest = L.tileLayer('http://otile{s}.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.jpeg', {
     opacity: 0.5,
