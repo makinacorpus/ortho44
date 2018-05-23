@@ -1083,7 +1083,7 @@ var HAS_HASHCHANGE = (function() {
   var cadastre = L.tileLayer.wms('https://arcgis.loire-atlantique.fr/arcgis/services/z_referentiel_externe/cadastre/MapServer/WMSServer?', {
     layers: '0,1,2,3',
     format: 'image/png32',
-    opacity: 0.75,
+    opacity: 0.55,
     tileSize: 512,
     width: 512,
     height: 512,
