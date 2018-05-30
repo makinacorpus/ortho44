@@ -1003,7 +1003,7 @@ var HAS_HASHCHANGE = (function() {
   var ortho2016 = new L.TileLayer(newTileServer + '/ortho-2016/{z}/{x}/{y}.png', {
     continuousWorld: true,  // very important
     maxZoom: 20,
-    subdomains: "bcd",
+    subdomains: "abcd",
     attribution: "",
   }).addTo(map);
 
@@ -1090,7 +1090,7 @@ var HAS_HASHCHANGE = (function() {
       tms: true,
       subdomains: 'abcdefgh'
     }},
-    'ortho1999': {url: mainTileServer + '/ortho-1999/{z}/{x}/{y}.jpg',
+    'ortho1999': {url: newTileServer + '/ortho-1999/{z}/{x}/{y}.png',
     pngFallback: false,
     options: {
       maxZoom: 18,
