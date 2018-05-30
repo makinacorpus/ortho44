@@ -998,14 +998,14 @@ var HAS_HASHCHANGE = (function() {
       format: 'image/jpeg',
       attribution: "&copy; IGN"
     }
-  ).addTo(map);
- 
+  );
+
   var ortho2016 = new L.TileLayer(newTileServer + '/ortho-2016/{z}/{x}/{y}.png', {
     continuousWorld: true,  // very important
     maxZoom: 20,
     subdomains: "abcd",
     attribution: "",
-  }).addTo(map);
+  });
 
   ortho2016.on('load', function() {
     // do not display external layers if not near limit
@@ -1038,7 +1038,8 @@ var HAS_HASHCHANGE = (function() {
           dashArray: '3',
           };
     }
-  }).addTo(map);
+  });
+
   map.on('zoomend', function(e) {
     if (map.getZoom() > 14) {
       border.setStyle({color: 'transparent'});
@@ -1054,7 +1055,7 @@ var HAS_HASHCHANGE = (function() {
     fixedPosition: true,
     center: [-1.8237, 47.35],
     width: 160
-  }).addTo(map);
+  });
 
   map.on('locationerror', function() {
     console.log("Too far away, keep default location");
@@ -1120,8 +1121,14 @@ var HAS_HASHCHANGE = (function() {
     }}
   };
 
+  ign.addTo(map);
+  ortho2016.addTo(map);
+  border.addTo(map);
+  miniMap.addTo(map);
   L.control.locator().addTo(map);
   (new L.Control.ZoomFS()).addTo(map);
+
+
   var overlayMaps = {
     "Afficher le cadastre": cadastre,
     "Afficher les rues": streets_custom_osm,
