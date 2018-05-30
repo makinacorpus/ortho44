@@ -969,9 +969,9 @@ var HAS_HASHCHANGE = (function() {
   }
 
   // LAYERS
-  var legacyTileServer = 'https://{s}.tiles.cg44.makina-corpus.net';
+  var legacyTileServer = 'http://{s}.tiles.cg44.makina-corpus.net';
   var newTileServer    = 'https://{s}-tiles-vuduciel2.makina-corpus.net';
-  var mainTileServer   = newTileServer;
+  var mainTileServer   = legacyTileServer;
 
   var matrixIds3857= new Array(22);
   for (var i= 0; i<22; i++) {
