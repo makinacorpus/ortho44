@@ -983,7 +983,7 @@ var HAS_HASHCHANGE = (function() {
   // LAYERS
   var legacyTileServer = 'http://{s}.tiles.cg44.makina-corpus.net';
   var newTileServer    = 'https://{s}-tiles-vuduciel2.makina-corpus.net';
-  var mainTileServer   = legacyTileServer;
+  var mainTileServer   = newTileServer;
 
   var matrixIds3857= new Array(22);
   for (var i= 0; i<22; i++) {
@@ -1087,49 +1087,45 @@ var HAS_HASHCHANGE = (function() {
     opacity: 0.8,
     maxZoom: 19,
     attribution: "Makina Corpus / OpenStreetMap",
-    subdomains: 'abcdefgh'
+    subdomains: 'abcd'
   });
 
   var older_layers = {
     'ortho1850': {url: mainTileServer + '/ortho-1850/{z}/{x}/{y}.jpg', options: {
       maxZoom: 16,
       tms: true,
-      subdomains: 'abcdefgh'
+      subdomains: 'abcd'
     }},
-    'ortho1949': {url: mainTileServer + '/ortho-1949/{z}/{x}/{y}.jpg',
-    pngFallback: true,
+    'ortho1949': {url: mainTileServer + '/ortho-1949/{z}/{x}/{y}.png',
     options: {
       maxZoom: 18,
       tms: true,
-      subdomains: 'abcdefgh'
+      subdomains: 'abcd'
     }},
     'ortho1999': {url: newTileServer + '/ortho-1999/{z}/{x}/{y}.png',
     pngFallback: false,
     options: {
       maxZoom: 18,
       tms: true,
-      subdomains: 'abcdefgh'
+      subdomains: 'abcd'
     }},
-    'ortho2004': {url: mainTileServer + '/ortho-2004/{z}/{x}/{y}.jpg',
-    pngFallback: false,
+    'ortho2004': {url: mainTileServer + '/ortho-2004/{z}/{x}/{y}.png',
     options: {
       maxZoom: 18,
       tms: true,
-      subdomains: 'abcdefgh'
+      subdomains: 'abcd'
     }},
-    'ortho2009': {url: mainTileServer + '/ortho-2009/{z}/{x}/{y}.jpg',
-    pngFallback: false,
+    'ortho2009': {url: mainTileServer + '/ortho-2009/{z}/{x}/{y}.png',
     options: {
       maxZoom: 18,
       tms: true,
-      subdomains: 'abcdefgh'
+      subdomains: 'abcd'
     }},
-    'ortho2012': {url: mainTileServer + '/ortho-2012/{z}/{x}/{y}.jpg',
-    pngFallback: true,
+    'ortho2012': {url: mainTileServer + '/ortho-2012/{z}/{x}/{y}.png',
     options: {
       maxZoom: 19,
       tms: true,
-      subdomains: 'abcdefgh'
+      subdomains: 'abcd'
     }}
   };
 
