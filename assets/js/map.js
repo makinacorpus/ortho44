@@ -963,7 +963,7 @@ var HAS_HASHCHANGE = (function() {
   var max_bounds_buffer = new L.LatLngBounds(new L.LatLng(46.8, -3.0), new L.LatLng(47.87, -0.8));
   var map = L.map('map',
       {
-        maxBounds: max_bounds_buffer,
+        // maxBounds: max_bounds_buffer,
         zoomControl:false
       }
     );
