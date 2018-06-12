@@ -829,7 +829,7 @@ var HAS_HASHCHANGE = (function() {
       // create map and sync it
       Ortho44.mapcompare = L.map(compare_container,
         {
-          maxBounds: map.options.maxBounds,
+          // maxBounds: map.options.maxBounds,
           zoomControl:false,
           attribution: ''
         }
@@ -964,6 +964,7 @@ var HAS_HASHCHANGE = (function() {
   var map = L.map('map',
       {
         // maxBounds: max_bounds_buffer,
+        minZoom: 10,
         zoomControl:false
       }
     );
