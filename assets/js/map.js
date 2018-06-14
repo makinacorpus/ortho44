@@ -417,17 +417,26 @@ var HAS_HASHCHANGE = (function() {
         + "&LAYERS=cg44:ortho44-2016"
         + "&STYLES=&FORMAT=image/jpeg&DPI=96&MAP_RESOLUTION=96&FORMAT_OPTIONS=dpi:96&TRANSPARENT=TRUE";
 
-        var download_url = "http://services.vuduciel.loire-atlantique.fr/download?x0="+bounds.getSouthWest().lng+"&y0="+bounds.getSouthWest().lat+"&x1="+bounds.getNorthEast().lng+"&y1="+bounds.getNorthEast().lat
+        // var download_url = "http://services.vuduciel.loire-atlantique.fr/download?x0="+bounds.getSouthWest().lng+"&y0="+bounds.getSouthWest().lat+"&x1="+bounds.getNorthEast().lng+"&y1="+bounds.getNorthEast().lat
+
+        var wms_geotiff = "http://services.vuduciel.loire-atlantique.fr"
+        + "/geoserver/wms/?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap"
+        + "&BBOX=" + bounds.getSouthWest().lat + "," + bounds.getSouthWest().lng + "," + bounds.getNorthEast().lat + "," + bounds.getNorthEast().lng
+        + "&SRS=EPSG:4326"
+        + "&WIDTH=" + size.x + "&HEIGHT=" + size.y
+        + "&LAYERS=cg44:ortho44-2016"
+        + "&STYLES=&FORMAT=image/geotiff&DPI=96&MAP_RESOLUTION=96&FORMAT_OPTIONS=dpi:96&TRANSPARENT=TRUE";
 
         var message = "<p>Pour télécharger l'image complète de la position actuelle, veuillez cliquer sur l'un des liens ci-dessous.</p>"
         message += "<p>Note: le temps de chargement peut être assez long suivant la taille de la zone affichée.</p>";
         // message += "<p><a href='"+download_url+"' id= target='_new'>Télécharger l'image en dalles ECW</a></p>";
         message += "<p><a href='"+wms+"' id= target='_new'>Télécharger l'image haute résolution JPG</a></p>";
+        message += "<p><a href='"+wms_geotiff+"' id= target='_new'>Télécharger l'image haute résolution GeoTIFF</a></p>";
         p.innerHTML = message;
       } else {
         p.innerHTML = "<strong>La zone sélectionnée est trop importante, merci de la réduire.</strong>"
       }
-      
+
     },
 
     onAdd: function(map) {
@@ -461,7 +470,7 @@ var HAS_HASHCHANGE = (function() {
     },
 
     display: function () {
-      
+
     },
 
     onAdd: function(map) {
@@ -523,7 +532,7 @@ var HAS_HASHCHANGE = (function() {
               .addListener(link, 'click', L.DomEvent.preventDefault)
               .addListener(link, 'click', this.share, {self: this, link: infos[2]});
         };
-        
+
         return this._container;
     }
   });
@@ -656,10 +665,10 @@ var HAS_HASHCHANGE = (function() {
                   nwPoint = tilePoint.multiplyBy(tileSize);
                   //+/-1 to get in tile
                   nwPoint.x+=1;
-                  nwPoint.y-=1; 
-                  sePoint = nwPoint.add(new L.Point(tileSize, tileSize)); 
+                  nwPoint.y-=1;
+                  sePoint = nwPoint.add(new L.Point(tileSize, tileSize));
                   nw = crs.project(map.unproject(nwPoint, zoom));
-                  se = crs.project(map.unproject(sePoint, zoom));  
+                  se = crs.project(map.unproject(sePoint, zoom));
                   tilewidth = se.x-nw.x;
                   zoom=map.getZoom();
                   ident = this.matrixIds[zoom].identifier;
@@ -993,7 +1002,7 @@ var HAS_HASHCHANGE = (function() {
           topLeftCorner : new L.LatLng(20037508,-20037508)
       };
   }
-  
+
   var ign_keys = {
     'localhost': 'ymg58ktvpimfa7zyxjxyr1a5',
     'makinacorpus.github.io' : 'grqevikr9rotxktsaf1dmpef',
@@ -1152,7 +1161,7 @@ var HAS_HASHCHANGE = (function() {
   L.control.snippet().addTo(map);
   L.control.social().addTo(map);
   L.control.scale({'imperial': false, 'position': 'bottomright'}).addTo(map);
-  
+
   var resultsLayer = L.featureGroup().addTo(map);
 
   L.DomEvent.addListener(document.getElementById("search-input"), 'keyup', function(e) {
@@ -1221,7 +1230,7 @@ var HAS_HASHCHANGE = (function() {
   window._l_ortho44geocoder_localitysearch = function(results) {
     Ortho44.showResult(results.hits.hits[0]._source);
   };
-  
+
   // SECONDARY MAP
   L.DomEvent.addListener(document.querySelector("form#compare-with"), 'change', function(e) {
     if(e.target.checked) {
@@ -1238,7 +1247,7 @@ var HAS_HASHCHANGE = (function() {
       }
     }
   });
-  
+
   // FOUNDATION INIT
   $(document).foundation(null, null, null, null, true);
   $(document).foundation('dropdown', 'off');
